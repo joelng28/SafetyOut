@@ -1,8 +1,8 @@
 import 'package:app/pages/home.dart';
 import 'package:app/pages/login.dart';
-import 'package:app/state/auth.dart';
+//import 'package:app/state/auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+//import 'package:provider/provider.dart';
 
 class AppRouter {
   static const String home = '/';
