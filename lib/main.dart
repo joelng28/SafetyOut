@@ -5,11 +5,7 @@ import 'package:provider/provider.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => AuthState(),
-      child: MyApp()
-    )
-  );
+      ChangeNotifierProvider(create: (context) => AuthState(), child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -22,7 +18,7 @@ class MyApp extends StatelessWidget {
       // Més endevant podem controlar amb una variable si l'usuari ho canvia des de l'aplicació
       theme: ThemeData(),
       darkTheme: ThemeData(),
-      
+
       onGenerateRoute: AppRouter.generateRoute,
       initialRoute: '/',
     );

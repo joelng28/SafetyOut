@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Login extends StatefulWidget {
-  Login({Key key/*, this.title*/}) : super(key: key);
+  Login({Key key /*, this.title*/}) : super(key: key);
 
   //final String title;
 
@@ -27,7 +27,7 @@ class _Login extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(/*widget.title*/'Login'),
+        title: Text(/*widget.title*/ 'Login'),
       ),
       body: Center(
         child: Column(
