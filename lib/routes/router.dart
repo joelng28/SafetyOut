@@ -13,7 +13,7 @@ class AppRouter {
       case home:
         return MaterialPageRoute(
           settings: settings,
-          builder: (context) => Provider.of<AuthState>(context).logInState ? Home() : Login()
+          builder: (context) => /*Provider.of<AuthState>(context).logInState ?*/ Home() /*: Login()*/
         );
       case login:
         return MaterialPageRoute(
