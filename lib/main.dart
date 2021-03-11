@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'SafetyOU',
-      themeMode: ThemeMode.system, //Utilitza el tema del sistema
+      themeMode: ThemeMode.system, //Uses default system theme
       // Més endevant podem controlar amb una variable si l'usuari ho canvia des de l'aplicació
       theme: ThemeData(),
       darkTheme: ThemeData(),
