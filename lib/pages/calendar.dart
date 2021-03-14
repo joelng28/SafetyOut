@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class Home extends StatefulWidget {
-  Home({Key key /*, this.title*/}) : super(key: key);
+class Calendar extends StatefulWidget {
+  Calendar({Key key /*, this.title*/}) : super(key: key);
 
   //final String title;
 
   @override
-  _Home createState() => _Home();
+  _Calendar createState() => _Calendar();
 }
 
-class _Home extends State<Home> {
+class _Calendar extends State<Calendar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,7 +18,7 @@ class _Home extends State<Home> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'Home',
+              'Calendar',
             ),
           ],
         ),
