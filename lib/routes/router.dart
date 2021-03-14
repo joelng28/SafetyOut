@@ -1,4 +1,4 @@
-import 'package:app/pages/home.dart';
+import 'package:app/pages/app.dart';
 import 'package:app/pages/login.dart';
 //import 'package:app/state/auth.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +13,7 @@ class AppRouter {
       case home:
         return MaterialPageRoute(
           settings: settings,
-          builder: (context) => /*Provider.of<AuthState>(context).logInState ?*/ Home() /*: Login()*/
+          builder: (context) => /*Provider.of<AuthState>(context).logInState ?*/ App() /*: Login()*/
         );
       case login:
         return MaterialPageRoute(

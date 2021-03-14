@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
 
       supportedLocales: [
         Locale('en', ''),
-        Locale('cat', ''),
+        Locale('ca', ''),
         Locale('es', ''),
       ],
       localizationsDelegates: [
