@@ -58,7 +58,7 @@ class _App extends State<App> {
           ],
         ),
         child: BottomNavigationBar(
-          iconSize: 45,
+          iconSize: 45 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1),
           type: BottomNavigationBarType.fixed,
           showSelectedLabels: false,
           showUnselectedLabels: false,
