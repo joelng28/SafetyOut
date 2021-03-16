@@ -13,15 +13,15 @@ class Constants {
   static final FontWeight bolder   = FontWeight.w800;
 
   //Colors used
-  static final Color primary     = Color(0xFFA7FF80);
-  static final Color primaryDark = Color(0xFF315C44);
-  static final Color green       = Color(0xFFA7FF80);
-  static final Color black       = Color(0xFF242424);
-  static final Color darkGrey    = Color(0xFF404040);
-  static final Color grey        = Color(0xFF8D8D8D);
-  static final Color lightGrey   = Color(0xFFDBDBDB);
-  static final Color white       = Color(0xFFEAEAEA);
-  static final Color link        = Color(0xFF00FF9B);
+  static Color primary(BuildContext context)      => MediaQuery.of(context).platformBrightness == Brightness.light ? Color(0xFFA7FF80) : Color(0xFFD2FFBE);
+  static Color primaryDark(BuildContext context)  => Color(0xFF315C44);
+  static Color green(BuildContext context)        => MediaQuery.of(context).platformBrightness == Brightness.light ? Color(0xFFA7FF80) : Color(0xFFD2FFBE);
+  static Color black(BuildContext context)        => MediaQuery.of(context).platformBrightness == Brightness.light ? Color(0xFF242424) : Color(0xFFEAEAEA);
+  static Color darkGrey(BuildContext context)     => MediaQuery.of(context).platformBrightness == Brightness.light ? Color(0xFF404040) : Color(0xFFDBDBDB);
+  static Color grey(BuildContext context)         => Color(0xFF8D8D8D);
+  static Color lightGrey(BuildContext context)    => MediaQuery.of(context).platformBrightness == Brightness.light ? Color(0xFFDBDBDB) : Color(0xFF404040);
+  static Color white(BuildContext context)        => MediaQuery.of(context).platformBrightness == Brightness.light ? Color(0xFFEAEAEA) : Color(0xFFEAEAEA);
+  static Color link(BuildContext context)         => MediaQuery.of(context).platformBrightness == Brightness.light ? Color(0xFF00FF9B) : Color(0xFF84FCCD);
 
   // Vertical spacings used for MARGINS and PADDINGS
   static double v1(BuildContext context) => 12 / (MediaQuery.of(context).size.height < 700 ? 1.6 : MediaQuery.of(context).size.height < 800 ? 1.15 : 1);

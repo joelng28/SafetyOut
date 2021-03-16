@@ -1,3 +1,10 @@
 {
-    "login": "Iniciar sessió"
+    "Iniciar_sessio": "Inicia sessió",
+    "Benvingut": "Benvingut",
+    "Correu_electronic": "Correu electrònic",
+    "Contrasenya": "Contrasenya",
+    "Has_oblidat_la_contrasenya": "Has oblidat la contrasenya?",
+    "O": "O",
+    "No_tens_un_compte": "No tens un compte?",
+    "Registrat": "Registra't"
 }

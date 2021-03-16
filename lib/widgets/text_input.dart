@@ -1,8 +1,8 @@
 import 'package:app/defaults/constants.dart';
 import 'package:flutter/material.dart';
 
-class TextInput extends StatelessWidget{
-  TextInput({this.labelText, this.prefixIcon});
+class EmailInput extends StatelessWidget{
+  EmailInput({this.labelText, this.prefixIcon});
 
   final String labelText;
   final IconData prefixIcon;
@@ -13,22 +13,24 @@ class TextInput extends StatelessWidget{
       child: SizedBox(
         height: Constants.a7(context),
         child: TextField(
+          autocorrect: false,
+          keyboardType: TextInputType.emailAddress,
           style: TextStyle(
-            color: Constants.black
+            color: Constants.black(context)
           ),
           decoration: InputDecoration(
             contentPadding: EdgeInsets.symmetric(horizontal: Constants.h3(context), vertical: Constants.v3(context)),
             filled: true,
-            fillColor: Constants.lightGrey,
+            fillColor: Constants.lightGrey(context),
             labelText: labelText,
             labelStyle: TextStyle(
               fontSize: Constants.m(context),
-              color: Constants.grey
+              color: Constants.grey(context)
             ),
             hintText: labelText,
             hintStyle: TextStyle(
               fontSize: Constants.m(context),
-              color: Constants.grey
+              color: Constants.grey(context)
             ),
             floatingLabelBehavior: FloatingLabelBehavior.never,
             enabledBorder: OutlineInputBorder(
@@ -43,8 +45,8 @@ class TextInput extends StatelessWidget{
               padding: EdgeInsets.only(left: 15, right: 10),
               child: Icon(
                 prefixIcon,
-                color: Constants.black,
-                size: 40 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1),)
+                color: Constants.black(context),
+                size: 32 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1),)
             )
           )
         ),

@@ -1,5 +1,6 @@
 import 'package:app/defaults/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class PasswordInput extends StatefulWidget{
   PasswordInput({this.labelText});
@@ -22,23 +23,24 @@ class PasswordInputState extends State<PasswordInput> {
       child: SizedBox(
         height: Constants.a7(context),
         child: TextField(
+          autocorrect: false,
           obscureText: showPassword ? false : true,
           style: TextStyle(
-            color: Constants.black
+            color: Constants.black(context)
           ),
           decoration: InputDecoration(
             contentPadding: EdgeInsets.symmetric(horizontal: Constants.h3(context), vertical: Constants.v3(context)),
             filled: true,
-            fillColor: Constants.lightGrey,
+            fillColor: Constants.lightGrey(context),
             labelText: labelText,
             labelStyle: TextStyle(
               fontSize: Constants.m(context),
-              color: Constants.grey
+              color: Constants.grey(context)
             ),
             hintText: labelText,
             hintStyle: TextStyle(
               fontSize: Constants.m(context),
-              color: Constants.grey
+              color: Constants.grey(context)
             ),
             floatingLabelBehavior: FloatingLabelBehavior.never,
             enabledBorder: OutlineInputBorder(
@@ -52,12 +54,12 @@ class PasswordInputState extends State<PasswordInput> {
             prefixIcon: Padding(
               padding: EdgeInsets.only(left: 15, right: 10),
               child: Icon(
-                Icons.lock,
-                color: Constants.black,
-                size: 40 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1),)
+                FontAwesomeIcons.lock,
+                color: Constants.black(context),
+                size: 32 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1),)
             ),
             suffixIcon: Padding(
-              padding: EdgeInsets.only(left: 15, right: 10),
+              padding: EdgeInsets.only(left: 15, right: 15),
               child: InkWell(
                 onTap: () { 
                   setState(() {
@@ -67,8 +69,9 @@ class PasswordInputState extends State<PasswordInput> {
                 child: Icon(
                   showPassword ? Icons.visibility_outlined : 
                     Icons.visibility_off_outlined,
-                  color: Constants.lightGrey,
-                  size: 40,),
+                  color: Constants.black(context),
+                  size: 30 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1),
+                  ),
               )
             )
           )
