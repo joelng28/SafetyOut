@@ -20,7 +20,7 @@ class Constants {
   static Color darkGrey(BuildContext context)     => MediaQuery.of(context).platformBrightness == Brightness.light ? Color(0xFF404040) : Color(0xFFDBDBDB);
   static Color grey(BuildContext context)         => Color(0xFF8D8D8D);
   static Color lightGrey(BuildContext context)    => MediaQuery.of(context).platformBrightness == Brightness.light ? Color(0xFFDBDBDB) : Color(0xFF404040);
-  static Color white(BuildContext context)        => MediaQuery.of(context).platformBrightness == Brightness.light ? Color(0xFFEAEAEA) : Color(0xFFEAEAEA);
+  static Color white(BuildContext context)        => MediaQuery.of(context).platformBrightness == Brightness.light ? Color(0xFFEAEAEA) : Color(0xFF242424);
   static Color link(BuildContext context)         => MediaQuery.of(context).platformBrightness == Brightness.light ? Color(0xFF00FF9B) : Color(0xFF84FCCD);
 
   // Vertical spacings used for MARGINS and PADDINGS
