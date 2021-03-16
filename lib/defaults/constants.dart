@@ -32,15 +32,6 @@ class Constants {
   static double v6(BuildContext context) => 24 / (MediaQuery.of(context).size.height < 700 ? 1.6 : MediaQuery.of(context).size.height < 800 ? 1.15 : 1);
   static double v7(BuildContext context) => 32 / (MediaQuery.of(context).size.height < 700 ? 1.6 : MediaQuery.of(context).size.height < 800 ? 1.15 : 1);
 
-  // Font sizes
-  static double xxs(BuildContext context) => 12 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
-  static double xs(BuildContext context) => 14 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
-  static double s(BuildContext context) => 16 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
-  static double m(BuildContext context) => 18 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
-  static double l(BuildContext context) => 20 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
-  static double xl(BuildContext context) => 24 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
-  static double xxl(BuildContext context) => 32 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
-
   // Horizontal spacings used for MARGINS and PADDINGS
   static double h1(BuildContext context) => 12 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
   static double h2(BuildContext context) => 14 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
@@ -49,6 +40,15 @@ class Constants {
   static double h5(BuildContext context) => 20 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
   static double h6(BuildContext context) => 24 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
   static double h7(BuildContext context) => 32 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
+
+  // Font sizes
+  static double xxs(BuildContext context) => 12 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
+  static double xs(BuildContext context) => 14 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
+  static double s(BuildContext context) => 16 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
+  static double m(BuildContext context) => 18 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
+  static double l(BuildContext context) => 20 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
+  static double xl(BuildContext context) => 24 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
+  static double xxl(BuildContext context) => 32 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
 
   // Heights
   static double a1(BuildContext context) => 4 / (MediaQuery.of(context).size.height < 700 ? 1.3 : MediaQuery.of(context).size.height < 800 ? 1.15 : 1);
