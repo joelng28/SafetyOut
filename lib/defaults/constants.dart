@@ -13,15 +13,15 @@ class Constants {
   static final FontWeight bolder   = FontWeight.w800;
 
   //Colors used
-  static final Color primary     = Color(0xFFA7FF80);
-  static final Color primaryDark = Color(0xFF315C44);
-  static final Color green       = Color(0xFFA7FF80);
-  static final Color black       = Color(0xFF242424);
-  static final Color darkGrey    = Color(0xFF404040);
-  static final Color grey        = Color(0xFF8D8D8D);
-  static final Color lightGrey   = Color(0xFFDBDBDB);
-  static final Color white       = Color(0xFFEAEAEA);
-  static final Color link        = Color(0xFF00FF9B);
+  static Color primary(BuildContext context)      => MediaQuery.of(context).platformBrightness == Brightness.light ? Color(0xFFA7FF80) : Color(0xFFD2FFBE);
+  static Color primaryDark(BuildContext context)  => Color(0xFF315C44);
+  static Color green(BuildContext context)        => MediaQuery.of(context).platformBrightness == Brightness.light ? Color(0xFFA7FF80) : Color(0xFFD2FFBE);
+  static Color black(BuildContext context)        => MediaQuery.of(context).platformBrightness == Brightness.light ? Color(0xFF242424) : Color(0xFFEAEAEA);
+  static Color darkGrey(BuildContext context)     => MediaQuery.of(context).platformBrightness == Brightness.light ? Color(0xFF404040) : Color(0xFFDBDBDB);
+  static Color grey(BuildContext context)         => Color(0xFF8D8D8D);
+  static Color lightGrey(BuildContext context)    => MediaQuery.of(context).platformBrightness == Brightness.light ? Color(0xFFDBDBDB) : Color(0xFF404040);
+  static Color white(BuildContext context)        => MediaQuery.of(context).platformBrightness == Brightness.light ? Color(0xFFEAEAEA) : Color(0xFF242424);
+  static Color link(BuildContext context)         => MediaQuery.of(context).platformBrightness == Brightness.light ? Color(0xFF00FF9B) : Color(0xFF84FCCD);
 
   // Vertical spacings used for MARGINS and PADDINGS
   static double v1(BuildContext context) => 12 / (MediaQuery.of(context).size.height < 700 ? 1.6 : MediaQuery.of(context).size.height < 800 ? 1.15 : 1);
@@ -32,15 +32,6 @@ class Constants {
   static double v6(BuildContext context) => 24 / (MediaQuery.of(context).size.height < 700 ? 1.6 : MediaQuery.of(context).size.height < 800 ? 1.15 : 1);
   static double v7(BuildContext context) => 32 / (MediaQuery.of(context).size.height < 700 ? 1.6 : MediaQuery.of(context).size.height < 800 ? 1.15 : 1);
 
-  // Font sizes
-  static double xxs(BuildContext context) => 12 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
-  static double xs(BuildContext context) => 14 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
-  static double s(BuildContext context) => 16 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
-  static double m(BuildContext context) => 18 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
-  static double l(BuildContext context) => 20 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
-  static double xl(BuildContext context) => 24 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
-  static double xxl(BuildContext context) => 32 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
-
   // Horizontal spacings used for MARGINS and PADDINGS
   static double h1(BuildContext context) => 12 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
   static double h2(BuildContext context) => 14 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
@@ -49,6 +40,15 @@ class Constants {
   static double h5(BuildContext context) => 20 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
   static double h6(BuildContext context) => 24 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
   static double h7(BuildContext context) => 32 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
+
+  // Font sizes
+  static double xxs(BuildContext context) => 12 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
+  static double xs(BuildContext context) => 14 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
+  static double s(BuildContext context) => 16 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
+  static double m(BuildContext context) => 18 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
+  static double l(BuildContext context) => 20 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
+  static double xl(BuildContext context) => 24 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
+  static double xxl(BuildContext context) => 32 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1);
 
   // Heights
   static double a1(BuildContext context) => 4 / (MediaQuery.of(context).size.height < 700 ? 1.3 : MediaQuery.of(context).size.height < 800 ? 1.15 : 1);

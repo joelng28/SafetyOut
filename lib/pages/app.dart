@@ -1,10 +1,13 @@
-import 'package:app/app_localizations.dart';
+/* import 'package:app/app_localizations.dart'; */
+import 'package:app/defaults/constants.dart';
 import 'package:app/pages/calendar.dart';
 import 'package:app/pages/discover.dart';
 import 'package:app/pages/home.dart';
 import 'package:app/pages/profile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class App extends StatefulWidget {
   App({Key key /*, this.title*/}) : super(key: key);
@@ -48,54 +51,82 @@ class _App extends State<App> {
         // in the middle of the parent.
         child: pantalles.elementAt(index)
       ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          boxShadow: <BoxShadow>[
-            BoxShadow(
-              color: Colors.black,
-              blurRadius: 10,
-            ),
-          ],
+      bottomNavigationBar: Theme(
+        data: Theme.of(context).copyWith(
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
         ),
-        child: BottomNavigationBar(
-          iconSize: 45 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1),
-          type: BottomNavigationBarType.fixed,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined,
-              color: Colors.black,),
-              label: "Home",
-              activeIcon: Icon(Icons.home,
-              color: Colors.black,),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.compass,
-              color: Colors.black,),
-              label: "Discover",
-              activeIcon: Icon(CupertinoIcons.compass_fill,
-              color: Colors.black,),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_today_outlined,
-              color: Colors.black,),
-              label: "Calendar",
-              activeIcon: Icon(Icons.calendar_today,
-              color: Colors.black,),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.person,
-              color: Colors.black,),
-              label: "Profile",
-              activeIcon: Icon(CupertinoIcons.person_fill,
-              color: Colors.black,),
-            ),
-          ],
-          currentIndex: index,
-          onTap: onItemTapped,
+        child: Container(
+          decoration: BoxDecoration(
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                color: Colors.black,
+                blurRadius: 10,
+              ),
+            ],
+          ),
+          child: BottomNavigationBar(
+            iconSize: 45 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1),
+            type: BottomNavigationBarType.fixed,
+            showSelectedLabels: false,
+            showUnselectedLabels: false,
+            items: <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: SvgPicture.asset(
+                  'assets/icons/home.svg',
+                  color: Constants.black(context),
+                  height: 40 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1),
+                ),
+                label: "Home",
+                activeIcon: SvgPicture.asset(
+                  'assets/icons/home_fill.svg',
+                  color: Constants.black(context),
+                  height: 40 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1)
+                ),
+              ),
+              BottomNavigationBarItem(
+                icon: SvgPicture.asset(
+                  'assets/icons/compass.svg',
+                  color: Constants.black(context),
+                  height: 40 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1)
+                ),
+                label: "Discover",
+                activeIcon: SvgPicture.asset(
+                  'assets/icons/compass_fill.svg',
+                  color: Constants.black(context),
+                  height: 40 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1)
+                ),
+              ),
+              BottomNavigationBarItem(
+                icon: SvgPicture.asset(
+                  'assets/icons/calendar.svg',
+                  color: Constants.black(context),
+                  height: 38 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1)
+                ),
+                label: "Calendar",
+                activeIcon: SvgPicture.asset(
+                  'assets/icons/calendar_fill.svg',
+                  color: Constants.black(context),
+                  height: 38 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1)
+                ),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(FontAwesomeIcons.user,
+                  color: Constants.black(context),
+                  size: 40 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1),
+                ),
+                label: "Profile",
+                activeIcon: Icon(FontAwesomeIcons.solidUser,
+                  color: Constants.black(context),
+                  size: 40 / (MediaQuery.of(context).size.width < 380 ? 1.3 : 1),
+                ),
+              ),
+            ],
+            currentIndex: index,
+            onTap: onItemTapped,
+          ),
         ),
-      ),// This trailing comma makes auto-formatting nicer for build methods.
+      )// This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
