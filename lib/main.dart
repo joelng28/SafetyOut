@@ -1,16 +1,28 @@
+import 'dart:async';
+
 import 'package:app/app_localizations.dart';
 import 'package:app/routes/router.dart';
 import 'package:app/state/auth.dart';
+import 'package:app/storage/secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  bool loggedIn;
+  await SecureStorage.readSecureStorage('token').then((value) => {
+    if (value != null) loggedIn = true
+    else loggedIn = false
+  });
   runApp(
-      ChangeNotifierProvider(create: (context) => AuthState(), child: MyApp()));
+      ChangeNotifierProvider(create: (context) => AuthState(), child: MyApp(initialRoute: loggedIn ? '/' : '/login',)));
 }
 
 class MyApp extends StatelessWidget {
+  MyApp({this.initialRoute});
+  final String initialRoute;
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -57,7 +69,7 @@ class MyApp extends StatelessWidget {
       ],
 
       onGenerateRoute: AppRouter.generateRoute,
-      initialRoute: '/splash',
+      initialRoute: this.initialRoute,
     );
   }
 }
