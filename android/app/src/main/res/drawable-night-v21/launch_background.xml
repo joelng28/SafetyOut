@@ -7,6 +7,6 @@
     <item>
         <bitmap
             android:gravity="fill"
-            android:src="@drawable/backgroundw" />
+            android:src="@drawable/backgroundb" />
     </item> 
 </layer-list>

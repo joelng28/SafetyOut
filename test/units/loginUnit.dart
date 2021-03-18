@@ -5,18 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../app_localizations.dart';
-
-class Login extends StatefulWidget {
-  Login({Key key /*, this.title*/}) : super(key: key);
+class LoginUnit extends StatefulWidget {
+  LoginUnit({Key key /*, this.title*/}) : super(key: key);
 
   //final String title;
 
   @override
-  _Login createState() => _Login();
+  _LoginUnit createState() => _LoginUnit();
 }
 
-class _Login extends State<Login> {
+class _LoginUnit extends State<LoginUnit> {
   Function forgottenPassword = () {
 
   };
@@ -90,7 +88,7 @@ class _Login extends State<Login> {
                     Padding(
                       padding: EdgeInsets.only(top: Constants.v1(context)),
                       child: Text(
-                        AppLocalizations.of(context).translate("Benvingut"),
+                        'Benvingut',
                         style: TextStyle(
                           color: Constants.darkGrey(context),
                           fontSize: Constants.xxl(context),
@@ -107,7 +105,7 @@ class _Login extends State<Login> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     EmailInput(
-                      labelText: AppLocalizations.of(context).translate("Correu_electronic"),
+                      labelText: 'Correu electrònic',
                       prefixIcon: FontAwesomeIcons.solidUser,
                     )
                   ],
@@ -119,7 +117,7 @@ class _Login extends State<Login> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     PasswordInput(
-                      labelText: AppLocalizations.of(context).translate("Contrasenya")
+                      labelText: 'Contrasenya'
                     )
                   ],
                 ),
@@ -134,7 +132,7 @@ class _Login extends State<Login> {
                       splashColor:  Colors.transparent,
                       onTap: forgottenPassword,
                       child: Text(
-                        AppLocalizations.of(context).translate("Has_oblidat_la_contrasenya"),
+                        'Has oblidat la contrasenya?',
                         style: TextStyle(
                           fontSize: Constants.m(context),
                           fontWeight: Constants.bold,
@@ -181,7 +179,7 @@ class _Login extends State<Login> {
                               backgroundColor: MaterialStateProperty.all(Colors.transparent)
                             ),
                             child: Text(
-                              AppLocalizations.of(context).translate("Iniciar_sessio"),
+                              'Inicia sessió',
                               style: TextStyle(
                                 fontSize: Constants.m(context),
                                 fontWeight: Constants.bold,
@@ -211,7 +209,7 @@ class _Login extends State<Login> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            AppLocalizations.of(context).translate("O"),
+                            'O',
                             style: TextStyle(
                               fontSize: Constants.xl(context),
                               fontWeight: Constants.bold
@@ -372,7 +370,7 @@ class _Login extends State<Login> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                AppLocalizations.of(context).translate("No_tens_un_compte") + ' ',
+                'No tens un compte? ',
                 style: TextStyle(
                   color: Constants.black(context),
                   fontSize: Constants.m(context)
@@ -383,7 +381,7 @@ class _Login extends State<Login> {
                 splashColor:  Colors.transparent,
                 onTap: goToRegister,
                 child: Text(
-                  AppLocalizations.of(context).translate("Registrat"),
+                  'Registra\'t',
                   style: TextStyle(
                   color: Constants.link(context),
                   fontSize: Constants.m(context),

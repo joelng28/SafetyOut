@@ -1,24 +1,25 @@
 import 'package:app/pages/app.dart';
 import 'package:app/pages/login.dart';
-//import 'package:app/state/auth.dart';
 import 'package:flutter/material.dart';
-//import 'package:provider/provider.dart';
+import 'package:page_transition/page_transition.dart';
 
 class AppRouter {
-  static const String home = '/';
+  static const String app = '/';
   static const String login = '/login';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
-      case home:
-        return MaterialPageRoute(
-            settings: settings,
-            builder:
-                (context) => /*Provider.of<AuthState>(context).logInState ?*/ App() /*: Login()*/
-            );
+      case app:
+        return PageTransition(
+            child: App(),
+            type: PageTransitionType.fade,
+            duration: Duration(milliseconds: 700));
       case login:
-        return MaterialPageRoute(
-            settings: settings, builder: (context) => Login());
+        return PageTransition(
+            child: Login(),
+            type: PageTransitionType.fade,
+            duration: Duration(milliseconds: 700));
+
       default:
         return null;
     }
