@@ -12,14 +12,13 @@ class AppRouter {
     switch (settings.name) {
       case home:
         return MaterialPageRoute(
-          settings: settings,
-          builder: (context) => /*Provider.of<AuthState>(context).logInState ?*/ App() /*: Login()*/
-        );
+            settings: settings,
+            builder:
+                (context) => /*Provider.of<AuthState>(context).logInState ?*/ App() /*: Login()*/
+            );
       case login:
         return MaterialPageRoute(
-          settings: settings,
-          builder: (context) => Login()
-        );
+            settings: settings, builder: (context) => Login());
       default:
         return null;
     }

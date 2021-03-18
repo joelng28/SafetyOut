@@ -13,13 +13,20 @@ class _Profile extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+      body: SafeArea(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'Profile',
-            ),
+            Visibility(
+                visible: MediaQuery.of(context).viewInsets.bottom == 0,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Icon(
+                      Icons.settings,
+                      color: Colors.black,
+                    ),
+                  ],
+                )),
           ],
         ),
       ),
