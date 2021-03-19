@@ -6,5 +6,9 @@
     "Has_oblidat_la_contrasenya": "Has olvidado la contraseña?",
     "O": "O",
     "No_tens_un_compte": "No tienes una cuenta?",
-    "Registrat": "Registrate"
+    "Registrat": "Registrate",
+    "Registre_Usuari": "Registro de usuario",
+    "Nom_Usuari": "Nombre de usuario",
+    "Nom_Complet": "Nombre completo",
+    "Data_naixement": "Fecha de nacimiento"
 }
