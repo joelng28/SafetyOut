@@ -1,3 +1,4 @@
+import 'package:app/defaults/constants.dart';
 import 'package:flutter/material.dart';
 
 class Profile extends StatefulWidget {
@@ -17,16 +18,49 @@ class _Profile extends State<Profile> {
         child: Column(
           children: <Widget>[
             Visibility(
-                visible: MediaQuery.of(context).viewInsets.bottom == 0,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Icon(
-                      Icons.settings,
-                      color: Colors.black,
+              visible: MediaQuery.of(context).viewInsets.bottom == 0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Icon(
+                    Icons.settings,
+                    color: Colors.black,
+                  ),
+                ],
+              ),
+            ),
+            Visibility(
+              visible: MediaQuery.of(context).viewInsets.bottom == 0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                        right: Constants.h2(context),
+                        left: Constants.h2(context)),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Hello',
+                        ),
+                      ],
                     ),
-                  ],
-                )),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                        right: Constants.h2(context),
+                        left: Constants.h2(context)),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Hello',
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
