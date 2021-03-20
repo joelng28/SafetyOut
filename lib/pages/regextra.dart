@@ -1,6 +1,8 @@
 import 'package:app/defaults/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:app/pages/regdata.dart';
+import 'package:app/pages/regpassword.dart';
 
 enum Sex {
   notKnown,
@@ -165,6 +167,83 @@ class _RegExtra extends State<RegExtra> {
                       },
                     ),
                   ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(Constants.h4(context),
+                  Constants.v7(context), Constants.h4(context), 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: SizedBox(
+                      height: Constants.a7(context),
+                      child: Container(
+                        child: TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => RegData()),
+                              );
+                            },
+                            style: ButtonStyle(
+                                shape: MaterialStateProperty.all(
+                                    RoundedRectangleBorder(
+                                  borderRadius: new BorderRadius.circular(30.0),
+                                )),
+                                backgroundColor: MaterialStateProperty.all(
+                                    Colors.transparent)),
+                            child: Text("Enrere",
+                                style: TextStyle(
+                                    fontSize: Constants.m(context),
+                                    fontWeight: Constants.bold,
+                                    color: Constants.primaryDark(context)))),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: SizedBox(
+                      height: Constants.a7(context),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [Color(0xFF84FCCD), Color(0xFFA7FF80)],
+                              begin: FractionalOffset.centerLeft,
+                              end: FractionalOffset.centerRight,
+                            ),
+                            borderRadius: BorderRadius.circular(30),
+                            boxShadow: [
+                              BoxShadow(
+                                offset: Offset(0, 3),
+                                blurRadius: 10,
+                                color: Color.fromARGB(100, 0, 0, 0),
+                              )
+                            ]),
+                        child: TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => RegPassword()),
+                              );
+                            },
+                            style: ButtonStyle(
+                                shape: MaterialStateProperty.all(
+                                    RoundedRectangleBorder(
+                                  borderRadius: new BorderRadius.circular(30.0),
+                                )),
+                                backgroundColor: MaterialStateProperty.all(
+                                    Colors.transparent)),
+                            child: Text("Següent",
+                                style: TextStyle(
+                                    fontSize: Constants.m(context),
+                                    fontWeight: Constants.bold,
+                                    color: Constants.primaryDark(context)))),
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),
