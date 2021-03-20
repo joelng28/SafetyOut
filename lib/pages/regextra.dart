@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:app/pages/regdata.dart';
 import 'package:app/pages/regpassword.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import '../app_localizations.dart';
 
 enum Sex {
   notKnown,
@@ -20,8 +23,9 @@ class RegExtra extends StatefulWidget {
 }
 
 class _RegExtra extends State<RegExtra> {
-  Sex _genere = Sex.notKnown;
+  Sex _genere;
   String _naixement;
+  String _mes;
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +80,8 @@ class _RegExtra extends State<RegExtra> {
               children: [
                 Padding(
                   padding: EdgeInsets.only(top: Constants.v1(context)),
-                  child: Text('Registre_Usuari',
+                  child: Text(
+                      AppLocalizations.of(context).translate("Registre_Usuari"),
                       style: TextStyle(
                           color: Constants.darkGrey(context),
                           fontSize: Constants.xxl(context),
@@ -85,10 +90,13 @@ class _RegExtra extends State<RegExtra> {
               ],
             ),
             Padding(
-              padding: EdgeInsets.fromLTRB(Constants.h4(context),
-                  Constants.v5(context), Constants.h4(context), 0),
+              padding: EdgeInsets.fromLTRB(
+                  Constants.h4(context),
+                  Constants.v5(context),
+                  Constants.h4(context),
+                  Constants.v7(context)),
               child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     Column(
                       children: [
@@ -102,8 +110,13 @@ class _RegExtra extends State<RegExtra> {
                                       lastDate: DateTime.now())
                                   .then((date) {
                                 setState(() {
-                                  _naixement =
-                                      "${date.year}/${date.month}/${date.day}";
+                                  _mes = "Mes" + date.month.toString();
+                                  _naixement = date.day.toString() +
+                                      "/" +
+                                      AppLocalizations.of(context)
+                                          .translate(_mes) +
+                                      "/" +
+                                      date.year.toString();
                                 });
                               });
                             })
@@ -113,7 +126,9 @@ class _RegExtra extends State<RegExtra> {
                       children: [
                         Text(
                           _naixement == null
-                              ? ' Data de naixement'
+                              ? ' ' +
+                                  AppLocalizations.of(context)
+                                      .translate("Data_naixement")
                               : ' ' + _naixement,
                           style: TextStyle(fontWeight: Constants.bold),
                         )
@@ -128,11 +143,25 @@ class _RegExtra extends State<RegExtra> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    'Gènere',
+                    AppLocalizations.of(context).translate("Gènere"),
                     style: TextStyle(fontWeight: Constants.bold),
                   ),
                   ListTile(
+                    title: const Text('Cap'),
+                    trailing: Icon(FontAwesomeIcons.genderless),
+                    leading: Radio<Sex>(
+                      value: Sex.notKnown,
+                      groupValue: _genere,
+                      onChanged: (Sex value) {
+                        setState(() {
+                          _genere = value;
+                        });
+                      },
+                    ),
+                  ),
+                  ListTile(
                     title: const Text('Femení'),
+                    trailing: Icon(FontAwesomeIcons.venus),
                     leading: Radio<Sex>(
                       value: Sex.female,
                       groupValue: _genere,
@@ -145,6 +174,7 @@ class _RegExtra extends State<RegExtra> {
                   ),
                   ListTile(
                     title: const Text('Masculí'),
+                    trailing: Icon(FontAwesomeIcons.mars),
                     leading: Radio<Sex>(
                       value: Sex.male,
                       groupValue: _genere,
@@ -156,7 +186,8 @@ class _RegExtra extends State<RegExtra> {
                     ),
                   ),
                   ListTile(
-                    title: const Text('No Binari'),
+                    title: const Text('Transgènere'),
+                    trailing: Icon(FontAwesomeIcons.transgenderAlt),
                     leading: Radio<Sex>(
                       value: Sex.not_applicable,
                       groupValue: _genere,

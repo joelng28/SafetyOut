@@ -2,6 +2,7 @@ import 'package:app/defaults/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:app/widgets/password_input.dart';
+import 'package:app/widgets/password_input2.dart';
 import 'package:app/pages/login.dart';
 import 'package:app/pages/regextra.dart';
 
@@ -70,7 +71,8 @@ class _RegPassword extends State<RegPassword> {
               children: [
                 Padding(
                   padding: EdgeInsets.only(top: Constants.v1(context)),
-                  child: Text('Registre_Usuari',
+                  child: Text(
+                      AppLocalizations.of(context).translate("Registre_Usuari"),
                       style: TextStyle(
                           color: Constants.darkGrey(context),
                           fontSize: Constants.xxl(context),
@@ -95,7 +97,11 @@ class _RegPassword extends State<RegPassword> {
                   Constants.v5(context), Constants.h4(context), 0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [PasswordInput(labelText: 'Confirmar_Contrasenya')],
+                children: [
+                  PasswordInput2(
+                      labelText: AppLocalizations.of(context)
+                          .translate("Confirmar_Contrasenya"))
+                ],
               ),
             ),
             Padding(

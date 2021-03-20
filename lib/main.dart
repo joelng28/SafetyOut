@@ -21,29 +21,20 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.grey,
         primaryColor: Color(0xFFA7FF80),
-        textSelectionTheme: TextSelectionThemeData(
-          cursorColor: Color(0xFFA7FF80)
-        ),
+        textSelectionTheme:
+            TextSelectionThemeData(cursorColor: Color(0xFFA7FF80)),
       ),
       darkTheme: ThemeData(
-        primarySwatch: Colors.grey,
-        primaryColor: Color(0xFFD2FFBE),
-        textSelectionTheme: TextSelectionThemeData(
-          cursorColor: Color(0xFFD2FFBE)
-        ),
-        scaffoldBackgroundColor: Color(0xFF242424),
-        bottomNavigationBarTheme: BottomNavigationBarThemeData(
-          backgroundColor: Color(0xFF242424)
-        ),
-        bottomSheetTheme: BottomSheetThemeData(
-          backgroundColor: Color(0xFF242424)
-        ),
-        textTheme: TextTheme(
-          bodyText2: TextStyle(
-            color: Color(0xFFEAEAEA)
-          )
-        )
-      ),
+          primarySwatch: Colors.grey,
+          primaryColor: Color(0xFFD2FFBE),
+          textSelectionTheme:
+              TextSelectionThemeData(cursorColor: Color(0xFFD2FFBE)),
+          scaffoldBackgroundColor: Color(0xFF242424),
+          bottomNavigationBarTheme:
+              BottomNavigationBarThemeData(backgroundColor: Color(0xFF242424)),
+          bottomSheetTheme:
+              BottomSheetThemeData(backgroundColor: Color(0xFF242424)),
+          textTheme: TextTheme(bodyText2: TextStyle(color: Color(0xFFEAEAEA)))),
 
       supportedLocales: [
         Locale('en', ''),
@@ -57,7 +48,7 @@ class MyApp extends StatelessWidget {
       ],
 
       onGenerateRoute: AppRouter.generateRoute,
-      initialRoute: '/splash',
+      initialRoute: '/login',
     );
   }
 }

@@ -3,6 +3,7 @@
     "Benvingut": "Bienvenido",
     "Correu_electronic": "Correo electrónico",
     "Contrasenya": "Contraseña",
+    "Confirmar_Contrasenya": "Confirmar contraseña",
     "Has_oblidat_la_contrasenya": "Has olvidado la contraseña?",
     "O": "O",
     "No_tens_un_compte": "No tienes una cuenta?",
@@ -10,5 +11,19 @@
     "Registre_Usuari": "Registro de usuario",
     "Nom_Usuari": "Nombre de usuario",
     "Nom_Complet": "Nombre completo",
-    "Data_naixement": "Fecha de nacimiento"
+    "Gènere": "Gènero",
+    "Data_naixement": "Fecha de nacimiento",
+    "Mes1": "Gener",
+    "Mes2": "Febrer",
+    "Mes3": "Març",
+    "Mes4": "Abril",
+    "Mes5": "Maig",
+    "Mes6": "Juny",
+    "Mes7": "Juliol",
+    "Mes8": "Agost",
+    "Mes9": "Septembre",
+    "Mes10": "Octubre",
+    "Mes11": "Novembre",
+    "Mes12": "Decembre"
 }
+    

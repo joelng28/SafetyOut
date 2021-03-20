@@ -17,6 +17,10 @@ class RegData extends StatefulWidget {
 }
 
 class _RegData extends State<RegData> {
+  String _usuari;
+  String _nom;
+  String _correu;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,7 +84,9 @@ class _RegData extends State<RegData> {
                 children: [
                   Padding(
                     padding: EdgeInsets.only(top: Constants.v1(context)),
-                    child: Text("Registre_Usuari",
+                    child: Text(
+                        AppLocalizations.of(context)
+                            .translate("Registre_Usuari"),
                         style: TextStyle(
                             color: Constants.darkGrey(context),
                             fontSize: Constants.xxl(context),
@@ -96,7 +102,8 @@ class _RegData extends State<RegData> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   EmailInput(
-                    labelText: 'Nom_Usuari',
+                    labelText:
+                        AppLocalizations.of(context).translate("Nom_Usuari"),
                   )
                 ],
               ),
@@ -108,7 +115,8 @@ class _RegData extends State<RegData> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   EmailInput(
-                    labelText: 'Nom_Complet',
+                    labelText:
+                        AppLocalizations.of(context).translate("Nom_Complet"),
                   )
                 ],
               ),
@@ -120,7 +128,8 @@ class _RegData extends State<RegData> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   EmailInput(
-                    labelText: 'Correu_electrònic',
+                    labelText: AppLocalizations.of(context)
+                        .translate("Correu_electronic"),
                   )
                 ],
               ),
