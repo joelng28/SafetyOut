@@ -26,6 +26,7 @@ class _Profile extends State<Profile> {
                   IconButton(
                     icon: const Icon(Icons.settings),
                     color: Constants.black(context),
+                    iconSize: Constants.xxl(context),
                     onPressed: () {},
                   ),
                 ],
@@ -44,13 +45,13 @@ class _Profile extends State<Profile> {
                       children: [
                         //Imagen perfil
                         new Container(
-                          width: Constants.w9(context),
-                          height: Constants.a9(context),
+                          width: Constants.w10(context),
+                          height: Constants.a10(context),
                           decoration: new BoxDecoration(
                               shape: BoxShape.circle,
                               image: new DecorationImage(
-                                  fit: BoxFit.fill,
-                                  image: new NetworkImage(
+                                  fit: BoxFit.fill, image: new NetworkImage(
+                                      //Imagen de prueba, se colocará la imagen del usuario
                                       "https://i.imgur.com/BoN9kdC.png"))),
                         ),
                       ],
@@ -61,6 +62,7 @@ class _Profile extends State<Profile> {
                         right: Constants.h2(context),
                         left: Constants.h2(context)),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
                           padding: EdgeInsets.only(
@@ -72,7 +74,7 @@ class _Profile extends State<Profile> {
                               Text(
                                 'Joel Navarro',
                                 style: TextStyle(
-                                  fontSize: Constants.xl(context),
+                                  fontSize: Constants.xxl(context),
                                   fontWeight: Constants.bolder,
                                 ),
                               ),
@@ -87,7 +89,12 @@ class _Profile extends State<Profile> {
                             children: [
                               //Boton editar perfil
                               ElevatedButton(
-                                child: Text('Editar Perfil'),
+                                child: Text(
+                                  'Editar Perfil',
+                                  style: TextStyle(
+                                    fontWeight: Constants.bolder,
+                                  ),
+                                ),
                                 onPressed: () {},
                                 style: ElevatedButton.styleFrom(
                                     primary: Constants.white(context),
