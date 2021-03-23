@@ -1,4 +1,5 @@
 import 'package:app/defaults/constants.dart';
+import 'package:app/pages/regdata.dart';
 import 'package:app/storage/secure_storage.dart';
 import 'package:app/widgets/password_input.dart';
 import 'package:app/widgets/email_input.dart';
@@ -54,7 +55,6 @@ class _Login extends State<Login> {
 
   Function googleLogin = () {};
 
-  Function goToRegister = () {};
 
   @override
   Widget build(BuildContext context) {
@@ -390,7 +390,12 @@ class _Login extends State<Login> {
                 InkWell(
                     highlightColor: Colors.transparent,
                     splashColor: Colors.transparent,
-                    onTap: goToRegister,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => RegData()),
+                      );
+                    },
                     child: Text(
                       AppLocalizations.of(context).translate("Registrat"),
                       style: TextStyle(
