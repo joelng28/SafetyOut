@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 
 TextEditingController emailController = new TextEditingController();
 
-class EmailInput extends StatelessWidget {
-  EmailInput({this.labelText, this.prefixIcon});
+class RawInput extends StatelessWidget {
+  RawInput({this.labelText});
 
   final String labelText;
-  final IconData prefixIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -40,18 +39,7 @@ class EmailInput extends StatelessWidget {
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.transparent),
                   borderRadius: BorderRadius.circular(40),
-                ),
-                prefixIcon: Visibility(
-                  visible: prefixIcon != null,
-                  child: Padding(
-                      padding: EdgeInsets.only(left: 15, right: 10),
-                      child: Icon(
-                        prefixIcon,
-                        color: Constants.black(context),
-                        size: 32 /
-                            (MediaQuery.of(context).size.width < 380 ? 1.3 : 1),
-                      )),
-                ))),
+                ),)),
       ),
     );
   }

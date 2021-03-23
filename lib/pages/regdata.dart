@@ -1,7 +1,7 @@
 import 'package:app/defaults/constants.dart';
+import 'package:app/widgets/raw_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:app/widgets/email_input.dart';
 import 'package:app/pages/login.dart';
 import 'package:app/pages/regextra.dart';
 
@@ -97,9 +97,8 @@ class _RegData extends State<RegData> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  EmailInput(
-                    labelText:
-                        AppLocalizations.of(context).translate("Nom_Complet"),
+                  RawInput(
+                    labelText: AppLocalizations.of(context).translate("Nom_Complet"),
                   )
                 ],
               ),
@@ -110,7 +109,7 @@ class _RegData extends State<RegData> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  EmailInput(
+                  RawInput(
                     labelText: AppLocalizations.of(context)
                         .translate("Correu_electronic"),
                   )

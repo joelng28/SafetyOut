@@ -47,7 +47,7 @@ Future<void> main() async {
   runApp(ChangeNotifierProvider(
       create: (context) => RegState(),
       child: MyApp(
-        initialRoute: '/login',
+        initialRoute: loggedIn ? '/' : '/login',
       )));
 }
 

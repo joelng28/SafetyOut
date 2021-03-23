@@ -24,7 +24,6 @@ dependencies:
   flutter:
     sdk: flutter
   provider: ^4.3.3
-  mongo_dart: ^0.4.4
   flutter_localizations:
     sdk: flutter
   # The following adds the Cupertino Icons font to your application.

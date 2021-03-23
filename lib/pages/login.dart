@@ -1,14 +1,12 @@
 import 'package:app/defaults/constants.dart';
 import 'package:app/pages/regdata.dart';
-import 'package:app/storage/secure_storage.dart';
+/* import 'package:app/storage/secure_storage.dart'; */
 import 'package:app/widgets/password_input.dart';
 import 'package:app/widgets/email_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../app_localizations.dart';
-/* import '../database.dart';
-import '../main.dart'; */
 
 class Login extends StatefulWidget {
   Login({Key key}) : super(key: key);

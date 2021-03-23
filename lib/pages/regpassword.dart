@@ -32,13 +32,13 @@ class _RegPassword extends State<RegPassword> {
       'gender': gender,
       'birthday': birthdate
     })
-    .then((res) => {
+    .then((res) {
       if(res.statusCode == 201) {
         //Guardar key
-        Navigator.of(context).pushReplacementNamed('/')
+        Navigator.of(context).pushReplacementNamed('/');
       }
     })
-    .catchError((err) => {
+    .catchError((err) {
       //Sale error por pantalla
     });
   };
