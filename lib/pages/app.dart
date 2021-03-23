@@ -28,6 +28,11 @@ class App extends StatefulWidget {
 }
 
 class _App extends State<App> {
+
+  Function settings = () {
+
+  };
+
     int index = 0;
 
     static List<Widget> pantalles = <Widget>[

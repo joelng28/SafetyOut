@@ -8,9 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../app_localizations.dart';
 
 class Login extends StatefulWidget {
-  Login({Key key /*, this.title*/}) : super(key: key);
-
-  //final String title;
+  Login({Key key}) : super(key: key);
 
   @override
   _Login createState() => _Login();
@@ -43,6 +41,7 @@ class _Login extends State<Login> {
       body: SafeArea(
         child: Column(
             children: <Widget>[
+              //Amaga el logo quan apareix el teclat per aprofitar l'espai
               Visibility(
                 visible: MediaQuery.of(context).viewInsets.bottom == 0,
                 child: Padding(

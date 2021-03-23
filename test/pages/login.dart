@@ -5,16 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class LoginUnit extends StatefulWidget {
-  LoginUnit({Key key /*, this.title*/}) : super(key: key);
+class Login extends StatefulWidget {
+  Login({Key key /*, this.title*/}) : super(key: key);
 
   //final String title;
 
   @override
-  _LoginUnit createState() => _LoginUnit();
+  _Login createState() => _Login();
 }
 
-class _LoginUnit extends State<LoginUnit> {
+class _Login extends State<Login> {
   Function forgottenPassword = () {
 
   };
