@@ -1,17 +1,17 @@
 import 'package:app/defaults/constants.dart';
 import 'package:app/pages/regdata.dart';
+import 'package:app/storage/secure_storage.dart';
 import 'package:app/widgets/password_input.dart';
 import 'package:app/widgets/email_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 import '../app_localizations.dart';
+import '../database.dart';
+import '../main.dart';
 
 class Login extends StatefulWidget {
-  Login({Key key /*, this.title*/}) : super(key: key);
-
-  //final String title;
+  Login({Key key}) : super(key: key);
 
   @override
   _Login createState() => _Login();
@@ -20,13 +20,41 @@ class Login extends StatefulWidget {
 class _Login extends State<Login> {
   Function forgottenPassword = () {};
 
-  Function login = () {};
+  Function login = () async {
+    var mail = emailController.text;
+    var psswd = passwordController.text;
+    var psswd1 = Database.passwordByEmail(mail.toString());
+
+    int res = psswd1.toString() == psswd.toString() ? 1 : 0;
+
+    if (res == 1) {
+      //Credencials correctes
+      SecureStorage.writeSecureStorage("Email", mail.toString());
+      SecureStorage.writeSecureStorage('Password', psswd.toString());
+    } else {
+      //Credencials incorrectes
+      Widget build(BuildContext context) {
+        return AlertDialog(
+          title: Text('Error contrasenya o correu'),
+          content: Text("Credenciales incorrectas"),
+          actions: [
+            // ignore: deprecated_member_use
+            FlatButton(
+                child: Text("Aceptar"),
+                textColor: Colors.blue,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                }),
+          ],
+        );
+      }
+    }
+  };
 
   Function facebookLogin = () {};
 
   Function googleLogin = () {};
 
-  Function goToRegister = () {};
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +62,7 @@ class _Login extends State<Login> {
         body: SafeArea(
           child: Column(
             children: <Widget>[
+              //Amaga el logo quan apareix el teclat per aprofitar l'espai
               Visibility(
                 visible: MediaQuery.of(context).viewInsets.bottom == 0,
                 child: Padding(
@@ -171,6 +200,7 @@ class _Login extends State<Login> {
                                 )
                               ]),
                           child: TextButton(
+                              key: Key('loginButton'),
                               onPressed: login,
                               style: ButtonStyle(
                                   shape: MaterialStateProperty.all(
