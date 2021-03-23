@@ -10,9 +10,16 @@ class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case app:
-        return PageTransition(child: App(), type: PageTransitionType.fade, duration: Duration(milliseconds: 700));
+        return PageTransition(
+            child: App(),
+            type: PageTransitionType.fade,
+            duration: Duration(milliseconds: 700));
       case login:
-        return PageTransition(child: Login(), type: PageTransitionType.fade, duration: Duration(milliseconds: 700));
+        return PageTransition(
+            child: Login(),
+            type: PageTransitionType.fade,
+            duration: Duration(milliseconds: 700));
+
       default:
         return null;
     }
