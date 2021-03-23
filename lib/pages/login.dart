@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../app_localizations.dart';
-import '../database.dart';
-import '../main.dart';
+/* import '../database.dart';
+import '../main.dart'; */
 
 class Login extends StatefulWidget {
   Login({Key key}) : super(key: key);
@@ -21,13 +21,13 @@ class _Login extends State<Login> {
   Function forgottenPassword = () {};
 
   Function login = () async {
-    var mail = emailController.text;
-    var psswd = passwordController.text;
-    var psswd1 = Database.passwordByEmail(mail.toString());
+    /* var mail = emailController.text;
+    var psswd = passwordController.text; */
+    /* var psswd1 = Database.passwordByEmail(mail.toString()); */
 
-    int res = psswd1.toString() == psswd.toString() ? 1 : 0;
+    /* int res = psswd1.toString() == psswd.toString() ? 1 : 0; */
 
-    if (res == 1) {
+    /* if (res == 1) {
       //Credencials correctes
       SecureStorage.writeSecureStorage("Email", mail.toString());
       SecureStorage.writeSecureStorage('Password', psswd.toString());
@@ -48,7 +48,7 @@ class _Login extends State<Login> {
           ],
         );
       }
-    }
+    } */
   };
 
   Function facebookLogin = () {};

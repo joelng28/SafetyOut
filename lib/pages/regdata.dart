@@ -99,19 +99,6 @@ class _RegData extends State<RegData> {
                 children: [
                   EmailInput(
                     labelText:
-                        AppLocalizations.of(context).translate("Nom_Usuari"),
-                  )
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(Constants.h4(context),
-                  Constants.v5(context), Constants.h4(context), 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  EmailInput(
-                    labelText:
                         AppLocalizations.of(context).translate("Nom_Complet"),
                   )
                 ],

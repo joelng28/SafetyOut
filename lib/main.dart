@@ -2,16 +2,16 @@ import 'dart:async';
 
 import 'package:app/app_localizations.dart';
 import 'package:app/routes/router.dart';
-import 'package:app/state/auth.dart';
+import 'package:app/state/reg.dart';
 import 'package:app/storage/secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:mongo_dart/mongo_dart.dart';
+/* import 'package:flutter_secure_storage/flutter_secure_storage.dart'; */
+/* import 'package:mongo_dart/mongo_dart.dart'; */
 
-Db db = Db('mongodb://localhost/test');
-DbCollection coll = db.collection('people');
+/* Db db = Db('mongodb://localhost/test');
+DbCollection coll = db.collection('people'); */
 
 /*main(List<String> arguments) async {
   Db db = Db('mongodb://localhost:27017/test');
@@ -28,10 +28,10 @@ DbCollection coll = db.collection('people');
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await db.open();
+ /*  await db.open(); */
   print('Connected to database');
 
-  await coll.insertAll([
+/*   await coll.insertAll([
     {
       'First_name': 'Dani',
       'Last_name': 'Rodri',
@@ -39,13 +39,13 @@ Future<void> main() async {
       'Gender': 'Male',
       'Password': 'prova'
     }
-  ]);
+  ]); */
 
   bool loggedIn;
   await SecureStorage.readSecureStorage('token').then(
       (value) => {if (value != null) loggedIn = true else loggedIn = false});
   runApp(ChangeNotifierProvider(
-      create: (context) => AuthState(),
+      create: (context) => RegState(),
       child: MyApp(
         initialRoute: '/login',
       )));

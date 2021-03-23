@@ -1,10 +1,12 @@
 import 'package:app/defaults/constants.dart';
+import 'package:app/state/reg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:app/widgets/password_input.dart';
 import 'package:app/widgets/password_input2.dart';
-import 'package:app/pages/login.dart';
 import 'package:app/pages/regextra.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 import '../app_localizations.dart';
 
@@ -18,6 +20,29 @@ class RegPassword extends StatefulWidget {
 }
 
 class _RegPassword extends State<RegPassword> {
+  Function submitSignUp = (BuildContext context) async {
+    String name = Provider.of<RegState>(context, listen: false).getName;
+    String email = Provider.of<RegState>(context, listen: false).getEmail;
+    String gender = Provider.of<RegState>(context, listen: false).getGender;
+    DateTime birthdate = Provider.of<RegState>(context, listen: false).getBirthdate;
+    var url = Uri.parse('https://safetyout.herokuapp.com/signup');
+    http.post(url, body: {
+      'name': name,
+      'email': email,
+      'gender': gender,
+      'birthday': birthdate
+    })
+    .then((res) => {
+      if(res.statusCode == 201) {
+        //Guardar key
+        Navigator.of(context).pushReplacementNamed('/')
+      }
+    })
+    .catchError((err) => {
+      //Sale error por pantalla
+    });
+  };
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -156,13 +181,7 @@ class _RegPassword extends State<RegPassword> {
                               )
                             ]),
                         child: TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Login()),
-                              );
-                            },
+                            onPressed: submitSignUp(context),
                             style: ButtonStyle(
                                 shape: MaterialStateProperty.all(
                                     RoundedRectangleBorder(
