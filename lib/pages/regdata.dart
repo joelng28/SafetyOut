@@ -17,10 +17,6 @@ class RegData extends StatefulWidget {
 }
 
 class _RegData extends State<RegData> {
-  String _usuari;
-  String _nom;
-  String _correu;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
