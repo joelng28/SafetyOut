@@ -1,24 +1,20 @@
 import 'package:app/defaults/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-TextEditingController passwordController = new TextEditingController();
-
-class PasswordInput2 extends StatefulWidget {
-  PasswordInput2({this.labelText});
+class PasswordInput3 extends StatefulWidget {
+  PasswordInput3({this.labelText});
 
   final String labelText;
 
   @override
-  PasswordInput2State createState() =>
-      PasswordInput2State(labelText: this.labelText);
+  PasswordInput3State createState() =>
+      PasswordInput3State(labelText: this.labelText);
 }
 
-class PasswordInput2State extends State<PasswordInput2> {
-  PasswordInput2State({this.labelText});
+class PasswordInput3State extends State<PasswordInput3> {
+  PasswordInput3State({this.labelText});
 
   final String labelText;
-  bool showPassword = false;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +23,7 @@ class PasswordInput2State extends State<PasswordInput2> {
         height: Constants.a7(context),
         child: TextField(
             autocorrect: false,
-            obscureText: showPassword ? false : true,
+            obscureText: true,
             style: TextStyle(color: Constants.black(context)),
             decoration: InputDecoration(
                 contentPadding: EdgeInsets.symmetric(
@@ -52,23 +48,7 @@ class PasswordInput2State extends State<PasswordInput2> {
                   borderSide: BorderSide(color: Colors.transparent),
                   borderRadius: BorderRadius.circular(40),
                 ),
-                suffixIcon: Padding(
-                    padding: EdgeInsets.only(left: 15, right: 15),
-                    child: InkWell(
-                      onTap: () {
-                        setState(() {
-                          showPassword = !showPassword;
-                        });
-                      },
-                      child: Icon(
-                        showPassword
-                            ? Icons.visibility_outlined
-                            : Icons.visibility_off_outlined,
-                        color: Constants.black(context),
-                        size: 30 /
-                            (MediaQuery.of(context).size.width < 380 ? 1.3 : 1),
-                      ),
-                    )))),
+              )),
       ),
     );
   }

@@ -1,5 +1,5 @@
 import 'package:app/defaults/constants.dart';
-import 'package:app/pages/regdata.dart';
+import 'package:app/pages/signup/name.dart';
 /* import 'package:app/storage/secure_storage.dart'; */
 import 'package:app/widgets/password_input.dart';
 import 'package:app/widgets/email_input.dart';
@@ -391,7 +391,7 @@ class _Login extends State<Login> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => RegData()),
+                        PageRouteBuilder(pageBuilder: (_, __, ___) => RegData()),
                       );
                     },
                     child: Text(

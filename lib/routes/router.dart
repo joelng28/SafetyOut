@@ -1,7 +1,6 @@
 import 'package:app/pages/app.dart';
 import 'package:app/pages/login.dart';
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 
 class AppRouter {
   static const String app = '/';
@@ -10,15 +9,11 @@ class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case app:
-        return PageTransition(
-            child: App(),
-            type: PageTransitionType.fade,
-            duration: Duration(milliseconds: 700));
+        return PageRouteBuilder(pageBuilder: (_, __, ___) => App());
+        break;
       case login:
-        return PageTransition(
-            child: Login(),
-            type: PageTransitionType.fade,
-            duration: Duration(milliseconds: 700));
+        return PageRouteBuilder(pageBuilder: (_, __, ___) => Login());
+        break;
 
       default:
         return null;
