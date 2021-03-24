@@ -2,7 +2,7 @@ import 'package:app/defaults/constants.dart';
 import 'package:app/pages/signup/gender.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-
+import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import '../../app_localizations.dart';
 
 enum Sex {
@@ -21,8 +21,8 @@ class Birthdate extends StatefulWidget {
 }
 
 class _Birthdate extends State<Birthdate> {
-  String _naixement;
-  String _mes;
+/*   String _naixement;
+  String _mes; */
   CalendarController _calendarController;
   DateTime pickedDate = DateTime(2010);
     DateTime yearDate = DateTime.now();
@@ -90,9 +90,8 @@ class _Birthdate extends State<Birthdate> {
                 Padding(
                   padding: EdgeInsets.only(top: Constants.v4(context)),
                   child: Text(
-                      /* AppLocalizations.of(context)
-                          .translate("Registre_Usuari") */
-                          'Introdueix la teva data de naixement',
+                      AppLocalizations.of(context)
+                          .translate("Introdueix_la_teva_data_de_naixement"),
                       style: TextStyle(
                           color: Constants.darkGrey(context),
                           fontSize: Constants.l(context),
@@ -116,6 +115,9 @@ class _Birthdate extends State<Birthdate> {
                           borderRadius: BorderRadius.all(Radius.circular(20))
                         ),
                         child: TableCalendar(
+                          locale: Localizations.localeOf(context).toLanguageTag(),
+                          startDay: DateTime(1900),
+                          endDay: DateTime.now(),
                           calendarController: _calendarController,
                           initialSelectedDay: pickedDate,
                           initialCalendarFormat: CalendarFormat.month,
@@ -174,55 +176,25 @@ class _Birthdate extends State<Birthdate> {
                               color: Constants.black(context)
                             ),
                           ),
-                          onDaySelected: (date, events, holidays) {
-                            print(date);
-                          },
+                          onDaySelected: (date, events, holidays) => setState(() {
+                              pickedDate = date;
+                              _calendarController.setSelectedDay(pickedDate);}
+                            ),
                           onHeaderTapped: (date) {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return new Theme(
-                                  data: ThemeData(
-                                    primarySwatch: Colors.green,
-                                    dialogBackgroundColor: Constants.grey(context),
-                                  ),
-                                  child: Dialog(
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
-                                    child: Column(
-                                      children: [
-                                        Expanded(
-                                          child: YearPicker(
-                                            firstDate: DateTime(1900), 
-                                            lastDate: DateTime.now(), 
-                                            selectedDate: date,
-                                            onChanged: (newYear) => setState((){
-                                              setState(() {
-                                                _calendarController.setSelectedDay(newYear);
-                                                Navigator.of(context).pop();
-                                              });
-                                            })),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.fromLTRB(Constants.h7(context), 0, 0, Constants.v5(context)),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: [
-                                              InkWell(
-                                                highlightColor: Colors.transparent,
-                                                splashColor: Colors.transparent,
-                                                onTap: () => Navigator.of(context).pop(),
-                                                child: Text('Cancel', style: TextStyle(
-                                                  fontWeight: Constants.bold,
-                                                ))
-                                              ),
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              });
+                            showMaterialNumberPicker(
+                            context: context,
+                            title: AppLocalizations.of(context)
+                            .translate("Any"),
+                            maxNumber: DateTime.now().year,
+                            minNumber: 1900,
+                            selectedNumber: pickedDate.year,
+                            onChanged: (value) => setState(() {
+                              pickedDate = DateTime(value, pickedDate.month, pickedDate.day);
+                              _calendarController.setSelectedDay(pickedDate);}
+                            ),
+                            backgroundColor: Constants.white(context),
+                            buttonTextColor: Constants.black(context)
+                          );
                           },
                         ),
                       ),
@@ -266,7 +238,8 @@ class _Birthdate extends State<Birthdate> {
                                 )),
                                 backgroundColor: MaterialStateProperty.all(
                                     Colors.transparent)),
-                            child: Text("Següent",
+                            child: Text(AppLocalizations.of(context)
+                            .translate("Següent"),
                                 style: TextStyle(
                                     fontSize: Constants.m(context),
                                     fontWeight: Constants.bold,

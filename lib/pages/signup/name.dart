@@ -66,9 +66,8 @@ class _RegData extends State<RegData> {
                   Padding(
                     padding: EdgeInsets.only(top: Constants.v4(context)),
                     child: Text(
-                        /* AppLocalizations.of(context)
-                            .translate("Registre_Usuari") */
-                            'Introdueix el teu nom complet',
+                        AppLocalizations.of(context)
+                            .translate("Introdueix_el_teu_nom_complet"),
                         style: TextStyle(
                             color: Constants.darkGrey(context),
                             fontSize: Constants.l(context),
@@ -126,7 +125,8 @@ class _RegData extends State<RegData> {
                                 )),
                                 backgroundColor: MaterialStateProperty.all(
                                     Colors.transparent)),
-                            child: Text("Següent",
+                            child: Text(AppLocalizations.of(context)
+                            .translate("Següent"),
                                 style: TextStyle(
                                     fontSize: Constants.m(context),
                                     fontWeight: Constants.bold,

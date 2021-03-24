@@ -2,8 +2,6 @@ import 'package:app/defaults/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:app/pages/signup/password.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:table_calendar/table_calendar.dart';
-
 import '../../app_localizations.dart';
 
 enum Sex {
@@ -75,9 +73,8 @@ class _Gender extends State<Gender> {
                 Padding(
                   padding: EdgeInsets.only(top: Constants.v4(context)),
                   child: Text(
-                      /* AppLocalizations.of(context)
-                          .translate("Registre_Usuari") */
-                          'Selecciona el teu gènere',
+                      AppLocalizations.of(context)
+                          .translate("Selecciona_el_teu_gènere"),
                       style: TextStyle(
                           color: Constants.darkGrey(context),
                           fontSize: Constants.l(context),
@@ -110,7 +107,8 @@ class _Gender extends State<Gender> {
                           color: gender == Sex.female ? Constants.pink(context) : Constants.grey(context)
                         ),
                       ),
-                      Text('Femení', style: TextStyle(
+                      Text(AppLocalizations.of(context)
+                          .translate("Femení"), style: TextStyle(
                         fontSize: Constants.l(context),
                         fontWeight: Constants.bold,
                         color: gender == Sex.female ? Constants.pink(context) : Constants.grey(context)
@@ -136,7 +134,8 @@ class _Gender extends State<Gender> {
                           color: gender == Sex.male ? Constants.blue(context) : Constants.grey(context)
                         ),
                       ),
-                      Text('Masculí', style: TextStyle(
+                      Text(AppLocalizations.of(context)
+                          .translate("Masculí"), style: TextStyle(
                         fontSize: Constants.l(context),
                         fontWeight: Constants.bold,
                         color: gender == Sex.male ? Constants.blue(context) : Constants.grey(context)
@@ -171,7 +170,8 @@ class _Gender extends State<Gender> {
                           color: gender == Sex.notKnown? Constants.purple(context) : Constants.grey(context)
                         ),
                       ),
-                      Text('Altres', style: TextStyle(
+                      Text(AppLocalizations.of(context)
+                          .translate("Altres"), style: TextStyle(
                         fontSize: Constants.l(context),
                         fontWeight: Constants.bold,
                         color: gender == Sex.notKnown ? Constants.purple(context) : Constants.grey(context)
@@ -197,7 +197,8 @@ class _Gender extends State<Gender> {
                           color: gender == Sex.not_applicable ? Constants.red(context) : Constants.grey(context)
                         ),
                       ),
-                      Text('No especificar', style: TextStyle(
+                      Text(AppLocalizations.of(context)
+                          .translate("No_especificar"), style: TextStyle(
                         fontSize: Constants.l(context),
                         fontWeight: Constants.bold,
                         color: gender == Sex.not_applicable ? Constants.red(context) : Constants.grey(context)
@@ -245,7 +246,8 @@ class _Gender extends State<Gender> {
                                 )),
                                 backgroundColor: MaterialStateProperty.all(
                                     Colors.transparent)),
-                            child: Text("Següent",
+                            child: Text(AppLocalizations.of(context)
+                            .translate("Següent"),
                                 style: TextStyle(
                                     fontSize: Constants.m(context),
                                     fontWeight: Constants.bold,

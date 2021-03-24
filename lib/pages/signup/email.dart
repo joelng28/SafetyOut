@@ -67,9 +67,8 @@ class _Email extends State<Email> {
                   Padding(
                     padding: EdgeInsets.only(top: Constants.v4(context)),
                     child: Text(
-                        /* AppLocalizations.of(context)
-                            .translate("Registre_Usuari") */
-                            'Introdueix un electrònic',
+                        AppLocalizations.of(context)
+                            .translate("Introdueix_un_correu_electronic"),
                         style: TextStyle(
                             color: Constants.darkGrey(context),
                             fontSize: Constants.l(context),
@@ -128,7 +127,8 @@ class _Email extends State<Email> {
                                 )),
                                 backgroundColor: MaterialStateProperty.all(
                                     Colors.transparent)),
-                            child: Text("Següent",
+                            child: Text(AppLocalizations.of(context)
+                            .translate("Següent"),
                                 style: TextStyle(
                                     fontSize: Constants.m(context),
                                     fontWeight: Constants.bold,
