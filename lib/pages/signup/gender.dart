@@ -2,9 +2,11 @@ import 'package:app/defaults/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:app/pages/signup/password.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../../app_localizations.dart';
+import '../../state/reg.dart';
 
 enum Sex {
   notKnown,
@@ -24,6 +26,14 @@ class Gender extends StatefulWidget {
 class _Gender extends State<Gender> {
   Sex gender;
 
+  Function paraPass = (BuildContext context, String gender) {
+    Provider.of<RegState>(context, listen: false).setGender(gender);
+    Navigator.push(
+      context,
+      PageRouteBuilder(pageBuilder: (_, __, ___) => RegPassword()),
+    );
+  };
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,44 +41,44 @@ class _Gender extends State<Gender> {
         child: Column(
           children: <Widget>[
             Padding(
-                padding: EdgeInsets.only(top: Constants.xs(context)),
-                child: Stack(
-                  children: [
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: EdgeInsets.only(left: Constants.xxs(context)),
-                        child: InkWell(
-                          highlightColor: Colors.transparent,
-                          splashColor: Colors.transparent,
-                          onTap: () {
-                              Navigator.of(context).pop();
-                          },
-                          child: Icon(
-                            Icons.arrow_back_ios_rounded,
+              padding: EdgeInsets.only(top: Constants.xs(context)),
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.only(left: Constants.xxs(context)),
+                      child: InkWell(
+                        highlightColor: Colors.transparent,
+                        splashColor: Colors.transparent,
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Icon(Icons.arrow_back_ios_rounded,
                             size: 32 /
-                                  (MediaQuery.of(context).size.width < 380 ? 1.3 : 1),
-                            color: Constants.black(context)
-                          ),
-                        ),
+                                (MediaQuery.of(context).size.width < 380
+                                    ? 1.3
+                                    : 1),
+                            color: Constants.black(context)),
                       ),
                     ),
-                    Align(
-                      alignment: Alignment.center,
-                      child: Visibility(
-                        visible: MediaQuery.of(context).viewInsets.bottom == 0,
-                        child: Text(
-                        AppLocalizations.of(context)
-                            .translate("Registre_Usuari"),
-                        style: TextStyle(
-                            color: Constants.darkGrey(context),
-                            fontSize: Constants.xl(context),
-                            fontWeight: Constants.bolder)),
-                      ),
+                  ),
+                  Align(
+                    alignment: Alignment.center,
+                    child: Visibility(
+                      visible: MediaQuery.of(context).viewInsets.bottom == 0,
+                      child: Text(
+                          AppLocalizations.of(context)
+                              .translate("Registre_Usuari"),
+                          style: TextStyle(
+                              color: Constants.darkGrey(context),
+                              fontSize: Constants.xl(context),
+                              fontWeight: Constants.bolder)),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -77,7 +87,7 @@ class _Gender extends State<Gender> {
                   child: Text(
                       /* AppLocalizations.of(context)
                           .translate("Registre_Usuari") */
-                          'Selecciona el teu gènere',
+                      'Selecciona el teu gènere',
                       style: TextStyle(
                           color: Constants.darkGrey(context),
                           fontSize: Constants.l(context),
@@ -86,127 +96,133 @@ class _Gender extends State<Gender> {
               ],
             ),
             Padding(
-              padding: EdgeInsets.fromLTRB(Constants.h7(context),
-                  Constants.v5(context), Constants.h7(context), 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    children: [
-                      InkWell(
-                        highlightColor: Colors.transparent,
-                        splashColor: Colors.transparent,
-                        onTap: () => setState(() {
-                          gender = Sex.female;
-                        }),
-                        child: Icon(
-                          FontAwesomeIcons.venus,
-                          size: 150 /
-                                (MediaQuery.of(context).size.height < 700
-                                    ? 1.5
-                                    : MediaQuery.of(context).size.height < 800
-                                        ? 1.3
-                                        : 1),
-                          color: gender == Sex.female ? Constants.pink(context) : Constants.grey(context)
+                padding: EdgeInsets.fromLTRB(Constants.h7(context),
+                    Constants.v5(context), Constants.h7(context), 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      children: [
+                        InkWell(
+                          highlightColor: Colors.transparent,
+                          splashColor: Colors.transparent,
+                          onTap: () => setState(() {
+                            gender = Sex.female;
+                          }),
+                          child: Icon(FontAwesomeIcons.venus,
+                              size: 150 /
+                                  (MediaQuery.of(context).size.height < 700
+                                      ? 1.5
+                                      : MediaQuery.of(context).size.height < 800
+                                          ? 1.3
+                                          : 1),
+                              color: gender == Sex.female
+                                  ? Constants.pink(context)
+                                  : Constants.grey(context)),
                         ),
-                      ),
-                      Text('Femení', style: TextStyle(
-                        fontSize: Constants.l(context),
-                        fontWeight: Constants.bold,
-                        color: gender == Sex.female ? Constants.pink(context) : Constants.grey(context)
-                      ))
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      InkWell(
-                        highlightColor: Colors.transparent,
-                        splashColor: Colors.transparent,
-                        onTap: () => setState(() {
-                          gender = Sex.male;
-                        }),
-                        child: Icon(
-                          FontAwesomeIcons.mars,
-                          size: 150 /
-                                (MediaQuery.of(context).size.height < 700
-                                    ? 1.5
-                                    : MediaQuery.of(context).size.height < 800
-                                        ? 1.3
-                                        : 1),
-                          color: gender == Sex.male ? Constants.blue(context) : Constants.grey(context)
+                        Text('Femení',
+                            style: TextStyle(
+                                fontSize: Constants.l(context),
+                                fontWeight: Constants.bold,
+                                color: gender == Sex.female
+                                    ? Constants.pink(context)
+                                    : Constants.grey(context)))
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        InkWell(
+                          highlightColor: Colors.transparent,
+                          splashColor: Colors.transparent,
+                          onTap: () => setState(() {
+                            gender = Sex.male;
+                          }),
+                          child: Icon(FontAwesomeIcons.mars,
+                              size: 150 /
+                                  (MediaQuery.of(context).size.height < 700
+                                      ? 1.5
+                                      : MediaQuery.of(context).size.height < 800
+                                          ? 1.3
+                                          : 1),
+                              color: gender == Sex.male
+                                  ? Constants.blue(context)
+                                  : Constants.grey(context)),
                         ),
-                      ),
-                      Text('Masculí', style: TextStyle(
-                        fontSize: Constants.l(context),
-                        fontWeight: Constants.bold,
-                        color: gender == Sex.male ? Constants.blue(context) : Constants.grey(context)
-                      ))
-                    ],
-                  ),
-                ],
-              )
-            ),
+                        Text('Masculí',
+                            style: TextStyle(
+                                fontSize: Constants.l(context),
+                                fontWeight: Constants.bold,
+                                color: gender == Sex.male
+                                    ? Constants.blue(context)
+                                    : Constants.grey(context)))
+                      ],
+                    ),
+                  ],
+                )),
             Padding(
-              padding: EdgeInsets.fromLTRB(Constants.h7(context),
-                  Constants.v7(context), Constants.h7(context), 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    children: [
-                      InkWell(
-                        highlightColor: Colors.transparent,
-                        splashColor: Colors.transparent,
-                        onTap: () => setState(() {
-                          gender = Sex.notKnown;
-                        }),
-                        child: Icon(
-                          FontAwesomeIcons.transgenderAlt,
-                          size: 150 /
-                                (MediaQuery.of(context).size.height < 700
-                                    ? 1.5
-                                    : MediaQuery.of(context).size.height < 800
-                                        ? 1.3
-                                        : 1),
-                          color: gender == Sex.notKnown? Constants.purple(context) : Constants.grey(context)
+                padding: EdgeInsets.fromLTRB(Constants.h7(context),
+                    Constants.v7(context), Constants.h7(context), 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      children: [
+                        InkWell(
+                          highlightColor: Colors.transparent,
+                          splashColor: Colors.transparent,
+                          onTap: () => setState(() {
+                            gender = Sex.notKnown;
+                          }),
+                          child: Icon(FontAwesomeIcons.transgenderAlt,
+                              size: 150 /
+                                  (MediaQuery.of(context).size.height < 700
+                                      ? 1.5
+                                      : MediaQuery.of(context).size.height < 800
+                                          ? 1.3
+                                          : 1),
+                              color: gender == Sex.notKnown
+                                  ? Constants.purple(context)
+                                  : Constants.grey(context)),
                         ),
-                      ),
-                      Text('Altres', style: TextStyle(
-                        fontSize: Constants.l(context),
-                        fontWeight: Constants.bold,
-                        color: gender == Sex.notKnown ? Constants.purple(context) : Constants.grey(context)
-                      ))
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      InkWell(
-                        highlightColor: Colors.transparent,
-                        splashColor: Colors.transparent,
-                        onTap: () => setState(() {
-                          gender = Sex.not_applicable;
-                        }),
-                        child: Icon(
-                          FontAwesomeIcons.genderless,
-                          size: 150 /
-                                (MediaQuery.of(context).size.height < 700
-                                    ? 1.5
-                                    : MediaQuery.of(context).size.height < 800
-                                        ? 1.3
-                                        : 1),
-                          color: gender == Sex.not_applicable ? Constants.red(context) : Constants.grey(context)
+                        Text('Altres',
+                            style: TextStyle(
+                                fontSize: Constants.l(context),
+                                fontWeight: Constants.bold,
+                                color: gender == Sex.notKnown
+                                    ? Constants.purple(context)
+                                    : Constants.grey(context)))
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        InkWell(
+                          highlightColor: Colors.transparent,
+                          splashColor: Colors.transparent,
+                          onTap: () => setState(() {
+                            gender = Sex.not_applicable;
+                          }),
+                          child: Icon(FontAwesomeIcons.genderless,
+                              size: 150 /
+                                  (MediaQuery.of(context).size.height < 700
+                                      ? 1.5
+                                      : MediaQuery.of(context).size.height < 800
+                                          ? 1.3
+                                          : 1),
+                              color: gender == Sex.not_applicable
+                                  ? Constants.red(context)
+                                  : Constants.grey(context)),
                         ),
-                      ),
-                      Text('No especificar', style: TextStyle(
-                        fontSize: Constants.l(context),
-                        fontWeight: Constants.bold,
-                        color: gender == Sex.not_applicable ? Constants.red(context) : Constants.grey(context)
-                      ))
-                    ],
-                  ),
-                ],
-              )
-            ),
+                        Text('No especificar',
+                            style: TextStyle(
+                                fontSize: Constants.l(context),
+                                fontWeight: Constants.bold,
+                                color: gender == Sex.not_applicable
+                                    ? Constants.red(context)
+                                    : Constants.grey(context)))
+                      ],
+                    ),
+                  ],
+                )),
             Padding(
               padding: EdgeInsets.fromLTRB(Constants.h4(context),
                   Constants.v7(context), Constants.h4(context), 0),
@@ -232,12 +248,8 @@ class _Gender extends State<Gender> {
                               )
                             ]),
                         child: TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                PageRouteBuilder(pageBuilder: (_, __, ___) => RegPassword()),
-                              );
-                            },
+                            onPressed: () =>
+                                paraPass(context, gender.toString()),
                             style: ButtonStyle(
                                 shape: MaterialStateProperty.all(
                                     RoundedRectangleBorder(
