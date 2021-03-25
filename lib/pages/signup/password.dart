@@ -2,12 +2,9 @@ import 'package:app/defaults/constants.dart';
 import 'package:app/state/reg.dart';
 import 'package:app/widgets/password_input2.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:app/widgets/password_input.dart';
 import 'package:app/widgets/password_input3.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-
 import '../../app_localizations.dart';
 
 class RegPassword extends StatefulWidget {
@@ -20,6 +17,8 @@ class RegPassword extends StatefulWidget {
 }
 
 class _RegPassword extends State<RegPassword> {
+  static String pwd = '';
+  String rePwd = '';
 
   Function submitSignUp = (BuildContext context) {
     String name = Provider.of<RegState>(context, listen: false).getName;
@@ -31,7 +30,8 @@ class _RegPassword extends State<RegPassword> {
       'name': name,
       'email': email,
       'gender': gender,
-      'birthday': birthdate
+      'birthday': birthdate,
+      'password': pwd
     })
     .then((res) {
       if(res.statusCode == 201) {

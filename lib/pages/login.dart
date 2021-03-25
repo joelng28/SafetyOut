@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../app_localizations.dart';
+import 'package:http/http.dart' as http;
 
 class Login extends StatefulWidget {
   Login({Key key}) : super(key: key);
@@ -16,37 +17,61 @@ class Login extends StatefulWidget {
 }
 
 class _Login extends State<Login> {
+  static String email = '';
+  static String pwd = '';
+  bool activeButton = false;
+
   Function forgottenPassword = () {};
 
-  Function login = () async {
-    /* var mail = emailController.text;
-    var psswd = passwordController.text; */
-    /* var psswd1 = Database.passwordByEmail(mail.toString()); */
-
-    /* int res = psswd1.toString() == psswd.toString() ? 1 : 0; */
-
-    /* if (res == 1) {
-      //Credencials correctes
-      SecureStorage.writeSecureStorage("Email", mail.toString());
-      SecureStorage.writeSecureStorage('Password', psswd.toString());
-    } else {
-      //Credencials incorrectes
-      Widget build(BuildContext context) {
-        return AlertDialog(
-          title: Text('Error contrasenya o correu'),
-          content: Text("Credenciales incorrectas"),
-          actions: [
-            // ignore: deprecated_member_use
-            FlatButton(
-                child: Text("Aceptar"),
-                textColor: Colors.blue,
+  Function submitLogin = (BuildContext context) {
+      if(email != '' && pwd != '')
+  {
+    var url = Uri.parse('https://safetyout.herokuapp.com/login');
+    http.post(url, body: {
+      'email': email,
+      'password': pwd,
+    })
+    .then((res) {
+      if(res.statusCode == 200) {
+        //Guardar key
+        Navigator.of(context).pushReplacementNamed('/');
+      }
+    })
+    .catchError((err) {
+      //Sale error por pantalla
+      showDialog(
+        context: context, 
+        builder: (BuildContext context) {
+          return AlertDialog(
+            contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text(
+                    'Els credencials són incorrectes',
+                    style: TextStyle(
+                      fontSize: Constants.m(context)
+                    )
+                  ),
+                ],
+              )
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                  'Acceptar',
+                  style: TextStyle(
+                    color: Constants.black(context)
+                  )),
                 onPressed: () {
                   Navigator.of(context).pop();
-                }),
-          ],
-        );
-      }
-    } */
+                },
+              ),
+            ],
+          );
+        });
+    });
+  }
   };
 
   Function facebookLogin = () {};
@@ -138,6 +163,10 @@ class _Login extends State<Login> {
                       labelText: AppLocalizations.of(context)
                           .translate("Correu_electronic"),
                       prefixIcon: FontAwesomeIcons.solidUser,
+                      onChanged: (val) => setState(() {
+                        email = val;
+                        activeButton = email != '' && pwd != '';
+                      })
                     )
                   ],
                 ),
@@ -149,7 +178,11 @@ class _Login extends State<Login> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     PasswordInput(
-                        labelText: AppLocalizations.of(context)
+                      onChanged: (val) => setState(() {
+                      pwd = val;
+                       activeButton = pwd != '' && email != '';
+                      }),
+                      labelText: AppLocalizations.of(context)
                             .translate("Contrasenya"))
                   ],
                 ),
@@ -185,7 +218,7 @@ class _Login extends State<Login> {
                         child: Container(
                           decoration: BoxDecoration(
                               gradient: LinearGradient(
-                                colors: [Color(0xFF84FCCD), Color(0xFFA7FF80)],
+                                colors: activeButton ? [Color(0xFF84FCCD), Color(0xFFA7FF80)] : [Color(0xFF679080), Color(0xFF68865A)],
                                 begin: FractionalOffset.centerLeft,
                                 end: FractionalOffset.centerRight,
                               ),
@@ -199,7 +232,7 @@ class _Login extends State<Login> {
                               ]),
                           child: TextButton(
                               key: Key('loginButton'),
-                              onPressed: login,
+                              onPressed: () => submitLogin(context),
                               style: ButtonStyle(
                                   shape: MaterialStateProperty.all(
                                       RoundedRectangleBorder(

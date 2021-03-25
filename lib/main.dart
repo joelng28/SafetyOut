@@ -62,12 +62,24 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.system, //Uses default system theme
       // Més endevant podem controlar amb una variable si l'usuari ho canvia des de l'aplicació
       theme: ThemeData(
+        dialogTheme: DialogTheme(
+          contentTextStyle: TextStyle(
+            color: Color(0xFF242424)
+          )
+        ),
+        dialogBackgroundColor: Color(0xFFDBDBDB),
         primarySwatch: Colors.grey,
         primaryColor: Color(0xFFA7FF80),
         textSelectionTheme:
             TextSelectionThemeData(cursorColor: Color(0xFFA7FF80)),
       ),
       darkTheme: ThemeData(
+        dialogTheme: DialogTheme(
+          contentTextStyle: TextStyle(
+            color: Color(0xFFEAEAEA)
+          )
+        ),
+        dialogBackgroundColor: Color(0xFF404040),
           primarySwatch: Colors.grey,
           primaryColor: Color(0xFFD2FFBE),
           textSelectionTheme:

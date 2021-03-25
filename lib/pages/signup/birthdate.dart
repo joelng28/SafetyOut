@@ -1,30 +1,20 @@
 import 'package:app/defaults/constants.dart';
 import 'package:app/pages/signup/gender.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_picker/Picker.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import '../../app_localizations.dart';
 
-enum Sex {
-  notKnown,
-  male,
-  female,
-  not_applicable,
-}
-
 class Birthdate extends StatefulWidget {
-  Birthdate({Key key /*, this.title*/}) : super(key: key);
-  //final String title;
+  Birthdate({Key key}) : super(key: key);
 
   @override
   _Birthdate createState() => _Birthdate();
 }
 
 class _Birthdate extends State<Birthdate> {
-/*   String _naixement;
-  String _mes; */
   CalendarController _calendarController;
-  DateTime pickedDate = DateTime(2010);
+  DateTime pickedDate = DateTime.now();
     DateTime yearDate = DateTime.now();
 
   @override
@@ -178,23 +168,64 @@ class _Birthdate extends State<Birthdate> {
                           ),
                           onDaySelected: (date, events, holidays) => setState(() {
                               pickedDate = date;
-                              _calendarController.setSelectedDay(pickedDate);}
-                            ),
+                              _calendarController.setSelectedDay(pickedDate);
+                            }),
                           onHeaderTapped: (date) {
-                            showMaterialNumberPicker(
-                            context: context,
-                            title: AppLocalizations.of(context)
-                            .translate("Any"),
-                            maxNumber: DateTime.now().year,
-                            minNumber: 1900,
-                            selectedNumber: pickedDate.year,
-                            onChanged: (value) => setState(() {
-                              pickedDate = DateTime(value, pickedDate.month, pickedDate.day);
-                              _calendarController.setSelectedDay(pickedDate);}
+                          pickedDate = date;
+                          _calendarController.setSelectedDay(pickedDate);
+                          Picker(
+                            adapter: DateTimePickerAdapter(
+                              type: 11,
+                              yearBegin: 1900,
+                              yearEnd: DateTime.now().year,
+                              value: pickedDate,
+                              months: [
+                                AppLocalizations.of(context).translate("Gener"),
+                                AppLocalizations.of(context).translate("Febrer"),
+                                AppLocalizations.of(context).translate("Març"),
+                                AppLocalizations.of(context).translate("Abril"),
+                                AppLocalizations.of(context).translate("Maig"),
+                                AppLocalizations.of(context).translate("Juny"),
+                                AppLocalizations.of(context).translate("Juliol"),
+                                AppLocalizations.of(context).translate("Agost"),
+                                AppLocalizations.of(context).translate("Setembre"),
+                                AppLocalizations.of(context).translate("Octubre"),
+                                AppLocalizations.of(context).translate("Novembre"),
+                                AppLocalizations.of(context).translate("Desembre"),
+                              ],
+                              customColumnType: [0, 1]
                             ),
-                            backgroundColor: Constants.white(context),
-                            buttonTextColor: Constants.black(context)
-                          );
+                            textStyle: TextStyle(
+                              color: Constants.darkGrey(context),
+                              fontSize: Constants.l(context)
+                            ),
+                            columnFlex: [2, 3],
+                            confirmText: AppLocalizations.of(context).translate("Confirmar"),
+                            cancelText: AppLocalizations.of(context).translate("Cancel·lar"),
+                            confirmTextStyle: TextStyle(
+                              color: Constants.darkGrey(context),
+                              fontWeight: Constants.bold,
+                              fontSize: Constants.s(context)
+                            ),
+                            cancelTextStyle: TextStyle(
+                              color: Constants.darkGrey(context),
+                              fontWeight: Constants.bold,
+                              fontSize: Constants.s(context)
+                            ),
+                            height: Constants.a11(context),
+                            hideHeader: true,
+                            selectedTextStyle: TextStyle(
+                              color: Constants.black(context),
+                            ),
+                            backgroundColor: Constants.lightGrey(context),
+                            onConfirm: (Picker picker, List values) => setState(() {
+                              pickedDate = DateTime(1900 + values[0], values[1] + 1, pickedDate.day);
+                              _calendarController.setSelectedDay(pickedDate);
+                            }),
+                            onCancel: () {
+                              
+                            },
+                          ).showDialog(context);
                           },
                         ),
                       ),

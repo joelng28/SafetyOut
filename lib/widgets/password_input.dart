@@ -5,19 +5,21 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 TextEditingController passwordController = new TextEditingController();
 
 class PasswordInput extends StatefulWidget {
-  PasswordInput({this.labelText});
+  PasswordInput({this.labelText, this.onChanged});
 
   final String labelText;
-
+  final Function onChanged;
+  
   @override
   PasswordInputState createState() =>
-      PasswordInputState(labelText: this.labelText);
+      PasswordInputState(labelText: this.labelText, onChanged: onChanged);
 }
 
 class PasswordInputState extends State<PasswordInput> {
-  PasswordInputState({this.labelText});
+  PasswordInputState({this.labelText, this.onChanged});
 
   final String labelText;
+  final Function onChanged;
   bool showPassword = false;
 
   @override
@@ -26,6 +28,7 @@ class PasswordInputState extends State<PasswordInput> {
       child: SizedBox(
         height: Constants.a7(context),
         child: TextField(
+            onChanged: onChanged,
             autocorrect: false,
             obscureText: showPassword ? false : true,
             style: TextStyle(color: Constants.black(context)),
