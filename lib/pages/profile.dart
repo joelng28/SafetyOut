@@ -1,4 +1,5 @@
 import 'package:app/defaults/constants.dart';
+import 'package:app/pages/profileconfig.dart';
 import 'package:flutter/material.dart';
 
 class Profile extends StatefulWidget {
@@ -11,6 +12,13 @@ class Profile extends StatefulWidget {
 }
 
 class _Profile extends State<Profile> {
+  Function paraConfig = (BuildContext context) {
+    Navigator.push(
+      context,
+      PageRouteBuilder(pageBuilder: (_, __, ___) => ProfileConfig()),
+    );
+  };
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
