@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:app/defaults/constants.dart';
+import 'package:app/pages/recover_password/recover_email.dart';
 import 'package:app/pages/signup/name.dart';
-/* import 'package:app/storage/secure_storage.dart'; */
+import 'package:app/storage/secure_storage.dart';
 import 'package:app/widgets/password_input.dart';
 import 'package:app/widgets/email_input.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../app_localizations.dart';
@@ -19,14 +23,18 @@ class Login extends StatefulWidget {
 class _Login extends State<Login> {
   static String email = '';
   static String pwd = '';
-  bool activeButton = false;
+  static bool activeButton = false;
+  static bool isLoading = false;
+  FocusNode pwdFocusNode = FocusNode();
+  Function submitLogin = (BuildContext context) {};
 
-  Function forgottenPassword = () {};
-
-  Function submitLogin = (BuildContext context) {
-      if(email != '' && pwd != '')
-  {
-    var url = Uri.parse('https://safetyout.herokuapp.com/login');
+  @override
+  void initState() {
+    super.initState();
+    submitLogin = (BuildContext context) {
+    isLoading = true;
+    activeButton = false;
+    var url = Uri.parse('https://safetyout.herokuapp.com/user/login');
     http.post(url, body: {
       'email': email,
       'password': pwd,
@@ -34,7 +42,86 @@ class _Login extends State<Login> {
     .then((res) {
       if(res.statusCode == 200) {
         //Guardar key
+        Map<String, dynamic> body = jsonDecode(res.body);
+        SecureStorage.writeSecureStorage('SafetyOUT_Token', body["token"]);
+        SecureStorage.writeSecureStorage('SafetyOUT_Token', body["userId"]);
         Navigator.of(context).pushReplacementNamed('/');
+        setState(() {
+          isLoading = false;
+          activeButton = true;
+        });
+      } else if(res.statusCode == 404 || res.statusCode == 401) {
+        setState(() {
+          isLoading = false;
+          activeButton = true;
+        });
+        showDialog(
+          context: context, 
+          builder: (BuildContext context) {
+            return AlertDialog(
+              contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Text(
+                      AppLocalizations.of(context).translate("Els_credencials_són_incorrectes"),
+                      style: TextStyle(
+                        fontSize: Constants.m(context)
+                      )
+                    ),
+                  ],
+                )
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                    AppLocalizations.of(context).translate("Acceptar"),
+                    style: TextStyle(
+                      color: Constants.black(context)
+                    )),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          });
+      } else {
+        showDialog(
+          context: context, 
+          builder: (BuildContext context) {
+            return AlertDialog(
+              contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Text(
+                      AppLocalizations.of(context).translate("Error de xarxa"),
+                      style: TextStyle(
+                        fontSize: Constants.m(context)
+                      )
+                    ),
+                  ],
+                )
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                    AppLocalizations.of(context).translate("Acceptar"),
+                    style: TextStyle(
+                      color: Constants.black(context)
+                    )),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          });
+          setState(() {
+            isLoading = false;
+            activeButton = true;
+          });
       }
     })
     .catchError((err) {
@@ -48,7 +135,7 @@ class _Login extends State<Login> {
               child: ListBody(
                 children: <Widget>[
                   Text(
-                    'Els credencials són incorrectes',
+                    AppLocalizations.of(context).translate("Error de xarxa"),
                     style: TextStyle(
                       fontSize: Constants.m(context)
                     )
@@ -59,7 +146,7 @@ class _Login extends State<Login> {
             actions: <Widget>[
               TextButton(
                 child: Text(
-                  'Acceptar',
+                  AppLocalizations.of(context).translate("Acceptar"),
                   style: TextStyle(
                     color: Constants.black(context)
                   )),
@@ -70,9 +157,13 @@ class _Login extends State<Login> {
             ],
           );
         });
+        setState(() {
+          isLoading = false;
+          activeButton = true;
+        });
     });
-  }
   };
+  }
 
   Function facebookLogin = () {};
 
@@ -89,7 +180,7 @@ class _Login extends State<Login> {
               Visibility(
                 visible: MediaQuery.of(context).viewInsets.bottom == 0,
                 child: Padding(
-                  padding: EdgeInsets.only(top: Constants.xs(context)),
+                  padding: EdgeInsets.only(top: Constants.xxl(context)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -154,8 +245,8 @@ class _Login extends State<Login> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.fromLTRB(Constants.h4(context),
-                    Constants.v5(context), Constants.h4(context), 0),
+                padding: EdgeInsets.fromLTRB(Constants.h7(context),
+                    Constants.v5(context), Constants.h7(context), 0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -166,18 +257,21 @@ class _Login extends State<Login> {
                       onChanged: (val) => setState(() {
                         email = val;
                         activeButton = email != '' && pwd != '';
-                      })
+                      }),
+                      onSubmitted: (val) => pwdFocusNode.requestFocus(),
                     )
                   ],
                 ),
               ),
               Padding(
-                padding: EdgeInsets.fromLTRB(Constants.h4(context),
-                    Constants.v5(context), Constants.h4(context), 0),
+                padding: EdgeInsets.fromLTRB(Constants.h7(context),
+                    Constants.v5(context), Constants.h7(context), 0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     PasswordInput(
+                      focusNode: pwdFocusNode,
+                      onSubmitted: (val) => email != '' && pwd != '' ? setState(() { submitLogin(context); }) : () {},
                       onChanged: (val) => setState(() {
                       pwd = val;
                        activeButton = pwd != '' && email != '';
@@ -188,15 +282,20 @@ class _Login extends State<Login> {
                 ),
               ),
               Padding(
-                  padding: EdgeInsets.fromLTRB(Constants.h4(context),
-                      Constants.v1(context), Constants.h4(context), 0),
+                  padding: EdgeInsets.fromLTRB(Constants.h7(context),
+                      Constants.v4(context), Constants.h7(context), 0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       InkWell(
                           highlightColor: Colors.transparent,
                           splashColor: Colors.transparent,
-                          onTap: forgottenPassword,
+                          onTap: () {
+                              Navigator.push(
+                              context,
+                              PageRouteBuilder(pageBuilder: (_, __, ___) => RecoverEmail()),
+                            );
+                          },
                           child: Text(
                               AppLocalizations.of(context)
                                   .translate("Has_oblidat_la_contrasenya"),
@@ -207,8 +306,8 @@ class _Login extends State<Login> {
                     ],
                   )),
               Padding(
-                padding: EdgeInsets.fromLTRB(Constants.h4(context),
-                    Constants.v1(context), Constants.h4(context), 0),
+                padding: EdgeInsets.fromLTRB(Constants.h7(context),
+                    Constants.v4(context), Constants.h7(context), 0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -232,7 +331,7 @@ class _Login extends State<Login> {
                               ]),
                           child: TextButton(
                               key: Key('loginButton'),
-                              onPressed: () => submitLogin(context),
+                              onPressed: () => email != '' && pwd != '' ? setState(() { submitLogin(context); }) : () {},
                               style: ButtonStyle(
                                   shape: MaterialStateProperty.all(
                                       RoundedRectangleBorder(
@@ -241,7 +340,13 @@ class _Login extends State<Login> {
                                   )),
                                   backgroundColor: MaterialStateProperty.all(
                                       Colors.transparent)),
-                              child: Text(
+                              child: isLoading ? 
+                              SpinKitFadingCube(
+                                color: Colors.white,
+                                size: 20.0 / (MediaQuery.of(context).size.height < 700 ? 1.3 : MediaQuery.of(context).size.height < 800 ? 1.15 : 1)
+                              )
+                              :
+                              Text(
                                   AppLocalizations.of(context)
                                       .translate("Iniciar_sessio"),
                                   style: TextStyle(
@@ -256,7 +361,7 @@ class _Login extends State<Login> {
               ),
               Padding(
                 padding: EdgeInsets.only(
-                    top: Constants.v2(context), bottom: Constants.v2(context)),
+                    top: Constants.v3(context), bottom: Constants.v3(context)),
                 child: Row(children: [
                   Expanded(
                       flex: 45,
@@ -283,7 +388,7 @@ class _Login extends State<Login> {
               ),
               Padding(
                 padding: EdgeInsets.fromLTRB(
-                    Constants.h4(context), 0, Constants.h4(context), 0),
+                    Constants.h7(context), 0, Constants.h7(context), 0),
                 child: Row(children: [
                   Expanded(
                     flex: 45,
@@ -315,7 +420,7 @@ class _Login extends State<Login> {
                               child: Row(
                                 children: [
                                   Expanded(
-                                    flex: 30,
+                                    flex: (MediaQuery.of(context).size.width < 380 ? 20 : 30),
                                     child: Padding(
                                       padding: EdgeInsets.only(left: 1),
                                       child: SvgPicture.asset(
@@ -325,7 +430,7 @@ class _Login extends State<Login> {
                                     ),
                                   ),
                                   Expanded(
-                                    flex: 70,
+                                    flex: 75,
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [

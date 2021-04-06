@@ -6,47 +6,37 @@ import 'package:app/pages/signup/birthdate.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../../app_localizations.dart';
-import 'package:http/http.dart' as http;
 
-class Email extends StatefulWidget {
-  Email({Key key}) : super(key: key);
+class RecoverEmail extends StatefulWidget {
+  RecoverEmail({Key key}) : super(key: key);
 
   @override
-  _Email createState() => _Email();
+  _RecoverEmail createState() => _RecoverEmail();
 }
 
-class _Email extends State<Email> {
+class _RecoverEmail extends State<RecoverEmail> {
   static String email = '';
   static bool activeButton = false;
   static bool isLoading = false;
-  Function comprovaEmail = () {};
 
-  @override
-  void initState() {
-    super.initState();
-    comprovaEmail = (BuildContext context) {
+  Function comprovaEmail = (BuildContext context) {
     if(activeButton) {
     if(RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(email)) {
       activeButton = false;
       isLoading = true;
-      var url = Uri.parse('https://safetyout.herokuapp.com/user/checkEmail/' + email);
-      http.get(url)
-      .then((res) {
-        if(res.statusCode == 200) {
-          Provider.of<RegState>(context, listen: false).setEmail(email);
-          Navigator.push(
-            context,
-            PageRouteBuilder(pageBuilder: (_, __, ___) => Birthdate()),
-          );
-          setState(() {
-            isLoading = false;
-            activeButton = true;
-          });
-        } else if (res.statusCode == 409) {
-          setState(() {
-            isLoading = false;
-            activeButton = true;
-          });
+      //falta api call
+      /* if(email existe) */
+      Future.delayed(const Duration(milliseconds: 2000), () {
+        Navigator.push(
+        context,
+        PageRouteBuilder(pageBuilder: (_, __, ___) => Birthdate()),
+        
+      );
+      isLoading = false;
+      activeButton = true;
+      });
+      Provider.of<RegState>(context, listen: false).setEmail(email);
+      /* else { 
           showDialog(
             context: context, 
             builder: (BuildContext context) {
@@ -78,81 +68,8 @@ class _Email extends State<Email> {
                 ],
               );
             });
-        } else {
-          showDialog(
-          context: context, 
-          builder: (BuildContext context) {
-            return AlertDialog(
-              contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: <Widget>[
-                    Text(
-                      AppLocalizations.of(context).translate("Error_de_xarxa"),
-                      style: TextStyle(
-                        fontSize: Constants.m(context)
-                      )
-                    ),
-                  ],
-                )
-              ),
-              actions: <Widget>[
-                TextButton(
-                  child: Text(
-                    AppLocalizations.of(context).translate("Acceptar"),
-                    style: TextStyle(
-                      color: Constants.black(context)
-                    )),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
-          setState(() {
             isLoading = false;
-            activeButton = true;
-          });
-        }
-      })
-      .catchError((err) {
-        showDialog(
-          context: context, 
-          builder: (BuildContext context) {
-            return AlertDialog(
-              contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: <Widget>[
-                    Text(
-                      AppLocalizations.of(context).translate("Error_de_xarxa"),
-                      style: TextStyle(
-                        fontSize: Constants.m(context)
-                      )
-                    ),
-                  ],
-                )
-              ),
-              actions: <Widget>[
-                TextButton(
-                  child: Text(
-                    AppLocalizations.of(context).translate("Acceptar"),
-                    style: TextStyle(
-                      color: Constants.black(context)
-                    )),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
-          setState(() {
-            isLoading = false;
-            activeButton = true;
-          });
-      });
+      */
     }
     else {
       showDialog(
@@ -186,10 +103,9 @@ class _Email extends State<Email> {
             ],
           );
         });
-      }
     }
-  };
   }
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -224,7 +140,7 @@ class _Email extends State<Email> {
                       alignment: Alignment.center,
                       child: Text(
                         AppLocalizations.of(context)
-                            .translate("Registre_Usuari"),
+                            .translate("Recuperar_contrassenya"),
                         style: TextStyle(
                             color: Constants.darkGrey(context),
                             fontSize: Constants.xl(context),
@@ -240,7 +156,7 @@ class _Email extends State<Email> {
                     padding: EdgeInsets.only(top: Constants.v4(context)),
                     child: Text(
                         AppLocalizations.of(context)
-                            .translate("Introdueix_un_correu_electronic"),
+                            .translate("Introdueix_el_teu_correu_electronic"),
                         style: TextStyle(
                             color: Constants.darkGrey(context),
                             fontSize: Constants.l(context),
@@ -261,8 +177,7 @@ class _Email extends State<Email> {
                       email = value;
                       activeButton = email != '';
                     }),
-                    type: TextInputType.emailAddress,
-                    onSubmitted: (val) => setState(() { comprovaEmail(context); }),
+                    type: TextInputType.emailAddress
                   )
                 ],
               ),

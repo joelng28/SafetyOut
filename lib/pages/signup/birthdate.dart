@@ -1,7 +1,9 @@
 import 'package:app/defaults/constants.dart';
 import 'package:app/pages/signup/gender.dart';
+import 'package:app/state/reg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_picker/Picker.dart';
+import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../app_localizations.dart';
 
@@ -60,9 +62,7 @@ class _Birthdate extends State<Birthdate> {
                     ),
                     Align(
                       alignment: Alignment.center,
-                      child: Visibility(
-                        visible: MediaQuery.of(context).viewInsets.bottom == 0,
-                        child: Text(
+                      child: Text(
                         AppLocalizations.of(context)
                             .translate("Registre_Usuari"),
                         style: TextStyle(
@@ -70,7 +70,6 @@ class _Birthdate extends State<Birthdate> {
                             fontSize: Constants.xl(context),
                             fontWeight: Constants.bolder)),
                       ),
-                    ),
                   ],
                 ),
               ),
@@ -91,9 +90,9 @@ class _Birthdate extends State<Birthdate> {
             ),
             Padding(
               padding: EdgeInsets.fromLTRB(
-                  Constants.h4(context),
+                  Constants.h7(context),
                   Constants.v5(context),
-                  Constants.h4(context),
+                  Constants.h7(context),
                   Constants.v7(context)),
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -232,8 +231,8 @@ class _Birthdate extends State<Birthdate> {
               )]),
             ),
             Padding(
-              padding: EdgeInsets.fromLTRB(Constants.h4(context),
-                  0, Constants.h4(context), 0),
+              padding: EdgeInsets.fromLTRB(Constants.h7(context),
+                  0, Constants.h7(context), 0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -261,6 +260,7 @@ class _Birthdate extends State<Birthdate> {
                                 context,
                                 PageRouteBuilder(pageBuilder: (_, __, ___) => Gender()),
                               );
+                              Provider.of<RegState>(context, listen: false).setBirthdate(pickedDate);
                             },
                             style: ButtonStyle(
                                 shape: MaterialStateProperty.all(

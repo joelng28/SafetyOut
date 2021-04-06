@@ -2,19 +2,25 @@ import 'package:app/defaults/constants.dart';
 import 'package:flutter/material.dart';
 
 class PasswordInput3 extends StatefulWidget {
-  PasswordInput3({this.labelText});
+  PasswordInput3({this.labelText, this.onChanged, this.onSubmitted, this.focusNode});
 
   final String labelText;
+  final Function onChanged;
+  final Function onSubmitted;
+  final FocusNode focusNode;
 
   @override
   PasswordInput3State createState() =>
-      PasswordInput3State(labelText: this.labelText);
+      PasswordInput3State(labelText: this.labelText, onChanged: this.onChanged, onSubmitted: this.onSubmitted, focusNode: this.focusNode);
 }
 
 class PasswordInput3State extends State<PasswordInput3> {
-  PasswordInput3State({this.labelText});
+  PasswordInput3State({this.labelText, this.onChanged, this.onSubmitted, this.focusNode});
 
   final String labelText;
+  final Function onChanged;
+  final Function onSubmitted;
+  final FocusNode focusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +28,9 @@ class PasswordInput3State extends State<PasswordInput3> {
       child: SizedBox(
         height: Constants.a7(context),
         child: TextField(
+            focusNode: focusNode,
+            onSubmitted: onSubmitted,
+            onChanged: onChanged,
             autocorrect: false,
             obscureText: true,
             style: TextStyle(color: Constants.black(context)),

@@ -49,5 +49,22 @@
     "Setembre": "Setembre",
     "Octubre": "Octubre",
     "Novembre": "Novembre",
-    "Desembre": "Desembre"
+    "Desembre": "Desembre",
+    "Els_credencials_són_incorrectes": "Els credencials són incorrectes",
+    "Acceptar": "Acceptar",
+    "Les_contrasenyes_no_coincideixen": "Les contrasenyes no coincideixen",
+    "La_contrasenya_ha_de_contenir_com_a_mínim:": "La contrasenya ha de contenir com a mínim:",
+    "8_caràcters": "8 caràcters",
+    "Un_número": "Un número",
+    "Una_minúscula": "Una minúscula",
+    "Una_majúscula": "Una majúscula",
+    "Error_de_xarxa": "Error de xarxa",
+    "El_correu_no_és_correcte": "El correu no és correcte",
+    "El_correu_ja_existeix": "El correu ja existeix",
+    "Editar_perfil": "Editar perfil",
+    "Introdueix_el_teu_correu_electronic": "Introdueix el teu correu electrònic",
+    "Recuperar_contrassenya": "Recuperar contrassenya",
+    "Configuracio": "Configuració",
+    "Tancar_sessió": "Tancar sessió",
+    "Segur_que_vols_tancar_sessió": "Segur que vols tancar sessió?"
 }

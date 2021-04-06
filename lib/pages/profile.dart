@@ -1,8 +1,14 @@
+import 'dart:convert';
+
+import 'package:app/app_localizations.dart';
 import 'package:app/defaults/constants.dart';
+import 'package:app/pages/profileconfig.dart';
+import 'package:app/storage/secure_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class Profile extends StatefulWidget {
-  Profile({Key key /*, this.title*/}) : super(key: key);
+  Profile({Key key}) : super(key: key);
 
   //final String title;
 
@@ -11,36 +17,126 @@ class Profile extends StatefulWidget {
 }
 
 class _Profile extends State<Profile> {
+  String name = '';
+  String surnames = '';
+
+  @override
+  void initState() {
+    super.initState();
+    SecureStorage.readSecureStorage('SafetyOUT_Token')
+    .then((id) {
+      var url = Uri.parse('https://safetyout.herokuapp.com/user/getUserInfo/' + id);
+      http.get(url)
+      .then((res) {
+        if(res.statusCode == 200) {
+          Map<String, dynamic> body = jsonDecode(res.body);
+          Map<String, dynamic> user = body["user"];
+          setState(() {
+            name = user["name"];
+            surnames = user["surnames"];
+          });
+        } else {
+          showDialog(
+            context: context, 
+            builder: (BuildContext context) {
+              return AlertDialog(
+                contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: <Widget>[
+                      Text(
+                        AppLocalizations.of(context).translate("Error de xarxa"),
+                        style: TextStyle(
+                          fontSize: Constants.m(context)
+                        )
+                      ),
+                    ],
+                  )
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text(
+                      AppLocalizations.of(context).translate("Acceptar"),
+                      style: TextStyle(
+                        color: Constants.black(context)
+                      )),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            });
+        }
+      })
+      .catchError((err) {
+        //Sale error por pantalla
+        showDialog(
+          context: context, 
+          builder: (BuildContext context) {
+            return AlertDialog(
+              contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Text(
+                      AppLocalizations.of(context).translate("Error de xarxa"),
+                      style: TextStyle(
+                        fontSize: Constants.m(context)
+                      )
+                    ),
+                  ],
+                )
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                    AppLocalizations.of(context).translate("Acceptar"),
+                    style: TextStyle(
+                      color: Constants.black(context)
+                    )),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          });
+        });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Column(
           children: <Widget>[
-            Visibility(
-              visible: MediaQuery.of(context).viewInsets.bottom == 0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  //Icono configuracion
-                  IconButton(
-                    icon: const Icon(Icons.settings),
-                    color: Constants.black(context),
-                    iconSize: Constants.xxl(context),
-                    onPressed: () {},
-                  ),
-                ],
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                //Icono configuracion
+                IconButton(
+                  icon: const Icon(Icons.settings),
+                  color: Constants.black(context),
+                  iconSize: Constants.xxl(context),
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(pageBuilder: (_, __, ___) => ProfileConfig()),
+                    );
+                  },
+                ),
+              ],
             ),
-            Visibility(
-              visible: MediaQuery.of(context).viewInsets.bottom == 0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
                     padding: EdgeInsets.only(
-                        right: Constants.h2(context),
-                        left: Constants.h2(context)),
+                        left: Constants.h7(context)),
                     child: Column(
                       children: [
                         //Imagen perfil
@@ -52,47 +148,49 @@ class _Profile extends State<Profile> {
                               image: new DecorationImage(
                                   fit: BoxFit.fill, image: new NetworkImage(
                                       //Imagen de prueba, se colocará la imagen del usuario
-                                      "https://i.imgur.com/BoN9kdC.png"))),
+                                      "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"))),
                         ),
                       ],
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        right: Constants.h2(context),
-                        left: Constants.h2(context)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(
-                              right: Constants.h2(context),
-                              left: Constants.h2(context)),
-                          child: Row(
-                            children: [
-                              //Nombre usuario
-                              Text(
-                                'Joel Navarro',
-                                style: TextStyle(
-                                  fontSize: Constants.xxl(context),
-                                  fontWeight: Constants.bolder,
-                                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                      right: Constants.h7(context),
+                      left: Constants.h7(context)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          //Nombre usuario
+                          SizedBox(
+                            width: Constants.w11(context),
+                            child: Text(
+                              name + ' ' + surnames,
+                              maxLines: 2,
+                              style: TextStyle(
+                                fontSize: Constants.l(context),
+                                fontWeight: Constants.bolder,
                               ),
-                            ],
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                              right: Constants.h2(context),
-                              left: Constants.h2(context)),
-                          child: Row(
-                            children: [
-                              //Boton editar perfil
-                              ElevatedButton(
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          //Boton editar perfil
+                          Padding(
+                            padding: EdgeInsets.only(top: Constants.v1(context)),
+                            child: Container(
+                              height: Constants.a6(context) + Constants.a2(context),
+                              child: TextButton(
                                 child: Text(
-                                  'Editar Perfil',
+                                  AppLocalizations.of(context).translate("Editar_perfil"),
                                   style: TextStyle(
+                                    fontSize: Constants.xs(context),
                                     fontWeight: Constants.bolder,
+                                    color: Constants.black(context)
                                   ),
                                 ),
                                 onPressed: () {},
@@ -107,15 +205,15 @@ class _Profile extends State<Profile> {
                                         borderRadius:
                                             new BorderRadius.circular(10.0))),
                               ),
-                            ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
+                    ],
                   ),
-                ],
+                ),
+              ],
               ),
-            ),
           ],
         ),
       ),

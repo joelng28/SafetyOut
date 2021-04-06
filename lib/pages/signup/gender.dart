@@ -1,7 +1,9 @@
 import 'package:app/defaults/constants.dart';
+import 'package:app/state/reg.dart';
 import 'package:flutter/material.dart';
 import 'package:app/pages/signup/password.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import '../../app_localizations.dart';
 
 enum Sex {
@@ -21,6 +23,7 @@ class Gender extends StatefulWidget {
 
 class _Gender extends State<Gender> {
   Sex gender;
+  bool activeButton = false;
 
   @override
   Widget build(BuildContext context) {
@@ -53,16 +56,13 @@ class _Gender extends State<Gender> {
                     ),
                     Align(
                       alignment: Alignment.center,
-                      child: Visibility(
-                        visible: MediaQuery.of(context).viewInsets.bottom == 0,
-                        child: Text(
+                      child: Text(
                         AppLocalizations.of(context)
                             .translate("Registre_Usuari"),
                         style: TextStyle(
                             color: Constants.darkGrey(context),
                             fontSize: Constants.xl(context),
                             fontWeight: Constants.bolder)),
-                      ),
                     ),
                   ],
                 ),
@@ -86,7 +86,7 @@ class _Gender extends State<Gender> {
               padding: EdgeInsets.fromLTRB(Constants.h7(context),
                   Constants.v5(context), Constants.h7(context), 0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Column(
                     children: [
@@ -149,7 +149,7 @@ class _Gender extends State<Gender> {
               padding: EdgeInsets.fromLTRB(Constants.h7(context),
                   Constants.v7(context), Constants.h7(context), 0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Column(
                     children: [
@@ -209,8 +209,8 @@ class _Gender extends State<Gender> {
               )
             ),
             Padding(
-              padding: EdgeInsets.fromLTRB(Constants.h4(context),
-                  Constants.v7(context), Constants.h4(context), 0),
+              padding: EdgeInsets.fromLTRB(Constants.h7(context),
+                  Constants.v7(context), Constants.h7(context), 0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -220,7 +220,7 @@ class _Gender extends State<Gender> {
                       child: Container(
                         decoration: BoxDecoration(
                             gradient: LinearGradient(
-                              colors: [Color(0xFF84FCCD), Color(0xFFA7FF80)],
+                              colors: gender != null ? [Color(0xFF84FCCD), Color(0xFFA7FF80)] : [Color(0xFF679080), Color(0xFF68865A)],
                               begin: FractionalOffset.centerLeft,
                               end: FractionalOffset.centerRight,
                             ),
@@ -234,10 +234,13 @@ class _Gender extends State<Gender> {
                             ]),
                         child: TextButton(
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                PageRouteBuilder(pageBuilder: (_, __, ___) => RegPassword()),
-                              );
+                              if(gender != null) {
+                                Navigator.push(
+                                  context,
+                                  PageRouteBuilder(pageBuilder: (_, __, ___) => RegPassword()),
+                                );
+                                Provider.of<RegState>(context, listen: false).setGender(gender.toString().replaceAll(new RegExp(r'Sex.'), ''));
+                              }
                             },
                             style: ButtonStyle(
                                 shape: MaterialStateProperty.all(

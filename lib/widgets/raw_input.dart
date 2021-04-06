@@ -4,9 +4,13 @@ import 'package:flutter/material.dart';
 TextEditingController textController = new TextEditingController();
 
 class RawInput extends StatelessWidget {
-  RawInput({this.labelText});
+  RawInput({this.labelText, this.onChanged, this.type, this.onSubmitted, this.focusNode});
 
   final String labelText;
+  final Function onChanged;
+  final TextInputType type;
+  final Function onSubmitted;
+  final FocusNode focusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -14,8 +18,11 @@ class RawInput extends StatelessWidget {
       child: SizedBox(
         height: Constants.a7(context),
         child: TextField(
+            focusNode: focusNode,
+            onSubmitted: onSubmitted,
+            onChanged: onChanged,
             autocorrect: false,
-            keyboardType: TextInputType.emailAddress,
+            keyboardType: type,
             style: TextStyle(color: Constants.black(context)),
             decoration: InputDecoration(
               contentPadding: EdgeInsets.symmetric(
