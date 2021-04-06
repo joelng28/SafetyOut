@@ -95,9 +95,8 @@ class _RegPassword extends State<RegPassword> {
                 Padding(
                   padding: EdgeInsets.only(top: Constants.v4(context)),
                   child: Text(
-                      /* AppLocalizations.of(context)
-                          .translate("Registre_Usuari") */
-                          'Introdueix una contrasenya',
+                      AppLocalizations.of(context)
+                          .translate("Introdueix_una_contrasenya"),
                       style: TextStyle(
                           color: Constants.darkGrey(context),
                           fontSize: Constants.l(context),
@@ -162,7 +161,8 @@ class _RegPassword extends State<RegPassword> {
                                 )),
                                 backgroundColor: MaterialStateProperty.all(
                                     Colors.transparent)),
-                            child: Text("Confirmar",
+                            child: Text(AppLocalizations.of(context)
+                                        .translate("Confirmar"),
                                 style: TextStyle(
                                     fontSize: Constants.m(context),
                                     fontWeight: Constants.bold,

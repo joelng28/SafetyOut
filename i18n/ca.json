@@ -9,6 +9,7 @@
     "No_tens_un_compte": "No tens un compte?",
     "Registrat": "Registra't",
     "Registre_Usuari": "Registre d'usuari",
+    "Següent": "Següent",
     "Nom_Usuari": "Nom d' usuari",
     "Nom_Complet": "Nom complet",
     "Gènere": "Gènere",
@@ -26,4 +27,15 @@
     "Mes11": "Novembre",
     "Mes12": "Decembre",
     "Configuracio": "Configuració"
+    "Introdueix_el_teu_nom_complet": "Introdueix el teu nom complet",
+    "Introdueix_un_correu_electronic": "Introdueix un correu electrònic",
+    "Introdueix_la_teva_data_de_naixement": "Introdueix la teva data de naixement",
+    "Any": "Any",
+    "Selecciona_el_teu_gènere": "Selecciona el teu gènere",
+    "Femení": "Femení",
+    "Masculí": "Masculí",
+    "Altres": "Altres",
+    "No_especificar": "No especificar",
+    "Introdueix_una_contrasenya": "Introdueix una contrasenya",
+    "Confirmar": "Confirmar"
 }
