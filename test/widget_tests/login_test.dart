@@ -10,7 +10,8 @@ void main() {
       // Build our app and trigger a frame.
       await tester.pumpWidget(MaterialApp(home: Login()));
 
-      await tester.enterText(find.byType(EmailInput), 'agustinmillanjimenez@gmail.com');
+      await tester.enterText(
+          find.byType(EmailInput), 'agustinmillanjimenez@gmail.com');
       expect(find.text('agustinmillanjimenez@gmail.com'), findsOneWidget);
       await tester.enterText(find.byType(PasswordInput), 'Pepito23');
       expect(find.text('Pepito23'), findsOneWidget);
