@@ -30,10 +30,12 @@ class App extends StatefulWidget {
 class _App extends State<App> {
   Function settings = () {};
 
-  int index = 0;
+  static Function mapPressed;
+
+  static int index = 0;
 
   static List<Widget> pantalles = <Widget>[
-    Home(),
+    Home(mapPressed: mapPressed),
     Discover(),
     Calendar(),
     Profile(),
@@ -43,6 +45,16 @@ class _App extends State<App> {
     setState(() {
       index = newIndex;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    mapPressed = () {
+      setState(() {
+        index = 1;
+      });
+    };
   }
 
   @override
