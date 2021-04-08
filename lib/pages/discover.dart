@@ -45,14 +45,57 @@ class _Discover extends State<Discover> {
   }
 
   void retrievePlaces(LatLng l) {
-    markers.clear();
     var url = Uri.parse(
         'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
             l.latitude.toString() +
             ',' +
             l.longitude.toString() +
             '&radius=10000&keyword=park|nature|sightseeing|public|terrace|mountain|castle&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,name,types,formatted_address');
-    http.get(url).then((res) {
+    var urlRes = Uri.parse(
+        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
+            l.latitude.toString() +
+            ',' +
+            l.longitude.toString() +
+            '&radius=10000&keyword=outdoor seating&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,name,types,formatted_address');
+    Future.wait([http.get(url), http.get(urlRes)]).then((List responses) {
+      List<Map<String, dynamic>> places = [];
+      Map<String, dynamic> body = jsonDecode(responses[0].body);
+      List<dynamic> results = body["results"];
+      results.forEach((element) {
+        Map<String, dynamic> place = {
+          "location": element["geometry"]["location"],
+          "name": element["name"],
+          "types": element["types"],
+        };
+        places.add(place);
+      });
+      body = jsonDecode(responses[1].body);
+      results = body["results"];
+      results.forEach((element) {
+        Map<String, dynamic> place = {
+          "location": element["geometry"]["location"],
+          "name": element["name"],
+          "types": element["types"],
+        };
+        places.add(place);
+      });
+      setState(() {
+        markers.clear();
+        places.forEach((place) {
+          final marker = Marker(
+            markerId: MarkerId(place["name"]),
+            position:
+                LatLng(place["location"]["lat"], place["location"]["lng"]),
+            infoWindow: InfoWindow(
+              title: place["name"],
+            ),
+          );
+          markers[place["name"]] = marker;
+        });
+      });
+    }).catchError((error) => print(error));
+
+/*     http.get(url).then((res) {
       Map<String, dynamic> body = jsonDecode(res.body);
       List<dynamic> results = body["results"];
       List<Map<String, dynamic>> places = [];
@@ -78,12 +121,7 @@ class _Discover extends State<Discover> {
         });
       });
     }).catchError((error) => print(error));
-    var urlRes = Uri.parse(
-        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
-            l.latitude.toString() +
-            ',' +
-            l.longitude.toString() +
-            '&radius=10000&keyword=outdoor seating&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,name,types,formatted_address');
+    
     http.get(urlRes).then((res) {
       Map<String, dynamic> body = jsonDecode(res.body);
       List<dynamic> results = body["results"];
@@ -109,7 +147,7 @@ class _Discover extends State<Discover> {
           markers[place["name"]] = marker;
         });
       });
-    }).catchError((error) => print(error));
+    }).catchError((error) => print(error)); */
   }
 
   void getFirstLocation() {
@@ -145,11 +183,11 @@ class _Discover extends State<Discover> {
                 onCameraIdle: () {
                   setState(() {
                     if (pow(movingCamPos.latitude - lastLatLng.latitude, 2) >=
-                            0.0050000000000 ||
+                            0.0000010000000 ||
                         pow(movingCamPos.longitude - lastLatLng.longitude, 2) >=
-                            0.0050000000000) {
+                            0.0000010000000) {
                       lastLatLng = movingCamPos;
-                      retrievePlaces(lastLatLng);
+                      retrievePlaces(movingCamPos);
                     }
                   });
                 },
