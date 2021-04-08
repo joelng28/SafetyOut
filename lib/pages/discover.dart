@@ -50,13 +50,13 @@ class _Discover extends State<Discover> {
             l.latitude.toString() +
             ',' +
             l.longitude.toString() +
-            '&radius=10000&keyword=park|nature|sightseeing|public|terrace|mountain|castle&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,name,types,formatted_address');
+            '&radius=5000&keyword=park|nature|sightseeing|public|terrace|mountain|castle&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,name,types,formatted_address');
     var urlRes = Uri.parse(
         'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
             l.latitude.toString() +
             ',' +
             l.longitude.toString() +
-            '&radius=10000&keyword=outdoor seating&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,name,types,formatted_address');
+            '&radius=5000&keyword=outdoor seating&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,name,types,formatted_address');
     Future.wait([http.get(url), http.get(urlRes)]).then((List responses) {
       List<Map<String, dynamic>> places = [];
       Map<String, dynamic> body = jsonDecode(responses[0].body);
@@ -183,9 +183,9 @@ class _Discover extends State<Discover> {
                 onCameraIdle: () {
                   setState(() {
                     if (pow(movingCamPos.latitude - lastLatLng.latitude, 2) >=
-                            0.0000010000000 ||
+                            0.0000000100000 ||
                         pow(movingCamPos.longitude - lastLatLng.longitude, 2) >=
-                            0.0000010000000) {
+                            0.0000000100000) {
                       lastLatLng = movingCamPos;
                       retrievePlaces(movingCamPos);
                     }
