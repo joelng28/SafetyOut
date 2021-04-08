@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:app/defaults/constants.dart';
 import 'package:app/pages/recover_password/recover_email.dart';
 import 'package:app/pages/signup/name.dart';
@@ -313,7 +312,7 @@ class _Login extends State<Login> {
                               borderRadius: BorderRadius.circular(30),
                               boxShadow: [
                                 BoxShadow(
-                                  offset: Offset(0, 3),
+                                  offset: Offset(0, 5),
                                   blurRadius: 10,
                                   color: Color.fromARGB(100, 0, 0, 0),
                                 )
@@ -420,10 +419,7 @@ class _Login extends State<Login> {
                               child: Row(
                                 children: [
                                   Expanded(
-                                    flex:
-                                        (MediaQuery.of(context).size.width < 380
-                                            ? 20
-                                            : 30),
+                                    flex: 20,
                                     child: Padding(
                                       padding: EdgeInsets.only(left: 1),
                                       child: SvgPicture.asset(
