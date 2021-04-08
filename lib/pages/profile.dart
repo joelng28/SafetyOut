@@ -23,12 +23,11 @@ class _Profile extends State<Profile> {
   @override
   void initState() {
     super.initState();
-    SecureStorage.readSecureStorage('SafetyOUT_Token')
-    .then((id) {
-      var url = Uri.parse('https://safetyout.herokuapp.com/user/getUserInfo/' + id);
-      http.get(url)
-      .then((res) {
-        if(res.statusCode == 200) {
+    SecureStorage.readSecureStorage('SafetyOUT_Token').then((id) {
+      var url =
+          Uri.parse('https://safetyout.herokuapp.com/user/getUserInfo/' + id);
+      http.get(url).then((res) {
+        if (res.statusCode == 200) {
           Map<String, dynamic> body = jsonDecode(res.body);
           Map<String, dynamic> user = body["user"];
           setState(() {
@@ -37,29 +36,53 @@ class _Profile extends State<Profile> {
           });
         } else {
           showDialog(
-            context: context, 
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                  content: SingleChildScrollView(
+                      child: ListBody(
+                    children: <Widget>[
+                      Text(
+                          AppLocalizations.of(context)
+                              .translate("Error de xarxa"),
+                          style: TextStyle(fontSize: Constants.m(context))),
+                    ],
+                  )),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text(
+                          AppLocalizations.of(context).translate("Acceptar"),
+                          style: TextStyle(color: Constants.black(context))),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              });
+        }
+      }).catchError((err) {
+        //Sale error por pantalla
+        showDialog(
+            context: context,
             builder: (BuildContext context) {
               return AlertDialog(
                 contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
                 content: SingleChildScrollView(
-                  child: ListBody(
-                    children: <Widget>[
-                      Text(
-                        AppLocalizations.of(context).translate("Error de xarxa"),
-                        style: TextStyle(
-                          fontSize: Constants.m(context)
-                        )
-                      ),
-                    ],
-                  )
-                ),
+                    child: ListBody(
+                  children: <Widget>[
+                    Text(
+                        AppLocalizations.of(context)
+                            .translate("Error de xarxa"),
+                        style: TextStyle(fontSize: Constants.m(context))),
+                  ],
+                )),
                 actions: <Widget>[
                   TextButton(
                     child: Text(
-                      AppLocalizations.of(context).translate("Acceptar"),
-                      style: TextStyle(
-                        color: Constants.black(context)
-                      )),
+                        AppLocalizations.of(context).translate("Acceptar"),
+                        style: TextStyle(color: Constants.black(context))),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -67,42 +90,7 @@ class _Profile extends State<Profile> {
                 ],
               );
             });
-        }
-      })
-      .catchError((err) {
-        //Sale error por pantalla
-        showDialog(
-          context: context, 
-          builder: (BuildContext context) {
-            return AlertDialog(
-              contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: <Widget>[
-                    Text(
-                      AppLocalizations.of(context).translate("Error de xarxa"),
-                      style: TextStyle(
-                        fontSize: Constants.m(context)
-                      )
-                    ),
-                  ],
-                )
-              ),
-              actions: <Widget>[
-                TextButton(
-                  child: Text(
-                    AppLocalizations.of(context).translate("Acceptar"),
-                    style: TextStyle(
-                      color: Constants.black(context)
-                    )),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
-        });
+      });
     });
   }
 
@@ -125,7 +113,8 @@ class _Profile extends State<Profile> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      PageRouteBuilder(pageBuilder: (_, __, ___) => ProfileConfig()),
+                      PageRouteBuilder(
+                          pageBuilder: (_, __, ___) => ProfileConfig()),
                     );
                   },
                 ),
@@ -135,24 +124,23 @@ class _Profile extends State<Profile> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Padding(
-                    padding: EdgeInsets.only(
-                        left: Constants.h7(context)),
-                    child: Column(
-                      children: [
-                        //Imagen perfil
-                        new Container(
-                          width: Constants.w10(context),
-                          height: Constants.a10(context),
-                          decoration: new BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: new DecorationImage(
-                                  fit: BoxFit.fill, image: new NetworkImage(
-                                      //Imagen de prueba, se colocará la imagen del usuario
-                                      "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"))),
-                        ),
-                      ],
-                    ),
+                  padding: EdgeInsets.only(left: Constants.h7(context)),
+                  child: Column(
+                    children: [
+                      //Imagen perfil
+                      Container(
+                        width: Constants.w10(context),
+                        height: Constants.a10(context),
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                                fit: BoxFit.fill, image: NetworkImage(
+                                    //Imagen de prueba, se colocará la imagen del usuario
+                                    "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"))),
+                      ),
+                    ],
                   ),
+                ),
                 Padding(
                   padding: EdgeInsets.only(
                       right: Constants.h7(context),
@@ -181,17 +169,19 @@ class _Profile extends State<Profile> {
                         children: [
                           //Boton editar perfil
                           Padding(
-                            padding: EdgeInsets.only(top: Constants.v1(context)),
+                            padding:
+                                EdgeInsets.only(top: Constants.v1(context)),
                             child: Container(
-                              height: Constants.a6(context) + Constants.a2(context),
+                              height:
+                                  Constants.a6(context) + Constants.a2(context),
                               child: TextButton(
                                 child: Text(
-                                  AppLocalizations.of(context).translate("Editar_perfil"),
+                                  AppLocalizations.of(context)
+                                      .translate("Editar_perfil"),
                                   style: TextStyle(
-                                    fontSize: Constants.xs(context),
-                                    fontWeight: Constants.bolder,
-                                    color: Constants.black(context)
-                                  ),
+                                      fontSize: Constants.xs(context),
+                                      fontWeight: Constants.bolder,
+                                      color: Constants.black(context)),
                                 ),
                                 onPressed: () {},
                                 style: ElevatedButton.styleFrom(
@@ -203,7 +193,7 @@ class _Profile extends State<Profile> {
                                         color: Constants.black(context)),
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
-                                            new BorderRadius.circular(10.0))),
+                                            BorderRadius.circular(10.0))),
                               ),
                             ),
                           ),
@@ -213,7 +203,7 @@ class _Profile extends State<Profile> {
                   ),
                 ),
               ],
-              ),
+            ),
           ],
         ),
       ),

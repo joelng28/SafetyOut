@@ -1,10 +1,11 @@
 import 'package:app/defaults/constants.dart';
 import 'package:flutter/material.dart';
 
-TextEditingController passwordController = new TextEditingController();
+TextEditingController passwordController = TextEditingController();
 
 class PasswordInput2 extends StatefulWidget {
-  PasswordInput2({this.labelText, this.onChanged, this.onSubmitted, this.focusNode});
+  PasswordInput2(
+      {this.labelText, this.onChanged, this.onSubmitted, this.focusNode});
 
   final String labelText;
   final Function onChanged;
@@ -12,12 +13,16 @@ class PasswordInput2 extends StatefulWidget {
   final FocusNode focusNode;
 
   @override
-  PasswordInput2State createState() =>
-      PasswordInput2State(labelText: this.labelText, onChanged: this.onChanged, onSubmitted: this.onSubmitted, focusNode: this.focusNode);
+  PasswordInput2State createState() => PasswordInput2State(
+      labelText: this.labelText,
+      onChanged: this.onChanged,
+      onSubmitted: this.onSubmitted,
+      focusNode: this.focusNode);
 }
 
 class PasswordInput2State extends State<PasswordInput2> {
-  PasswordInput2State({this.labelText, this.onChanged, this.onSubmitted, this.focusNode});
+  PasswordInput2State(
+      {this.labelText, this.onChanged, this.onSubmitted, this.focusNode});
 
   final String labelText;
   final Function onChanged;

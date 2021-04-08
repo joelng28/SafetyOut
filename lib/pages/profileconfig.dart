@@ -16,52 +16,45 @@ class ProfileConfig extends StatefulWidget {
 class _ProfileConfig extends State<ProfileConfig> {
   Function logOut = (BuildContext context) {
     showDialog(
-    context: context, 
-    builder: (BuildContext context) {
-      return AlertDialog(
-        contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              Text(
-                AppLocalizations.of(context).translate("Segur_que_vols_tancar_sessió"),
-                style: TextStyle(
-                  fontSize: Constants.m(context)
-                )
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+            content: SingleChildScrollView(
+                child: ListBody(
+              children: <Widget>[
+                Text(
+                    AppLocalizations.of(context)
+                        .translate("Segur_que_vols_tancar_sessió"),
+                    style: TextStyle(fontSize: Constants.m(context))),
+              ],
+            )),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                    AppLocalizations.of(context).translate("Cancel·lar"),
+                    style: TextStyle(color: Constants.black(context))),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: Text(
+                    AppLocalizations.of(context).translate("Tancar_sessió"),
+                    style: TextStyle(color: Constants.black(context))),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  SecureStorage.deleteSecureStorage().then((val) {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(pageBuilder: (_, __, ___) => Login()),
+                    );
+                  });
+                },
               ),
             ],
-          )
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: Text(
-              AppLocalizations.of(context).translate("Cancel·lar"),
-              style: TextStyle(
-                color: Constants.black(context)
-              )),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          TextButton(
-            child: Text(
-              AppLocalizations.of(context).translate("Tancar_sessió"),
-              style: TextStyle(
-                color: Constants.black(context)
-              )),
-            onPressed: () {
-              Navigator.of(context).pop();
-              SecureStorage.deleteSecureStorage().then((val) {
-                Navigator.push(
-                context,
-                PageRouteBuilder(pageBuilder: (_, __, ___) => Login()),
-              );
-            });
-            },
-          ),
-        ],
-      );
-    });
+          );
+        });
   };
 
   @override
@@ -122,22 +115,19 @@ class _ProfileConfig extends State<ProfileConfig> {
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(30),
                             border: Border.all(
-                              color: Constants.red(context),
-                              width: 2
-                            )
-                        ),
+                                color: Constants.red(context), width: 2)),
                         child: TextButton(
                             onPressed: () => logOut(context),
                             style: ButtonStyle(
                                 shape: MaterialStateProperty.all(
                                     RoundedRectangleBorder(
-                                  borderRadius: new BorderRadius.circular(30.0),
+                                  borderRadius: BorderRadius.circular(30.0),
                                 )),
                                 backgroundColor: MaterialStateProperty.all(
                                     Colors.transparent)),
                             child: Text(
                                 AppLocalizations.of(context)
-                                  .translate("Tancar_sessió"),
+                                    .translate("Tancar_sessió"),
                                 style: TextStyle(
                                     fontSize: Constants.m(context),
                                     fontWeight: Constants.bold,

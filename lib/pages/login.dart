@@ -32,143 +32,125 @@ class _Login extends State<Login> {
   void initState() {
     super.initState();
     submitLogin = (BuildContext context) {
-    isLoading = true;
-    activeButton = false;
-    var url = Uri.parse('https://safetyout.herokuapp.com/user/login');
-    http.post(url, body: {
-      'email': email,
-      'password': pwd,
-    })
-    .then((res) {
-      if(res.statusCode == 200) {
-        //Guardar key
-        Map<String, dynamic> body = jsonDecode(res.body);
-        SecureStorage.writeSecureStorage('SafetyOUT_Token', body["token"]);
-        SecureStorage.writeSecureStorage('SafetyOUT_Token', body["userId"]);
-        Navigator.of(context).pushReplacementNamed('/');
-        setState(() {
-          isLoading = false;
-          activeButton = true;
-        });
-      } else if(res.statusCode == 404 || res.statusCode == 401) {
-        setState(() {
-          isLoading = false;
-          activeButton = true;
-        });
-        showDialog(
-          context: context, 
-          builder: (BuildContext context) {
-            return AlertDialog(
-              contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: <Widget>[
-                    Text(
-                      AppLocalizations.of(context).translate("Els_credencials_són_incorrectes"),
-                      style: TextStyle(
-                        fontSize: Constants.m(context)
-                      )
-                    ),
-                  ],
-                )
-              ),
-              actions: <Widget>[
-                TextButton(
-                  child: Text(
-                    AppLocalizations.of(context).translate("Acceptar"),
-                    style: TextStyle(
-                      color: Constants.black(context)
-                    )),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
-      } else {
-        showDialog(
-          context: context, 
-          builder: (BuildContext context) {
-            return AlertDialog(
-              contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: <Widget>[
-                    Text(
-                      AppLocalizations.of(context).translate("Error de xarxa"),
-                      style: TextStyle(
-                        fontSize: Constants.m(context)
-                      )
-                    ),
-                  ],
-                )
-              ),
-              actions: <Widget>[
-                TextButton(
-                  child: Text(
-                    AppLocalizations.of(context).translate("Acceptar"),
-                    style: TextStyle(
-                      color: Constants.black(context)
-                    )),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
+      isLoading = true;
+      activeButton = false;
+      var url = Uri.parse('https://safetyout.herokuapp.com/user/login');
+      http.post(url, body: {
+        'email': email,
+        'password': pwd,
+      }).then((res) {
+        if (res.statusCode == 200) {
+          //Guardar key
+          Map<String, dynamic> body = jsonDecode(res.body);
+          SecureStorage.writeSecureStorage('SafetyOUT_Token', body["token"]);
+          SecureStorage.writeSecureStorage('SafetyOUT_Token', body["userId"]);
+          Navigator.of(context).pushReplacementNamed('/');
           setState(() {
             isLoading = false;
             activeButton = true;
           });
-      }
-    })
-    .catchError((err) {
-      //Sale error por pantalla
-      showDialog(
-        context: context, 
-        builder: (BuildContext context) {
-          return AlertDialog(
-            contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  Text(
-                    AppLocalizations.of(context).translate("Error de xarxa"),
-                    style: TextStyle(
-                      fontSize: Constants.m(context)
-                    )
+        } else if (res.statusCode == 404 || res.statusCode == 401) {
+          setState(() {
+            isLoading = false;
+            activeButton = true;
+          });
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                  content: SingleChildScrollView(
+                      child: ListBody(
+                    children: <Widget>[
+                      Text(
+                          AppLocalizations.of(context)
+                              .translate("Els_credencials_són_incorrectes"),
+                          style: TextStyle(fontSize: Constants.m(context))),
+                    ],
+                  )),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text(
+                          AppLocalizations.of(context).translate("Acceptar"),
+                          style: TextStyle(color: Constants.black(context))),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              });
+        } else {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                  content: SingleChildScrollView(
+                      child: ListBody(
+                    children: <Widget>[
+                      Text(
+                          AppLocalizations.of(context)
+                              .translate("Error de xarxa"),
+                          style: TextStyle(fontSize: Constants.m(context))),
+                    ],
+                  )),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text(
+                          AppLocalizations.of(context).translate("Acceptar"),
+                          style: TextStyle(color: Constants.black(context))),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              });
+          setState(() {
+            isLoading = false;
+            activeButton = true;
+          });
+        }
+      }).catchError((err) {
+        //Sale error por pantalla
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                content: SingleChildScrollView(
+                    child: ListBody(
+                  children: <Widget>[
+                    Text(
+                        AppLocalizations.of(context)
+                            .translate("Error de xarxa"),
+                        style: TextStyle(fontSize: Constants.m(context))),
+                  ],
+                )),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text(
+                        AppLocalizations.of(context).translate("Acceptar"),
+                        style: TextStyle(color: Constants.black(context))),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
                   ),
                 ],
-              )
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: Text(
-                  AppLocalizations.of(context).translate("Acceptar"),
-                  style: TextStyle(
-                    color: Constants.black(context)
-                  )),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        });
+              );
+            });
         setState(() {
           isLoading = false;
           activeButton = true;
         });
-    });
-  };
+      });
+    };
   }
 
   Function facebookLogin = () {};
 
   Function googleLogin = () {};
-
 
   @override
   Widget build(BuildContext context) {
@@ -270,13 +252,17 @@ class _Login extends State<Login> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     PasswordInput(
-                      focusNode: pwdFocusNode,
-                      onSubmitted: (val) => email != '' && pwd != '' ? setState(() { submitLogin(context); }) : () {},
-                      onChanged: (val) => setState(() {
-                      pwd = val;
-                       activeButton = pwd != '' && email != '';
-                      }),
-                      labelText: AppLocalizations.of(context)
+                        focusNode: pwdFocusNode,
+                        onSubmitted: (val) => email != '' && pwd != ''
+                            ? setState(() {
+                                submitLogin(context);
+                              })
+                            : () {},
+                        onChanged: (val) => setState(() {
+                              pwd = val;
+                              activeButton = pwd != '' && email != '';
+                            }),
+                        labelText: AppLocalizations.of(context)
                             .translate("Contrasenya"))
                   ],
                 ),
@@ -291,9 +277,10 @@ class _Login extends State<Login> {
                           highlightColor: Colors.transparent,
                           splashColor: Colors.transparent,
                           onTap: () {
-                              Navigator.push(
+                            Navigator.push(
                               context,
-                              PageRouteBuilder(pageBuilder: (_, __, ___) => RecoverEmail()),
+                              PageRouteBuilder(
+                                  pageBuilder: (_, __, ___) => RecoverEmail()),
                             );
                           },
                           child: Text(
@@ -317,7 +304,9 @@ class _Login extends State<Login> {
                         child: Container(
                           decoration: BoxDecoration(
                               gradient: LinearGradient(
-                                colors: activeButton ? [Color(0xFF84FCCD), Color(0xFFA7FF80)] : [Color(0xFF679080), Color(0xFF68865A)],
+                                colors: activeButton
+                                    ? [Color(0xFF84FCCD), Color(0xFFA7FF80)]
+                                    : [Color(0xFF679080), Color(0xFF68865A)],
                                 begin: FractionalOffset.centerLeft,
                                 end: FractionalOffset.centerRight,
                               ),
@@ -331,28 +320,39 @@ class _Login extends State<Login> {
                               ]),
                           child: TextButton(
                               key: Key('loginButton'),
-                              onPressed: () => email != '' && pwd != '' ? setState(() { submitLogin(context); }) : () {},
+                              onPressed: () => email != '' && pwd != ''
+                                  ? setState(() {
+                                      submitLogin(context);
+                                    })
+                                  : () {},
                               style: ButtonStyle(
                                   shape: MaterialStateProperty.all(
                                       RoundedRectangleBorder(
-                                    borderRadius:
-                                        new BorderRadius.circular(30.0),
+                                    borderRadius: BorderRadius.circular(30.0),
                                   )),
                                   backgroundColor: MaterialStateProperty.all(
                                       Colors.transparent)),
-                              child: isLoading ? 
-                              SpinKitFadingCube(
-                                color: Colors.white,
-                                size: 20.0 / (MediaQuery.of(context).size.height < 700 ? 1.3 : MediaQuery.of(context).size.height < 800 ? 1.15 : 1)
-                              )
-                              :
-                              Text(
-                                  AppLocalizations.of(context)
-                                      .translate("Iniciar_sessio"),
-                                  style: TextStyle(
-                                      fontSize: Constants.m(context),
-                                      fontWeight: Constants.bold,
-                                      color: Constants.primaryDark(context)))),
+                              child: isLoading
+                                  ? SpinKitFadingCube(
+                                      color: Colors.white,
+                                      size: 20.0 /
+                                          (MediaQuery.of(context).size.height <
+                                                  700
+                                              ? 1.3
+                                              : MediaQuery.of(context)
+                                                          .size
+                                                          .height <
+                                                      800
+                                                  ? 1.15
+                                                  : 1))
+                                  : Text(
+                                      AppLocalizations.of(context)
+                                          .translate("Iniciar_sessio"),
+                                      style: TextStyle(
+                                          fontSize: Constants.m(context),
+                                          fontWeight: Constants.bold,
+                                          color:
+                                              Constants.primaryDark(context)))),
                         ),
                       ),
                     )
@@ -410,7 +410,7 @@ class _Login extends State<Login> {
                             style: ButtonStyle(
                                 shape: MaterialStateProperty.all(
                                     RoundedRectangleBorder(
-                                  borderRadius: new BorderRadius.circular(30.0),
+                                  borderRadius: BorderRadius.circular(30.0),
                                 )),
                                 backgroundColor: MaterialStateProperty.all(
                                     Colors.transparent)),
@@ -420,7 +420,10 @@ class _Login extends State<Login> {
                               child: Row(
                                 children: [
                                   Expanded(
-                                    flex: (MediaQuery.of(context).size.width < 380 ? 20 : 30),
+                                    flex:
+                                        (MediaQuery.of(context).size.width < 380
+                                            ? 20
+                                            : 30),
                                     child: Padding(
                                       padding: EdgeInsets.only(left: 1),
                                       child: SvgPicture.asset(
@@ -469,7 +472,7 @@ class _Login extends State<Login> {
                             style: ButtonStyle(
                                 shape: MaterialStateProperty.all(
                                     RoundedRectangleBorder(
-                                  borderRadius: new BorderRadius.circular(30.0),
+                                  borderRadius: BorderRadius.circular(30.0),
                                 )),
                                 backgroundColor: MaterialStateProperty.all(
                                     Colors.transparent)),
@@ -529,7 +532,8 @@ class _Login extends State<Login> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        PageRouteBuilder(pageBuilder: (_, __, ___) => RegData()),
+                        PageRouteBuilder(
+                            pageBuilder: (_, __, ___) => RegData()),
                       );
                     },
                     child: Text(
