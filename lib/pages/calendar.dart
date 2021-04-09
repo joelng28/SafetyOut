@@ -31,7 +31,9 @@ class _Calendar extends State<Calendar> {
 }
 
 class Attendance {
-  String place;
+  String placename;
+  String placeLocation;
+  String date;
   String startHour;
   String endHour;
   String personas;
@@ -102,11 +104,27 @@ class _DetailsAttendanceState extends State<DetailsAttendance> {
                   Visibility(
                       visible: MediaQuery.of(context).viewInsets.bottom == 0,
                       child: Text(
-                          widget.assistencia.place,
+                          widget.assistencia.placename,
                           style: TextStyle(
-                              color: Constants.darkGrey(context),
-                              fontSize: Constants.xl(context),
+                              color: Constants.black(context),
+                              fontSize: Constants.xxl(context),
                               fontWeight: Constants.bolder)),
+                  ),
+                  Text(
+                      widget.assistencia.placeLocation,
+                      style: TextStyle(
+                          color: Constants.black(context))
+                  ),
+                  Text(
+                      widget.assistencia.date + widget.assistencia.startHour + 
+                      " - " + widget.assistencia.endHour,
+                      style: TextStyle(
+                          color: Constants.black(context))
+                  ),
+                  Text(
+                      widget.assistencia.personas,
+                      style: TextStyle(
+                          color: Constants.black(context))
                   ),
                   Expanded(
                     child: SizedBox(
