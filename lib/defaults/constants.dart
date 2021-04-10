@@ -39,6 +39,10 @@ class Constants {
       MediaQuery.of(context).platformBrightness == Brightness.light
           ? Color(0xFFEAEAEA)
           : Color(0xFF242424);
+  static Color trueWhite(BuildContext context) =>
+      MediaQuery.of(context).platformBrightness == Brightness.light
+          ? Colors.white
+          : Color(0xFF242424);
   static Color link(BuildContext context) =>
       MediaQuery.of(context).platformBrightness == Brightness.light
           ? Color(0xFF00FF9B)

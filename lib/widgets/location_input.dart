@@ -3,15 +3,11 @@ import 'package:flutter/material.dart';
 
 TextEditingController textController = TextEditingController();
 
-class RawInput extends StatelessWidget {
-  RawInput(
-      {this.labelText,
-      this.onChanged,
-      this.type,
-      this.onSubmitted,
-      this.focusNode});
+class LocationInput extends StatelessWidget {
+  LocationInput(
+      {this.text, this.onChanged, this.type, this.onSubmitted, this.focusNode});
 
-  final String labelText;
+  final String text;
   final Function onChanged;
   final TextInputType type;
   final Function onSubmitted;
@@ -22,6 +18,7 @@ class RawInput extends StatelessWidget {
     return SizedBox(
       height: Constants.a7(context),
       child: TextField(
+          readOnly: true,
           focusNode: focusNode,
           onSubmitted: onSubmitted,
           onChanged: onChanged,
@@ -30,17 +27,15 @@ class RawInput extends StatelessWidget {
           style: TextStyle(color: Constants.black(context)),
           decoration: InputDecoration(
             contentPadding: EdgeInsets.symmetric(
-                horizontal: Constants.h3(context),
-                vertical: Constants.v3(context)),
+              horizontal: Constants.h3(context),
+            ),
             filled: true,
-            fillColor: Constants.lightGrey(context),
-            labelText: labelText,
-            labelStyle: TextStyle(
-                fontSize: Constants.m(context), color: Constants.grey(context)),
-            hintText: labelText,
+            fillColor: Constants.trueWhite(context),
+            hintText: text,
             hintStyle: TextStyle(
-                fontSize: Constants.m(context), color: Constants.grey(context)),
-            floatingLabelBehavior: FloatingLabelBehavior.never,
+                fontSize: Constants.m(context),
+                color: Constants.black(context),
+                fontWeight: Constants.bold),
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(color: Colors.transparent),
               borderRadius: BorderRadius.circular(40),

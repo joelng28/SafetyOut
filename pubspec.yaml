@@ -41,6 +41,7 @@ dependencies:
   google_maps_flutter: ^2.0.3
   location: ^4.1.1
   flutter_google_places: ^0.3.0
+  geocoder: ^0.2.1
 
 dev_dependencies:
   flutter_test:
@@ -65,6 +66,7 @@ flutter:
   assets:
     - i18n/
     - assets/icons/
+    - assets/map_styles/
   
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
