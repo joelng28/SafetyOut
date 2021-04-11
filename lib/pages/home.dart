@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:app/defaults/constants.dart';
+import 'package:app/theme_mode_handler.dart';
 import 'package:app/widgets/location_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +11,7 @@ import 'package:geocoder/geocoder.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
+import 'package:theme_mode_handler/theme_mode_handler.dart';
 
 import '../app_localizations.dart';
 
@@ -34,10 +36,18 @@ class _Home extends State<Home> {
   final Map<String, Marker> markers = {};
 
   Future<void> onMapCreated(GoogleMapController cntlr) async {
-    final theme = WidgetsBinding.instance.window.platformBrightness;
-    String mapStyle = theme == Brightness.light
-        ? await rootBundle.loadString('assets/map_styles/light.json')
-        : await rootBundle.loadString('assets/map_styles/dark.json');
+    String mapStyle;
+    String theme = await ThemeModeManager().loadThemeMode();
+    if (theme != null) {
+      mapStyle = theme == 'ThemeMode.light'
+          ? await rootBundle.loadString('assets/map_styles/light.json')
+          : await rootBundle.loadString('assets/map_styles/dark.json');
+    } else {
+      mapStyle = MediaQuery.of(context).platformBrightness == Brightness.light
+          ? await rootBundle.loadString('assets/map_styles/light.json')
+          : await rootBundle.loadString('assets/map_styles/dark.json');
+    }
+
     await cntlr.setMapStyle(mapStyle);
     serviceEnabled = await location.serviceEnabled();
     if (!serviceEnabled) {
@@ -56,11 +66,13 @@ class _Home extends State<Home> {
     }
     controller = cntlr;
     location.onLocationChanged.listen((LocationData l) {
-      controller.animateCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(target: LatLng(l.latitude, l.longitude), zoom: 18),
-        ),
-      );
+      controller
+          .animateCamera(
+            CameraUpdate.newCameraPosition(
+              CameraPosition(target: LatLng(l.latitude, l.longitude), zoom: 18),
+            ),
+          )
+          .catchError((error) {});
     });
   }
 
@@ -107,9 +119,6 @@ class _Home extends State<Home> {
             anchor: Offset(0, -1),
             position:
                 LatLng(place["location"]["lat"], place["location"]["lng"]),
-            infoWindow: InfoWindow(
-              title: place["name"],
-            ),
           );
           markers[place["name"]] = marker;
         });
@@ -188,17 +197,17 @@ class _Home extends State<Home> {
             Container(
               clipBehavior: Clip.hardEdge,
               decoration: BoxDecoration(
-                color: Constants.lightGrey(context),
+                color: Constants.white(context),
                 borderRadius: BorderRadius.only(
                   bottomRight: Radius.circular(30),
                   bottomLeft: Radius.circular(30),
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: MediaQuery.of(context).platformBrightness ==
-                            Brightness.light
+                    color: ThemeModeHandler.of(context).themeMode ==
+                            ThemeMode.light
                         ? Colors.black.withOpacity(0.3)
-                        : Colors.black,
+                        : Colors.black.withOpacity(0.5),
                     spreadRadius: 1,
                     blurRadius: 4,
                     offset: Offset(0, 8), // changes position of shadow
