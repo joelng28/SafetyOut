@@ -143,7 +143,7 @@ class _Profile extends State<Profile> {
                 ),
                 Padding(
                   padding: EdgeInsets.only(
-                      right: Constants.h7(context),
+                      right: Constants.h3(context),
                       left: Constants.h7(context)),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

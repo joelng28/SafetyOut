@@ -1,8 +1,10 @@
 import 'package:app/app_localizations.dart';
 import 'package:app/defaults/constants.dart';
+import 'package:app/pages/app.dart';
 import 'package:app/pages/login.dart';
 import 'package:app/storage/secure_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:theme_mode_handler/theme_mode_handler.dart';
 
 class ProfileConfig extends StatefulWidget {
   ProfileConfig({Key key /*, this.title*/}) : super(key: key);
@@ -75,7 +77,9 @@ class _ProfileConfig extends State<ProfileConfig> {
                         highlightColor: Colors.transparent,
                         splashColor: Colors.transparent,
                         onTap: () {
-                          Navigator.of(context).pop();
+                          Navigator.of(context).pushReplacement(
+                              PageRouteBuilder(
+                                  pageBuilder: (_, __, ___) => App()));
                         },
                         child: Icon(Icons.arrow_back_ios_rounded,
                             size: 32 /
@@ -138,6 +142,15 @@ class _ProfileConfig extends State<ProfileConfig> {
                 ],
               ),
             ),
+            TextButton(
+                onPressed: () {
+                  ThemeMode newTheme =
+                      ThemeModeHandler.of(context).themeMode == ThemeMode.light
+                          ? ThemeMode.dark
+                          : ThemeMode.light;
+                  ThemeModeHandler.of(context).saveThemeMode(newTheme);
+                },
+                child: Text('Change mode'))
           ],
         ),
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:theme_mode_handler/theme_mode_handler.dart';
 
 // Singleton class that contains a bunch of useful constants for rapid and responsive developement
 class Constants {
@@ -14,49 +15,53 @@ class Constants {
 
   //Colors used
   static Color primary(BuildContext context) =>
-      MediaQuery.of(context).platformBrightness == Brightness.light
+      ThemeModeHandler.of(context).themeMode == ThemeMode.light
           ? Color(0xFFA7FF80)
           : Color(0xFFD2FFBE);
   static Color primaryDark(BuildContext context) => Color(0xFF315C44);
   static Color green(BuildContext context) =>
-      MediaQuery.of(context).platformBrightness == Brightness.light
+      ThemeModeHandler.of(context).themeMode == ThemeMode.light
           ? Color(0xFFA7FF80)
           : Color(0xFFD2FFBE);
   static Color black(BuildContext context) =>
-      MediaQuery.of(context).platformBrightness == Brightness.light
+      ThemeModeHandler.of(context).themeMode == ThemeMode.light
           ? Color(0xFF242424)
           : Color(0xFFEAEAEA);
   static Color darkGrey(BuildContext context) =>
-      MediaQuery.of(context).platformBrightness == Brightness.light
+      ThemeModeHandler.of(context).themeMode == ThemeMode.light
           ? Color(0xFF404040)
           : Color(0xFFDBDBDB);
   static Color grey(BuildContext context) => Color(0xFF8D8D8D);
   static Color lightGrey(BuildContext context) =>
-      MediaQuery.of(context).platformBrightness == Brightness.light
+      ThemeModeHandler.of(context).themeMode == ThemeMode.light
           ? Color(0xFFDBDBDB)
           : Color(0xFF404040);
   static Color white(BuildContext context) =>
-      MediaQuery.of(context).platformBrightness == Brightness.light
+      ThemeModeHandler.of(context).themeMode == ThemeMode.light
           ? Color(0xFFEAEAEA)
           : Color(0xFF242424);
+  static Color trueWhite(BuildContext context) =>
+      ThemeModeHandler.of(context).themeMode == ThemeMode.light
+          ? Colors.white
+          : Color(0xFF242424);
   static Color link(BuildContext context) =>
-      MediaQuery.of(context).platformBrightness == Brightness.light
+      ThemeModeHandler.of(context).themeMode == ThemeMode.light
           ? Color(0xFF00FF9B)
           : Color(0xFF84FCCD);
   static Color pink(BuildContext context) =>
-      MediaQuery.of(context).platformBrightness == Brightness.light
+      ThemeModeHandler.of(context).themeMode == ThemeMode.light
           ? Colors.pink[400]
           : Colors.pink[200];
   static Color blue(BuildContext context) =>
-      MediaQuery.of(context).platformBrightness == Brightness.light
+      ThemeModeHandler.of(context).themeMode == ThemeMode.light
           ? Colors.blue[400]
           : Colors.blue[200];
   static Color purple(BuildContext context) =>
-      MediaQuery.of(context).platformBrightness == Brightness.light
+      ThemeModeHandler.of(context).themeMode == ThemeMode.light
           ? Colors.purple[400]
           : Colors.purple[200];
   static Color red(BuildContext context) =>
-      MediaQuery.of(context).platformBrightness == Brightness.light
+      ThemeModeHandler.of(context).themeMode == ThemeMode.light
           ? Colors.red[400]
           : Colors.red[300];
 
