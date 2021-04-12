@@ -1,9 +1,12 @@
+import 'package:app/app_language.dart';
 import 'package:app/app_localizations.dart';
 import 'package:app/defaults/constants.dart';
+import 'package:app/main.dart';
 import 'package:app/pages/app.dart';
 import 'package:app/pages/login.dart';
 import 'package:app/storage/secure_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:theme_mode_handler/theme_mode_handler.dart';
 
 class ProfileConfig extends StatefulWidget {
@@ -61,6 +64,7 @@ class _ProfileConfig extends State<ProfileConfig> {
 
   @override
   Widget build(BuildContext context) {
+    var appLanguage = Provider.of<AppLanguage>(context);
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -150,7 +154,24 @@ class _ProfileConfig extends State<ProfileConfig> {
                           : ThemeMode.light;
                   ThemeModeHandler.of(context).saveThemeMode(newTheme);
                 },
-                child: Text('Change mode'))
+                child: Text('Change mode')),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                ElevatedButton(
+                  onPressed: () {
+                    appLanguage.changeLanguage(Locale("ca"));
+                  },
+                  child: Text('Català'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    appLanguage.changeLanguage(Locale("es"));
+                  },
+                  child: Text('Español'),
+                )
+              ],
+            )
           ],
         ),
       ),

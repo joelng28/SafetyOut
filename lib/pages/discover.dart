@@ -119,6 +119,12 @@ class _Discover extends State<Discover> {
               position:
                   LatLng(place["location"]["lat"], place["location"]["lng"]),
               onTap: () {
+                //Llamada a la api buscando con la lat y lng
+                // placeName = el nombre que te retorne
+                // placeLocation = Ciutat, Comarca, País que te retorne como esta hecho en la pagina home
+                // placeAddress = la dirección que te retorne
+                // placeOpenHours = los horarios que te retorne
+                // placeGauge = esto de momento nada
                 setState(() {
                   viewPlace = true;
                 });
@@ -244,8 +250,12 @@ class _Discover extends State<Discover> {
                           )
                         ],
                       ),
-                      child: SearchInput(
-                        labelText: 'Cerca un espai obert',
+                      child: Row(
+                        children: [
+                          SearchInput(
+                            labelText: 'Cerca un espai obert',
+                          ),
+                        ],
                       )),
                   Padding(
                     padding: EdgeInsets.only(top: Constants.v3(context)),

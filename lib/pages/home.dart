@@ -49,9 +49,10 @@ class _Home extends State<Home> {
     }
 
     await cntlr.setMapStyle(mapStyle);
-    serviceEnabled = await location.serviceEnabled();
+    serviceEnabled = await location.serviceEnabled().catchError((error) {});
     if (!serviceEnabled) {
-      serviceEnabled = await location.requestService();
+      serviceEnabled = await location.requestService().catchError((error) {});
+      ;
       if (!serviceEnabled) {
         return;
       }
@@ -281,8 +282,12 @@ class _Home extends State<Home> {
                           ],
                         ),
                         child: Container(
-                          child: LocationInput(
-                            text: address,
+                          child: Row(
+                            children: [
+                              LocationInput(
+                                text: address,
+                              ),
+                            ],
                           ),
                         )),
                   )

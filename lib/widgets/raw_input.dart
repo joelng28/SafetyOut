@@ -19,37 +19,41 @@ class RawInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: Constants.a7(context),
-      child: TextField(
-          focusNode: focusNode,
-          onSubmitted: onSubmitted,
-          onChanged: onChanged,
-          autocorrect: false,
-          keyboardType: type,
-          style: TextStyle(color: Constants.black(context)),
-          decoration: InputDecoration(
-            contentPadding: EdgeInsets.symmetric(
-                horizontal: Constants.h3(context),
-                vertical: Constants.v3(context)),
-            filled: true,
-            fillColor: Constants.lightGrey(context),
-            labelText: labelText,
-            labelStyle: TextStyle(
-                fontSize: Constants.m(context), color: Constants.grey(context)),
-            hintText: labelText,
-            hintStyle: TextStyle(
-                fontSize: Constants.m(context), color: Constants.grey(context)),
-            floatingLabelBehavior: FloatingLabelBehavior.never,
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.transparent),
-              borderRadius: BorderRadius.circular(40),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.transparent),
-              borderRadius: BorderRadius.circular(40),
-            ),
-          )),
+    return Expanded(
+      child: SizedBox(
+        height: Constants.a7(context),
+        child: TextField(
+            focusNode: focusNode,
+            onSubmitted: onSubmitted,
+            onChanged: onChanged,
+            autocorrect: false,
+            keyboardType: type,
+            style: TextStyle(color: Constants.black(context)),
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.symmetric(
+                  horizontal: Constants.h3(context),
+                  vertical: Constants.v3(context)),
+              filled: true,
+              fillColor: Constants.lightGrey(context),
+              labelText: labelText,
+              labelStyle: TextStyle(
+                  fontSize: Constants.m(context),
+                  color: Constants.grey(context)),
+              hintText: labelText,
+              hintStyle: TextStyle(
+                  fontSize: Constants.m(context),
+                  color: Constants.grey(context)),
+              floatingLabelBehavior: FloatingLabelBehavior.never,
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.transparent),
+                borderRadius: BorderRadius.circular(40),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.transparent),
+                borderRadius: BorderRadius.circular(40),
+              ),
+            )),
+      ),
     );
   }
 }
