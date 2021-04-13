@@ -37,21 +37,31 @@ class _Home extends State<Home> {
 
   Future<void> onMapCreated(GoogleMapController cntlr) async {
     String mapStyle;
-    String theme = await ThemeModeManager().loadThemeMode();
+    String theme =
+        await ThemeModeManager().loadThemeMode().catchError((error) {});
     if (theme != null) {
       mapStyle = theme == 'ThemeMode.light'
-          ? await rootBundle.loadString('assets/map_styles/light.json')
-          : await rootBundle.loadString('assets/map_styles/dark.json');
+          ? await rootBundle
+              .loadString('assets/map_styles/light.json')
+              .catchError((error) {})
+          : await rootBundle
+              .loadString('assets/map_styles/dark.json')
+              .catchError((error) {});
     } else {
       mapStyle = MediaQuery.of(context).platformBrightness == Brightness.light
-          ? await rootBundle.loadString('assets/map_styles/light.json')
-          : await rootBundle.loadString('assets/map_styles/dark.json');
+          ? await rootBundle
+              .loadString('assets/map_styles/light.json')
+              .catchError((error) {})
+          : await rootBundle
+              .loadString('assets/map_styles/dark.json')
+              .catchError((error) {});
     }
 
     await cntlr.setMapStyle(mapStyle);
-    serviceEnabled = await location.serviceEnabled();
+    serviceEnabled = await location.serviceEnabled().catchError((error) {});
     if (!serviceEnabled) {
-      serviceEnabled = await location.requestService();
+      serviceEnabled = await location.requestService().catchError((error) {});
+      ;
       if (!serviceEnabled) {
         return;
       }
@@ -82,13 +92,13 @@ class _Home extends State<Home> {
             l.latitude.toString() +
             ',' +
             l.longitude.toString() +
-            '&radius=5000&keyword=park|nature|sightseeing|public|terrace|mountain|castle&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,name,types,formatted_address');
+            '&radius=5000&keyword=park|nature|sightseeing|public|terrace|mountain|castle&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,name');
     var urlRes = Uri.parse(
         'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
             l.latitude.toString() +
             ',' +
             l.longitude.toString() +
-            '&radius=5000&keyword=outdoor seating&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,name,types,formatted_address');
+            '&radius=5000&keyword=outdoor seating&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,name');
     Future.wait([http.get(url), http.get(urlRes)]).then((List responses) {
       List<Map<String, dynamic>> places = [];
       Map<String, dynamic> body = jsonDecode(responses[0].body);
@@ -96,8 +106,7 @@ class _Home extends State<Home> {
       results.forEach((element) {
         Map<String, dynamic> place = {
           "location": element["geometry"]["location"],
-          "name": element["name"],
-          "types": element["types"],
+          "name": element["name"]
         };
         places.add(place);
       });
@@ -106,8 +115,7 @@ class _Home extends State<Home> {
       results.forEach((element) {
         Map<String, dynamic> place = {
           "location": element["geometry"]["location"],
-          "name": element["name"],
-          "types": element["types"],
+          "name": element["name"]
         };
         places.add(place);
       });
@@ -131,7 +139,7 @@ class _Home extends State<Home> {
               newAddress.adminArea.toString() +
               ', ' +
               newAddress.countryName.toString();
-        });
+        }).catchError((error) => {});
       });
     }).catchError((error) => {});
   }
@@ -146,13 +154,15 @@ class _Home extends State<Home> {
         Geocoder.local
             .findAddressesFromCoordinates(Coordinates(l.latitude, l.longitude))
             .then((addresses) {
-          Address newAddress = addresses.first;
-          address = newAddress.locality.toString() +
-              ', ' +
-              newAddress.adminArea.toString() +
-              ', ' +
-              newAddress.countryName.toString();
-        });
+          setState(() {
+            Address newAddress = addresses.first;
+            address = newAddress.locality.toString() +
+                ', ' +
+                newAddress.adminArea.toString() +
+                ', ' +
+                newAddress.countryName.toString();
+          });
+        }).catchError((err) {});
       });
     }).catchError((err) {
       showDialog(
@@ -281,8 +291,12 @@ class _Home extends State<Home> {
                           ],
                         ),
                         child: Container(
-                          child: LocationInput(
-                            text: address,
+                          child: Row(
+                            children: [
+                              LocationInput(
+                                text: address,
+                              ),
+                            ],
                           ),
                         )),
                   )

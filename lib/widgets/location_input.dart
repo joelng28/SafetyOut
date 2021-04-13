@@ -15,36 +15,38 @@ class LocationInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: Constants.a7(context),
-      child: TextField(
-          readOnly: true,
-          focusNode: focusNode,
-          onSubmitted: onSubmitted,
-          onChanged: onChanged,
-          autocorrect: false,
-          keyboardType: type,
-          style: TextStyle(color: Constants.black(context)),
-          decoration: InputDecoration(
-            contentPadding: EdgeInsets.symmetric(
-              horizontal: Constants.h3(context),
-            ),
-            filled: true,
-            fillColor: Constants.trueWhite(context),
-            hintText: text,
-            hintStyle: TextStyle(
-                fontSize: Constants.m(context),
-                color: Constants.black(context),
-                fontWeight: Constants.bold),
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.transparent),
-              borderRadius: BorderRadius.circular(40),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.transparent),
-              borderRadius: BorderRadius.circular(40),
-            ),
-          )),
+    return Expanded(
+      child: SizedBox(
+        height: Constants.a7(context),
+        child: TextField(
+            readOnly: true,
+            focusNode: focusNode,
+            onSubmitted: onSubmitted,
+            onChanged: onChanged,
+            autocorrect: false,
+            keyboardType: type,
+            style: TextStyle(color: Constants.black(context)),
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: Constants.h3(context),
+              ),
+              filled: true,
+              fillColor: Constants.trueWhite(context),
+              hintText: text,
+              hintStyle: TextStyle(
+                  fontSize: Constants.m(context),
+                  color: Constants.black(context),
+                  fontWeight: Constants.bold),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.transparent),
+                borderRadius: BorderRadius.circular(40),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.transparent),
+                borderRadius: BorderRadius.circular(40),
+              ),
+            )),
+      ),
     );
   }
 }
