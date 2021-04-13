@@ -1,7 +1,6 @@
 import 'package:app/state/app_language.dart';
 import 'package:app/app_localizations.dart';
 import 'package:app/defaults/constants.dart';
-import 'package:app/main.dart';
 import 'package:app/pages/app.dart';
 import 'package:app/pages/login.dart';
 import 'package:app/storage/secure_storage.dart';
