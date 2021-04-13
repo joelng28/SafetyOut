@@ -42,7 +42,6 @@ dependencies:
   location: ^4.1.1
   flutter_google_places: ^0.3.0
   geocoder: ^0.2.1
-  theme_mode_handler: ^2.0.0
   shared_preferences: ^2.0.5
   flutter_platform_widgets: ^1.1.0
 

@@ -7,7 +7,6 @@ import 'package:app/storage/secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:theme_mode_handler/theme_mode_handler.dart';
 
 class ProfileConfig extends StatefulWidget {
   ProfileConfig({Key key /*, this.title*/}) : super(key: key);
@@ -66,7 +65,6 @@ class _ProfileConfig extends State<ProfileConfig> {
 
   @override
   Widget build(BuildContext context) {
-    ThemeMode appearence = ThemeModeHandler.of(context).themeMode;
     var appLanguage = Provider.of<AppLanguage>(context);
     Locale locale = appLanguage.appLocal;
     return Scaffold(
@@ -110,112 +108,6 @@ class _ProfileConfig extends State<ProfileConfig> {
                                 fontSize: Constants.xl(context),
                                 fontWeight: Constants.bolder)),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(Constants.h4(context),
-                    Constants.v7(context), Constants.h4(context), 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    InkWell(
-                      highlightColor: Colors.transparent,
-                      splashColor: Colors.transparent,
-                      focusColor: Colors.transparent,
-                      child: Text(
-                        'Canviar aparença',
-                        style: TextStyle(
-                            fontSize: Constants.l(context),
-                            fontWeight: Constants.normal,
-                            color: Constants.black(context)),
-                      ),
-                      onTap: () {
-                        showPlatformDialog(
-                          context: context,
-                          builder: (_) => AlertDialog(
-                            title: Text(
-                              'Canviar aparença',
-                              style: TextStyle(
-                                  fontSize: Constants.l(context),
-                                  fontWeight: Constants.bold,
-                                  color: Constants.black(context)),
-                            ),
-                            content: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Clar',
-                                      style: TextStyle(
-                                          fontSize: Constants.m(context),
-                                          color: Constants.black(context)),
-                                    ),
-                                    Radio(
-                                      fillColor: MaterialStateProperty.all(
-                                          Constants.black(context)),
-                                      activeColor: Constants.primary(context),
-                                      value: ThemeMode.light,
-                                      groupValue: appearence,
-                                      onChanged: (ThemeMode val) {
-                                        appearence = val;
-                                        ThemeMode newTheme =
-                                            ThemeModeHandler.of(context)
-                                                        .themeMode ==
-                                                    ThemeMode.light
-                                                ? ThemeMode.dark
-                                                : ThemeMode.light;
-                                        ThemeModeHandler.of(context)
-                                            .saveThemeMode(newTheme);
-                                      },
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Obscur',
-                                      style: TextStyle(
-                                          fontSize: Constants.s(context),
-                                          color: Constants.black(context)),
-                                    ),
-                                    Radio(
-                                      fillColor: MaterialStateProperty.all(
-                                          Constants.black(context)),
-                                      activeColor: Constants.primary(context),
-                                      value: ThemeMode.dark,
-                                      groupValue: appearence,
-                                      onChanged: (ThemeMode val) {
-                                        appearence = val;
-                                        ThemeMode newTheme =
-                                            ThemeModeHandler.of(context)
-                                                        .themeMode ==
-                                                    ThemeMode.light
-                                                ? ThemeMode.dark
-                                                : ThemeMode.light;
-                                        ThemeModeHandler.of(context)
-                                            .saveThemeMode(newTheme);
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            actions: [
-                              TextButton(
-                                child: PlatformText('OK'),
-                                onPressed: () => Navigator.pop(context),
-                              )
-                            ],
-                          ),
-                        );
-                      },
                     ),
                   ],
                 ),
