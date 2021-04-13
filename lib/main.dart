@@ -1,10 +1,11 @@
 import 'dart:async';
-import 'package:app/app_language.dart';
+import 'package:app/state/app_language.dart';
 import 'package:app/app_localizations.dart';
 import 'package:app/routes/router.dart';
 import 'package:app/state/reg.dart';
 import 'package:app/storage/secure_storage.dart';
 import 'package:app/theme_mode_handler.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
@@ -82,7 +83,11 @@ class MyApp extends StatelessWidget {
                   localizationsDelegates: [
                     AppLocalizations.delegate,
                     GlobalMaterialLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
                     GlobalWidgetsLocalizations.delegate,
+                    DefaultMaterialLocalizations.delegate,
+                    DefaultCupertinoLocalizations.delegate,
+                    DefaultWidgetsLocalizations.delegate,
                   ],
 
                   onGenerateRoute: AppRouter.generateRoute,

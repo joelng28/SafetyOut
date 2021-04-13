@@ -129,7 +129,7 @@ class _Profile extends State<Profile> {
                           BoxDecoration(color: Constants.trueWhite(context)),
                       child: Center(
                         child: SpinKitFadingCube(
-                            color: Colors.white,
+                            color: Colors.grey,
                             size: 40.0 /
                                 (MediaQuery.of(context).size.height < 700
                                     ? 1.3
@@ -204,7 +204,7 @@ class _Profile extends State<Profile> {
                                       ),
                                       onPressed: () {},
                                       style: ElevatedButton.styleFrom(
-                                          primary: Constants.white(context),
+                                          primary: Constants.trueWhite(context),
                                           textStyle: TextStyle(
                                             color: Constants.black(context),
                                           ),
