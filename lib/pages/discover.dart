@@ -490,6 +490,7 @@ class _Discover extends State<Discover> {
                   .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
                       target: LatLng(loc.latitude, loc.longitude), zoom: 18)))
                   .catchError((error) {});
+              retrievePlaces(LatLng(loc.latitude, loc.longitude));
             });
             setState(() {
               viewPlace = false;
