@@ -80,13 +80,13 @@ class _Discover extends State<Discover> {
             l.latitude.toString() +
             ',' +
             l.longitude.toString() +
-            '&radius=5000&keyword=park|nature|sightseeing|public|terrace|mountain|castle&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,name,types,formatted_address');
+            '&radius=5000&keyword=park|nature|sightseeing|public|terrace|mountain|castle&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,name');
     var urlRes = Uri.parse(
         'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
             l.latitude.toString() +
             ',' +
             l.longitude.toString() +
-            '&radius=5000&keyword=outdoor seating&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,name,types,formatted_address');
+            '&radius=5000&keyword=outdoor seating&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,name');
     Future.wait([http.get(url), http.get(urlRes)]).then((List responses) {
       List<Map<String, dynamic>> places = [];
       Map<String, dynamic> body = jsonDecode(responses[0].body);
@@ -94,8 +94,7 @@ class _Discover extends State<Discover> {
       results.forEach((element) {
         Map<String, dynamic> place = {
           "location": element["geometry"]["location"],
-          "name": element["name"],
-          "types": element["types"],
+          "name": element["name"]
         };
         places.add(place);
       });
@@ -104,8 +103,7 @@ class _Discover extends State<Discover> {
       results.forEach((element) {
         Map<String, dynamic> place = {
           "location": element["geometry"]["location"],
-          "name": element["name"],
-          "types": element["types"],
+          "name": element["name"]
         };
         places.add(place);
       });
@@ -119,6 +117,12 @@ class _Discover extends State<Discover> {
               position:
                   LatLng(place["location"]["lat"], place["location"]["lng"]),
               onTap: () {
+                //Llamada a la api buscando con la lat y lng
+                // placeName = el nombre que te retorne
+                // placeLocation = Ciutat, Comarca, País que te retorne como esta hecho en la pagina home
+                // placeAddress = la dirección que te retorne
+                // placeOpenHours = los horarios que te retorne
+                // placeGauge = esto de momento nada
                 setState(() {
                   viewPlace = true;
                 });
@@ -186,6 +190,11 @@ class _Discover extends State<Discover> {
           children: [
             firstLocation
                 ? GoogleMap(
+                    onTap: (lat) {
+                      setState(() {
+                        viewPlace = false;
+                      });
+                    },
                     initialCameraPosition: firstLocation
                         ? CameraPosition(
                             target: initialcameraposition, zoom: 18)
@@ -193,6 +202,7 @@ class _Discover extends State<Discover> {
                     mapType: MapType.normal,
                     onMapCreated: onMapCreated,
                     myLocationEnabled: true,
+                    myLocationButtonEnabled: false,
                     markers: markers.values.toSet(),
                     onCameraIdle: () {
                       setState(() {
@@ -244,8 +254,12 @@ class _Discover extends State<Discover> {
                           )
                         ],
                       ),
-                      child: SearchInput(
-                        labelText: 'Cerca un espai obert',
+                      child: Row(
+                        children: [
+                          SearchInput(
+                            labelText: 'Cerca un espai obert',
+                          ),
+                        ],
                       )),
                   Padding(
                     padding: EdgeInsets.only(top: Constants.v3(context)),
@@ -305,154 +319,159 @@ class _Discover extends State<Discover> {
                 ],
               ),
             ),
-            AnimatedContainer(
-              duration: Duration(milliseconds: 300),
-              decoration: BoxDecoration(
-                color: Constants.trueWhite(context),
-                borderRadius: BorderRadius.only(
-                  bottomRight: Radius.circular(30),
-                  bottomLeft: Radius.circular(30),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: ThemeModeHandler.of(context).themeMode ==
-                            ThemeMode.light
-                        ? Colors.black.withOpacity(0.3)
-                        : Colors.black.withOpacity(0.5),
-                    spreadRadius: 1,
-                    blurRadius: 4,
-                    offset: Offset(0, 8), // changes position of shadow
+            GestureDetector(
+              onTap: () {},
+              child: AnimatedContainer(
+                duration: Duration(milliseconds: 300),
+                decoration: BoxDecoration(
+                  color: Constants.trueWhite(context),
+                  borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(30),
+                    bottomLeft: Radius.circular(30),
                   ),
-                ],
-              ),
-              constraints: BoxConstraints(
-                maxHeight: viewPlace ? MediaQuery.of(context).size.height : 0,
-              ),
-              width: Constants.wFull(context),
-              child: Padding(
-                padding: EdgeInsets.only(
-                    top: Constants.v2(context),
-                    left: Constants.h6(context),
-                    right: Constants.h6(context)),
-                child: SingleChildScrollView(
-                  physics: NeverScrollableScrollPhysics(),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            placeName,
-                            style: TextStyle(
-                                fontSize: Constants.l(context),
-                                fontWeight: Constants.bolder),
+                  boxShadow: viewPlace
+                      ? [
+                          BoxShadow(
+                            color: ThemeModeHandler.of(context).themeMode ==
+                                    ThemeMode.light
+                                ? Colors.black.withOpacity(0.3)
+                                : Colors.black.withOpacity(0.5),
+                            spreadRadius: 1,
+                            blurRadius: 4,
+                            offset: Offset(0, 8), // changes position of shadow
                           ),
-                          InkWell(
-                            child: Icon(Icons.close,
-                                size: Constants.xxl(context),
-                                color: Constants.black(context)),
-                            onTap: () {
-                              setState(() {
-                                viewPlace = false;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                      Text(
-                        placeLocation,
-                        style: TextStyle(
-                            fontSize: Constants.m(context),
-                            fontWeight: Constants.bold),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: Constants.v3(context)),
-                        child: Row(
-                          children: [
-                            SvgPicture.asset('assets/icons/placeholder.svg',
-                                color: Constants.black(context),
-                                height: Constants.xxl(context),
-                                width: Constants.xxl(context)),
-                            Padding(
-                              padding:
-                                  EdgeInsets.only(left: Constants.h1(context)),
-                              child: Text(
-                                placeName,
-                                style: TextStyle(
-                                    fontSize: Constants.s(context),
-                                    fontWeight: Constants.normal),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: Constants.v1(context)),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.access_time_outlined,
-                              size: Constants.xxl(context),
-                              color: Constants.black(context),
-                            ),
-                            Padding(
-                              padding:
-                                  EdgeInsets.only(left: Constants.h1(context)),
-                              child: Text(
-                                placeOpenHours,
-                                style: TextStyle(
-                                    fontSize: Constants.s(context),
-                                    fontWeight: Constants.normal),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: Constants.v1(context)),
-                        child: Row(
-                          children: [
-                            SvgPicture.asset('assets/icons/group.svg',
-                                color: Constants.black(context),
-                                height: Constants.xxl(context),
-                                width: Constants.xxl(context)),
-                            Padding(
-                              padding:
-                                  EdgeInsets.only(left: Constants.h1(context)),
-                              child: Text(
-                                placeGauge,
-                                style: TextStyle(
-                                    fontSize: Constants.s(context),
-                                    fontWeight: Constants.normal),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: Constants.v3(context),
-                            bottom: Constants.v4(context)),
-                        child: Row(
+                        ]
+                      : [],
+                ),
+                constraints: BoxConstraints(
+                  maxHeight: viewPlace ? MediaQuery.of(context).size.height : 0,
+                ),
+                width: Constants.wFull(context),
+                child: Padding(
+                  padding: EdgeInsets.only(
+                      top: Constants.v2(context),
+                      left: Constants.h6(context),
+                      right: Constants.h6(context)),
+                  child: SingleChildScrollView(
+                    physics: NeverScrollableScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Container(
-                                constraints: BoxConstraints(
-                                    minWidth: Constants.w10(context),
-                                    maxWidth: Constants.w11(context)),
-                                child: BorderButton(
-                                    onPressed: () {}, text: 'Veure més')),
-                            Container(
-                                constraints: BoxConstraints(
-                                    minWidth: Constants.w10(context),
-                                    maxWidth: Constants.w11(context)),
-                                child: BorderButton(
-                                    onPressed: () {}, text: 'Vull anar-hi')),
+                            Text(
+                              placeName,
+                              style: TextStyle(
+                                  fontSize: Constants.l(context),
+                                  fontWeight: Constants.bolder),
+                            ),
+                            InkWell(
+                              child: Icon(Icons.close,
+                                  size: Constants.xxl(context),
+                                  color: Constants.black(context)),
+                              onTap: () {
+                                setState(() {
+                                  viewPlace = false;
+                                });
+                              },
+                            ),
                           ],
                         ),
-                      )
-                    ],
+                        Text(
+                          placeLocation,
+                          style: TextStyle(
+                              fontSize: Constants.m(context),
+                              fontWeight: Constants.bold),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: Constants.v3(context)),
+                          child: Row(
+                            children: [
+                              SvgPicture.asset('assets/icons/placeholder.svg',
+                                  color: Constants.black(context),
+                                  height: Constants.xxl(context),
+                                  width: Constants.xxl(context)),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    left: Constants.h1(context)),
+                                child: Text(
+                                  placeName,
+                                  style: TextStyle(
+                                      fontSize: Constants.s(context),
+                                      fontWeight: Constants.normal),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: Constants.v1(context)),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.access_time_outlined,
+                                size: Constants.xxl(context),
+                                color: Constants.black(context),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    left: Constants.h1(context)),
+                                child: Text(
+                                  placeOpenHours,
+                                  style: TextStyle(
+                                      fontSize: Constants.s(context),
+                                      fontWeight: Constants.normal),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: Constants.v1(context)),
+                          child: Row(
+                            children: [
+                              SvgPicture.asset('assets/icons/group.svg',
+                                  color: Constants.black(context),
+                                  height: Constants.xxl(context),
+                                  width: Constants.xxl(context)),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    left: Constants.h1(context)),
+                                child: Text(
+                                  placeGauge,
+                                  style: TextStyle(
+                                      fontSize: Constants.s(context),
+                                      fontWeight: Constants.normal),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: Constants.v3(context),
+                              bottom: Constants.v4(context)),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                  constraints: BoxConstraints(
+                                      minWidth: Constants.w10(context),
+                                      maxWidth: Constants.w11(context)),
+                                  child: BorderButton(
+                                      onPressed: () {}, text: 'Veure més')),
+                              Container(
+                                  constraints: BoxConstraints(
+                                      minWidth: Constants.w10(context),
+                                      maxWidth: Constants.w11(context)),
+                                  child: BorderButton(
+                                      onPressed: () {}, text: 'Vull anar-hi')),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -460,11 +479,26 @@ class _Discover extends State<Discover> {
           ],
         ),
       ),
-/*       floatingActionButton: FloatingActionButton.extended(
-        onPressed: _goToTheLake,
-        label: Text('To the lake!'),
-        icon: Icon(Icons.directions_boat),
-      ), */
+      floatingActionButton: FloatingActionButton(
+          splashColor: Colors.transparent,
+          focusColor: Colors.transparent,
+          elevation: 10,
+          backgroundColor: Constants.trueWhite(context),
+          onPressed: () {
+            location.getLocation().then((loc) {
+              controller
+                  .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+                      target: LatLng(loc.latitude, loc.longitude), zoom: 18)))
+                  .catchError((error) {});
+            });
+            setState(() {
+              viewPlace = false;
+            });
+          },
+          child: Icon(
+            Icons.location_searching,
+            color: Constants.black(context),
+          )),
     );
   }
 }
