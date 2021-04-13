@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:theme_mode_handler/theme_mode_manager_interface.dart';
 
@@ -8,7 +9,9 @@ class ThemeModeManager implements IThemeModeManager {
   Future<String> loadThemeMode() async {
     final _prefs = await SharedPreferences.getInstance();
 
-    return _prefs.getString(_key);
+    return _prefs.getString(_key) != null
+        ? _prefs.getString(_key)
+        : ThemeMode.system;
   }
 
   @override
