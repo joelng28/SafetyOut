@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:app/defaults/constants.dart';
-import 'package:app/theme_mode_handler.dart';
 import 'package:app/widgets/location_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,7 +10,6 @@ import 'package:geocoder/geocoder.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
-import 'package:theme_mode_handler/theme_mode_handler.dart';
 
 import '../app_localizations.dart';
 
@@ -37,10 +35,9 @@ class _Home extends State<Home> {
 
   Future<void> onMapCreated(GoogleMapController cntlr) async {
     String mapStyle;
-    String theme =
-        await ThemeModeManager().loadThemeMode().catchError((error) {});
+    Brightness theme = MediaQuery.of(context).platformBrightness;
     if (theme != null) {
-      mapStyle = theme == 'ThemeMode.light'
+      mapStyle = theme == Brightness.light
           ? await rootBundle
               .loadString('assets/map_styles/light.json')
               .catchError((error) {})
@@ -214,8 +211,8 @@ class _Home extends State<Home> {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: ThemeModeHandler.of(context).themeMode ==
-                            ThemeMode.light
+                    color: MediaQuery.of(context).platformBrightness ==
+                            Brightness.light
                         ? Colors.black.withOpacity(0.3)
                         : Colors.black.withOpacity(0.5),
                     spreadRadius: 1,
