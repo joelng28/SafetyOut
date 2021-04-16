@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:app/defaults/constants.dart';
-import 'package:flutter/material.dart';
 
 class BorderButton extends StatelessWidget {
   BorderButton({this.onPressed, this.text});
