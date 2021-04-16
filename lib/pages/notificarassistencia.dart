@@ -30,84 +30,98 @@ class _Notificarassistencia extends State<Notificarassistencia> {
         ],
       ),
       body: SafeArea(
-        child: Column(
-          children: <Widget>[
-            Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Row(children: [
-                  Column(children: [
-                    Row(children: [
-                      Text(
-                        "Parc de Pedralbes",
-                        style: TextStyle(
-                            color: Constants.black(context),
-                            fontWeight: Constants.bolder,
-                            fontSize: Constants.xxl(context)),
-                      ),
-                    ]),
-                    Row(children: [
-                      Text(
-                        "Pedralbes, Barcelona",
-                        style: TextStyle(
-                            color: Constants.black(context),
-                            fontWeight: Constants.bolder,
-                            fontSize: Constants.xl(context)),
-                      ),
-                    ]),
-                  ]),
-                ])),
-            Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Row(children: [
-                SvgPicture.asset('assets/icons/placeholder.svg',
-                    color: Constants.black(context),
-                    height: Constants.xl(context),
-                    width: Constants.xl(context)),
+        child: Padding(
+          padding: EdgeInsets.only(
+              top: Constants.v2(context),
+              left: Constants.h6(context),
+              right: Constants.h6(context)),
+          child: Column(
+            children: <Widget>[
+              Row(children: [
                 Text(
-                  "Ubicació",
-                  style: TextStyle(
-                      color: Constants.black(context),
-                      fontSize: Constants.l(context)),
-                ),
-              ]),
-            ),
-            Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Row(children: [
-                Icon(Icons.calendar_today_rounded),
-                Text(
-                  "Dia",
-                  style: TextStyle(
-                      color: Constants.black(context),
-                      fontSize: Constants.l(context)),
-                ),
-              ]),
-            ),
-            Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Row(children: [
-                Icon(Icons.watch_later_outlined),
-                Text(
-                  "Hora",
-                  style: TextStyle(
-                      color: Constants.black(context),
-                      fontSize: Constants.l(context)),
-                ),
-              ]),
-            ),
-            Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Row(children: [
-                Text(
-                  "Amb qui t'agradaria assistir?",
+                  "Parc de Pedralbes",
                   style: TextStyle(
                       color: Constants.black(context),
                       fontWeight: Constants.bolder,
-                      fontSize: Constants.xl(context)),
+                      fontSize: Constants.l(context)),
                 ),
               ]),
-            ),
-            Row(children: [
+              // Padding(
+              // padding: EdgeInsets.only(top: Constants.v1(context)),
+              //child:
+              Row(children: [
+                Text(
+                  "Pedralbes, Barcelona",
+                  style: TextStyle(
+                      color: Constants.black(context),
+                      fontWeight: Constants.bolder,
+                      fontSize: Constants.m(context)),
+                ),
+              ]),
+              //),
+              Padding(
+                padding: EdgeInsets.only(top: Constants.v3(context)),
+                child: Row(children: [
+                  SvgPicture.asset('assets/icons/placeholder.svg',
+                      color: Constants.black(context),
+                      height: Constants.xxl(context),
+                      width: Constants.xxl(context)),
+                  Padding(
+                    padding: EdgeInsets.only(left: Constants.h1(context)),
+                    child: Text(
+                      "Ubicació",
+                      style: TextStyle(
+                          color: Constants.black(context),
+                          fontSize: Constants.s(context)),
+                    ),
+                  ),
+                ]),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: Constants.v1(context)),
+                child: Row(children: [
+                  Icon(Icons.calendar_today_rounded,
+                      size: Constants.xxl(context)),
+                  Padding(
+                    padding: EdgeInsets.only(left: Constants.h1(context)),
+                    child: Text(
+                      "Dia",
+                      style: TextStyle(
+                          color: Constants.black(context),
+                          fontSize: Constants.s(context)),
+                    ),
+                  ),
+                ]),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: Constants.v1(context)),
+                child: Row(children: [
+                  Icon(Icons.watch_later_outlined,
+                      size: Constants.xxl(context)),
+                  Padding(
+                    padding: EdgeInsets.only(left: Constants.h1(context)),
+                    child: Text(
+                      "Hora",
+                      style: TextStyle(
+                          color: Constants.black(context),
+                          fontSize: Constants.s(context)),
+                    ),
+                  ),
+                ]),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: Constants.v3(context)),
+                child: Row(children: [
+                  Text(
+                    "Amb qui t'agradaria assistir?",
+                    style: TextStyle(
+                        color: Constants.black(context),
+                        fontWeight: Constants.bolder,
+                        fontSize: Constants.l(context)),
+                  ),
+                ]),
+              ),
+              /*Row(children: [
               ListWheelScrollView(
                 children: <Widget>[
                   const Text("Només jo"),
@@ -117,8 +131,9 @@ class _Notificarassistencia extends State<Notificarassistencia> {
                 //onSelectedItemChanged: ,
                 itemExtent: 50.0,
               )
-            ]),
-          ],
+            ]),*/
+            ],
+          ),
         ),
       ),
     );
