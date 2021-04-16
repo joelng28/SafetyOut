@@ -1,16 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class AppLocalizations {
   final Locale locale;
-  bool isTest;
 
-  AppLocalizations(
-    this.locale, {
-    this.isTest = false,
-  });
+  AppLocalizations(this.locale);
 
   // Helper method to keep the code in the widgets concise
   // Localizations are accessed using an InheritedWidget "of" syntax
@@ -22,45 +15,20 @@ class AppLocalizations {
   static const LocalizationsDelegate<AppLocalizations> delegate =
       AppLocalizationsDelegate();
 
-  Map<String, String> _localizedStrings;
-
-  Future<bool> loadTest(Locale locale) async {
-    return true;
-  }
-
   Future<bool> load() async {
-    // Load the language JSON file from the "lang" folder
-    String jsonString =
-        await rootBundle.loadString('i18n/${locale.languageCode}.json');
-    Map<String, dynamic> jsonMap = json.decode(jsonString);
-
-    _localizedStrings = jsonMap.map((key, value) {
-      return MapEntry(key, value.toString());
-    });
-
     return true;
   }
 
   // This method will be called from every widget which needs a localized text
   String translate(String key) {
-    if (isTest) return key;
-
-    if (key == null) {
-      return '...';
-    }
-
-    return _localizedStrings[key];
+    return key;
   }
 }
 
 class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   // This delegate instance will never change (it doesn't even have fields!)
-  // It can provide a constant constructor.
-  const AppLocalizationsDelegate({
-    this.isTest = false,
-  });
-
-  final bool isTest;
+  // It _can provide a constant constructor.
+  const AppLocalizationsDelegate();
 
   @override
   bool isSupported(Locale locale) {
@@ -71,12 +39,8 @@ class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   @override
   Future<AppLocalizations> load(Locale locale) async {
     // AppLocalizations class is where the JSON loading actually runs
-    AppLocalizations localizations = AppLocalizations(locale, isTest: isTest);
-    if (isTest) {
-      await localizations.loadTest(locale);
-    } else {
-      await localizations.load();
-    }
+    AppLocalizations localizations = AppLocalizations(locale);
+    await localizations.load();
     return localizations;
   }
 
