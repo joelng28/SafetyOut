@@ -23,58 +23,100 @@ class _Notificarassistencia extends State<Notificarassistencia> {
           },
         ),
         title: Text('Notificar assistència'),
+        centerTitle: true,
+        backgroundColor: Constants.white(context),
         actions: [
           IconButton(icon: const Icon(Icons.check_rounded), onPressed: () {}),
         ],
       ),
       body: SafeArea(
-        child: Row(
+        child: Column(
           children: <Widget>[
-            Row(children: [
-              Text(
-                "Parc de Pedralbes",
-                style: TextStyle(
+            Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Row(children: [
+                  Column(children: [
+                    Row(children: [
+                      Text(
+                        "Parc de Pedralbes",
+                        style: TextStyle(
+                            color: Constants.black(context),
+                            fontWeight: Constants.bolder,
+                            fontSize: Constants.xxl(context)),
+                      ),
+                    ]),
+                    Row(children: [
+                      Text(
+                        "Pedralbes, Barcelona",
+                        style: TextStyle(
+                            color: Constants.black(context),
+                            fontWeight: Constants.bolder,
+                            fontSize: Constants.xl(context)),
+                      ),
+                    ]),
+                  ]),
+                ])),
+            Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Row(children: [
+                SvgPicture.asset('assets/icons/placeholder.svg',
                     color: Constants.black(context),
-                    fontSize: Constants.xl(context)),
-              ),
-            ]),
+                    height: Constants.xl(context),
+                    width: Constants.xl(context)),
+                Text(
+                  "Ubicació",
+                  style: TextStyle(
+                      color: Constants.black(context),
+                      fontSize: Constants.l(context)),
+                ),
+              ]),
+            ),
+            Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Row(children: [
+                Icon(Icons.calendar_today_rounded),
+                Text(
+                  "Dia",
+                  style: TextStyle(
+                      color: Constants.black(context),
+                      fontSize: Constants.l(context)),
+                ),
+              ]),
+            ),
+            Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Row(children: [
+                Icon(Icons.watch_later_outlined),
+                Text(
+                  "Hora",
+                  style: TextStyle(
+                      color: Constants.black(context),
+                      fontSize: Constants.l(context)),
+                ),
+              ]),
+            ),
+            Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Row(children: [
+                Text(
+                  "Amb qui t'agradaria assistir?",
+                  style: TextStyle(
+                      color: Constants.black(context),
+                      fontWeight: Constants.bolder,
+                      fontSize: Constants.xl(context)),
+                ),
+              ]),
+            ),
             Row(children: [
-              Text(
-                "Pedralbes, Barcelona",
-                style: TextStyle(
-                    color: Constants.black(context),
-                    fontSize: Constants.xl(context)),
-              ),
-            ]),
-            Row(children: [
-              SvgPicture.asset('assets/icons/placeholder.svg',
-                  color: Constants.black(context),
-                  height: Constants.xxl(context),
-                  width: Constants.xxl(context)),
-              Text(
-                "Ubicació",
-                style: TextStyle(
-                    color: Constants.black(context),
-                    fontSize: Constants.xl(context)),
-              ),
-            ]),
-            Row(children: [
-              Icon(Icons.calendar_today_rounded),
-              Text(
-                "Dia",
-                style: TextStyle(
-                    color: Constants.black(context),
-                    fontSize: Constants.xl(context)),
-              ),
-            ]),
-            Row(children: [
-              Icon(Icons.watch_later_outlined),
-              Text(
-                "Hora",
-                style: TextStyle(
-                    color: Constants.black(context),
-                    fontSize: Constants.xl(context)),
-              ),
+              ListWheelScrollView(
+                children: <Widget>[
+                  const Text("Només jo"),
+                  const Text("Bombolla 1"),
+                  const Text("Bombolla 2")
+                ],
+                //onSelectedItemChanged: ,
+                itemExtent: 50.0,
+              )
             ]),
           ],
         ),
