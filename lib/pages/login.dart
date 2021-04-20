@@ -42,7 +42,7 @@ class _Login extends State<Login> {
           //Guardar key
           Map<String, dynamic> body = jsonDecode(res.body);
           SecureStorage.writeSecureStorage('SafetyOUT_Token', body["token"]);
-          SecureStorage.writeSecureStorage('SafetyOUT_Token', body["userId"]);
+          SecureStorage.writeSecureStorage('SafetyOUT_UserId', body["userId"]);
           Navigator.of(context).pushReplacementNamed('/');
           setState(() {
             isLoading = false;
@@ -112,6 +112,7 @@ class _Login extends State<Login> {
           });
         }
       }).catchError((err) {
+        print(err);
         //Sale error por pantalla
         showDialog(
             context: context,
