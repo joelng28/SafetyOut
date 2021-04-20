@@ -123,7 +123,8 @@ class _ProfileConfig extends State<ProfileConfig> {
                       splashColor: Colors.transparent,
                       focusColor: Colors.transparent,
                       child: Text(
-                        'Canviar idioma',
+                        AppLocalizations.of(context)
+                            .translate("Canviar_idioma"),
                         style: TextStyle(
                             fontSize: Constants.l(context),
                             fontWeight: Constants.normal,
@@ -134,7 +135,8 @@ class _ProfileConfig extends State<ProfileConfig> {
                           context: context,
                           builder: (_) => AlertDialog(
                             title: Text(
-                              'Canviar idioma',
+                              AppLocalizations.of(context)
+                                  .translate("Canviar_idioma"),
                               style: TextStyle(
                                   fontSize: Constants.l(context),
                                   fontWeight: Constants.bold,
@@ -148,7 +150,8 @@ class _ProfileConfig extends State<ProfileConfig> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      'Català',
+                                      AppLocalizations.of(context)
+                                          .translate("Catala"),
                                       style: TextStyle(
                                           fontSize: Constants.m(context),
                                           color: Constants.black(context)),
@@ -172,7 +175,8 @@ class _ProfileConfig extends State<ProfileConfig> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      'Castellà',
+                                      AppLocalizations.of(context)
+                                          .translate("Castella"),
                                       style: TextStyle(
                                           fontSize: Constants.m(context),
                                           color: Constants.black(context)),

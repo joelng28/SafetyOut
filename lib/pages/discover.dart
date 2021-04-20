@@ -78,13 +78,13 @@ class _Discover extends State<Discover> {
             l.latitude.toString() +
             ',' +
             l.longitude.toString() +
-            '&radius=5000&keyword=park|nature|sightseeing|public|terrace|mountain|castle&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,name');
+            '&radius=5000&keyword=park|nature|sightseeing|public|terrace|mountain|castle&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id');
     var urlRes = Uri.parse(
         'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
             l.latitude.toString() +
             ',' +
             l.longitude.toString() +
-            '&radius=5000&keyword=outdoor seating&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,name');
+            '&radius=5000&keyword=outdoor seating&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id');
     Future.wait([http.get(url), http.get(urlRes)]).then((List responses) {
       List<Map<String, dynamic>> places = [];
       Map<String, dynamic> body = jsonDecode(responses[0].body);
@@ -92,7 +92,7 @@ class _Discover extends State<Discover> {
       results.forEach((element) {
         Map<String, dynamic> place = {
           "location": element["geometry"]["location"],
-          "name": element["name"]
+          "place_id": element["place_id"]
         };
         places.add(place);
       });
@@ -101,7 +101,7 @@ class _Discover extends State<Discover> {
       results.forEach((element) {
         Map<String, dynamic> place = {
           "location": element["geometry"]["location"],
-          "name": element["name"]
+          "place_id": element["place_id"]
         };
         places.add(place);
       });
@@ -109,7 +109,7 @@ class _Discover extends State<Discover> {
         markers.clear();
         places.forEach((place) {
           final marker = Marker(
-              markerId: MarkerId(place["name"]),
+              markerId: MarkerId(place["place_id"]),
               anchor: Offset(0, -1),
               icon: BitmapDescriptor.defaultMarker,
               position:
@@ -132,7 +132,7 @@ class _Discover extends State<Discover> {
                             zoom: 18)))
                     .catchError((error) {});
               });
-          markers[place["name"]] = marker;
+          markers[place["place_id"]] = marker;
         });
       });
     }).catchError((error) => {});
@@ -255,7 +255,8 @@ class _Discover extends State<Discover> {
                       child: Row(
                         children: [
                           SearchInput(
-                            labelText: 'Cerca un espai obert',
+                            labelText: AppLocalizations.of(context)
+                                .translate("Cerca_un_espai_obert"),
                           ),
                         ],
                       )),
@@ -278,7 +279,9 @@ class _Discover extends State<Discover> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text('Suggerències',
+                              Text(
+                                  AppLocalizations.of(context)
+                                      .translate("Suggerencies"),
                                   style: TextStyle(
                                       color: Constants.black(context),
                                       fontWeight: Constants.bold,
