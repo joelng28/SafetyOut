@@ -1,6 +1,8 @@
+import 'package:app/app_localizations.dart';
 import 'package:app/defaults/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:http/http.dart' as http;
 
 class Notificarassistenciaconfirmacio extends StatefulWidget {
   Notificarassistenciaconfirmacio({Key key}) : super(key: key);
@@ -14,6 +16,88 @@ class Notificarassistenciaconfirmacio extends StatefulWidget {
 
 class _Notificarassistenciaconfirmacio
     extends State<Notificarassistenciaconfirmacio> {
+  static bool activeButton = false;
+  static bool isLoading = false;    
+  Function submitAssistencia = (BuildContext context) {};
+
+  @override
+  void initState() {
+    super.initState();
+    submitAssistencia = (BuildContext context){
+      isLoading = true;
+      activeButton = false;
+      var url =  Uri.parse('https://safetyout.herokuapp.com/assistance');
+      http.post(url, body:{
+        'user_id': "abcd",
+        'dateTime': "15:00",
+        'num_hours': "2",
+      }).then((res) {
+        if (res.statusCode == 201){
+          setState(() {
+              isLoading = false;
+              activeButton = true;
+            });
+        }//Correcte, guardar, notificació assitència ok i tornar a pantalla discover
+        else {
+          setState(() {
+              isLoading = false;
+              activeButton = true;
+            });
+          showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                    content: SingleChildScrollView(
+                        child: ListBody(
+                      children: <Widget>[
+                        Text(
+                            AppLocalizations.of(context)
+                                .translate("Ja has notificat assistència en aquest lloc, data i hora"),
+                            style: TextStyle(fontSize: Constants.m(context))),
+                      ],
+                    )),
+                    actions: <Widget>[
+                      TextButton(
+                        child: Text(
+                            AppLocalizations.of(context).translate("Acceptar"),
+                            style: TextStyle(color: Constants.black(context))),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  );
+                });
+        }
+      }).catchError((err) {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                  content: SingleChildScrollView(
+                      child: ListBody(
+                    children: <Widget>[
+                      Text(
+                          AppLocalizations.of(context)
+                              .translate("Error_de_xarxa"),
+                          style: TextStyle(fontSize: Constants.m(context))),
+                    ],
+                  )),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text(
+                          AppLocalizations.of(context).translate("Acceptar"),
+                          style: TextStyle(color: Constants.black(context))),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              });
+              
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -140,4 +224,5 @@ class _Notificarassistenciaconfirmacio
       ),
     );
   }
+}
 }
