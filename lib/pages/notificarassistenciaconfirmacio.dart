@@ -1,18 +1,19 @@
 import 'package:app/defaults/constants.dart';
-import 'package:app/pages/notificarassistenciaconfirmacio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-class Notificarassistencia extends StatefulWidget {
-  Notificarassistencia({Key key}) : super(key: key);
+class Notificarassistenciaconfirmacio extends StatefulWidget {
+  Notificarassistenciaconfirmacio({Key key}) : super(key: key);
 
   //final String title;
 
   @override
-  _Notificarassistencia createState() => _Notificarassistencia();
+  _Notificarassistenciaconfirmacio createState() =>
+      _Notificarassistenciaconfirmacio();
 }
 
-class _Notificarassistencia extends State<Notificarassistencia> {
+class _Notificarassistenciaconfirmacio
+    extends State<Notificarassistenciaconfirmacio> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,16 +28,7 @@ class _Notificarassistencia extends State<Notificarassistencia> {
         centerTitle: true,
         backgroundColor: Constants.white(context),
         actions: [
-          IconButton(
-              icon: const Icon(Icons.arrow_forward_ios),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                      pageBuilder: (_, __, ___) =>
-                          Notificarassistenciaconfirmacio()),
-                );
-              }),
+          IconButton(icon: const Icon(Icons.check_rounded), onPressed: () {}),
         ],
       ),
       body: SafeArea(
@@ -87,14 +79,61 @@ class _Notificarassistencia extends State<Notificarassistencia> {
                   ),
                 ]),
               ),
-              //Calendari
               Padding(
-                  padding: EdgeInsets.only(top: Constants.v3(context)),
-                  child: Row(children: [
-                    Text("Moltes persones"),
-                    Text("Hi haurà gent/no"),
-                    Text("Es recomanda(no) assistir"),
-                  ])),
+                padding: EdgeInsets.only(top: Constants.v1(context)),
+                child: Row(children: [
+                  Icon(Icons.calendar_today_rounded,
+                      size: Constants.xxl(context)),
+                  Padding(
+                    padding: EdgeInsets.only(left: Constants.h1(context)),
+                    child: Text(
+                      "Dia",
+                      style: TextStyle(
+                          color: Constants.black(context),
+                          fontSize: Constants.s(context)),
+                    ),
+                  ),
+                ]),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: Constants.v1(context)),
+                child: Row(children: [
+                  Icon(Icons.watch_later_outlined,
+                      size: Constants.xxl(context)),
+                  Padding(
+                    padding: EdgeInsets.only(left: Constants.h1(context)),
+                    child: Text(
+                      "Hora",
+                      style: TextStyle(
+                          color: Constants.black(context),
+                          fontSize: Constants.s(context)),
+                    ),
+                  ),
+                ]),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: Constants.v3(context)),
+                child: Row(children: [
+                  Text(
+                    "Amb qui t'agradaria assistir?",
+                    style: TextStyle(
+                        color: Constants.black(context),
+                        fontWeight: Constants.bolder,
+                        fontSize: Constants.l(context)),
+                  ),
+                ]),
+              ),
+              /*Row(children: [
+              ListWheelScrollView(
+                children: <Widget>[
+                  const Text("Només jo"),
+                  const Text("Bombolla 1"),
+                  const Text("Bombolla 2")
+                ],
+                //onSelectedItemChanged: ,
+                itemExtent: 50.0,
+              )
+            ]),*/
             ],
           ),
         ),
