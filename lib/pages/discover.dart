@@ -38,8 +38,42 @@ class _Discover extends State<Discover> {
   String placeName = 'Nom';
   String placeLocation = 'Ciutat, Comarca, País';
   String placeAddress = 'Adreça';
-  String placeOpenHours = 'Horari';
+  String placeOpenHours = 'Aquest lloc no especifica el seu horari ';
   String placeGauge = 'Aforament';
+  Uri placeDetailsUrl;
+
+  Future<String> getDetails(Uri placeDetailsUrl) async {
+    var response = await http.get(placeDetailsUrl);
+    setState(() {
+      Map<String, dynamic> convertDataToJson = jsonDecode(response.body);
+      placeName = convertDataToJson["result"]["name"];
+      placeAddress = convertDataToJson["result"]["formatted_address"];
+
+      var openHours = convertDataToJson["result"]["opening_hours"];
+      debugPrint(openHours.toString());
+      placeOpenHours = openHours["weekday_text"].toString();
+      debugPrint(placeOpenHours.toString());
+
+      var location = convertDataToJson["result"]["address_components"];
+      int max = location.length;
+      int index = 0;
+      while (index < max - 1) {
+        if (location[index]["types"].toString() == "[locality, political]") {
+          placeLocation = location[index]["long_name"];
+        }
+        if (location[index]["types"].toString() ==
+            "[administrative_area_level_2, political]") {
+          placeLocation += ", " + location[index]["long_name"];
+        }
+
+        if (location[index]["types"].toString() == "[country, political]") {
+          placeLocation += ", " + location[index]["long_name"];
+        }
+        ++index;
+      }
+    });
+    return "Success";
+  }
 
   Future<void> onMapCreated(GoogleMapController cntlr) async {
     controller = cntlr;
@@ -116,12 +150,16 @@ class _Discover extends State<Discover> {
               position:
                   LatLng(place["location"]["lat"], place["location"]["lng"]),
               onTap: () {
-                //Llamada a la api buscando con la lat y lng
-                // placeName = el nombre que te retorne
-                // placeLocation = Ciutat, Comarca, País que te retorne como esta hecho en la pagina home
-                // placeAddress = la dirección que te retorne
-                // placeOpenHours = los horarios que te retorne
-                // placeGauge = esto de momento nada
+                String api_key = "AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA";
+                String place_id = place["place_id"];
+                placeDetailsUrl = Uri.parse(
+                    'https://maps.googleapis.com/maps/api/place/details/json?place_id=' +
+                        place_id +
+                        '&key=' +
+                        api_key);
+
+                getDetails(placeDetailsUrl);
+
                 setState(() {
                   viewPlace = true;
                 });
@@ -398,7 +436,7 @@ class _Discover extends State<Discover> {
                                 padding: EdgeInsets.only(
                                     left: Constants.h1(context)),
                                 child: Text(
-                                  placeName,
+                                  placeAddress,
                                   style: TextStyle(
                                       fontSize: Constants.s(context),
                                       fontWeight: Constants.normal),
