@@ -50,9 +50,7 @@ class _Discover extends State<Discover> {
       placeAddress = convertDataToJson["result"]["formatted_address"];
 
       var openHours = convertDataToJson["result"]["opening_hours"];
-      debugPrint(openHours.toString());
       placeOpenHours = openHours["weekday_text"].toString();
-      debugPrint(placeOpenHours.toString());
 
       var location = convertDataToJson["result"]["address_components"];
       int max = location.length;
