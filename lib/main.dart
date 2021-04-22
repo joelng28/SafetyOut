@@ -18,8 +18,6 @@ Future<void> main() async {
   bool loggedIn;
   await SecureStorage.readSecureStorage('SafetyOUT_Token').then(
       (value) => {if (value != null) loggedIn = true else loggedIn = false});
-/*   await SecureStorage.readSecureStorage('userId').then(
-      (value) => {if (value != null) loggedIn = true else loggedIn = false}); */
   runApp(ChangeNotifierProvider(
       create: (context) => RegState(),
       child: MyApp(

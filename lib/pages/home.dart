@@ -89,13 +89,13 @@ class _Home extends State<Home> {
             l.latitude.toString() +
             ',' +
             l.longitude.toString() +
-            '&radius=5000&keyword=park|nature|sightseeing|public|terrace|mountain|castle&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,name');
+            '&radius=5000&keyword=park|nature|sightseeing|public|terrace|mountain|castle&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id');
     var urlRes = Uri.parse(
         'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
             l.latitude.toString() +
             ',' +
             l.longitude.toString() +
-            '&radius=5000&keyword=outdoor seating&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,name');
+            '&radius=5000&keyword=outdoor seating&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id');
     Future.wait([http.get(url), http.get(urlRes)]).then((List responses) {
       List<Map<String, dynamic>> places = [];
       Map<String, dynamic> body = jsonDecode(responses[0].body);
@@ -103,7 +103,7 @@ class _Home extends State<Home> {
       results.forEach((element) {
         Map<String, dynamic> place = {
           "location": element["geometry"]["location"],
-          "name": element["name"]
+          "place_id": element["place_id"]
         };
         places.add(place);
       });
@@ -112,7 +112,7 @@ class _Home extends State<Home> {
       results.forEach((element) {
         Map<String, dynamic> place = {
           "location": element["geometry"]["location"],
-          "name": element["name"]
+          "place_id": element["place_id"]
         };
         places.add(place);
       });
@@ -120,12 +120,12 @@ class _Home extends State<Home> {
         markers.clear();
         places.forEach((place) {
           final marker = Marker(
-            markerId: MarkerId(place["name"]),
+            markerId: MarkerId(place["place_id"]),
             anchor: Offset(0, -1),
             position:
                 LatLng(place["location"]["lat"], place["location"]["lng"]),
           );
-          markers[place["name"]] = marker;
+          markers[place["place_id"]] = marker;
         });
         Geocoder.local
             .findAddressesFromCoordinates(Coordinates(l.latitude, l.longitude))
@@ -308,7 +308,7 @@ class _Home extends State<Home> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text('Restriccions',
+                  Text(AppLocalizations.of(context).translate("Restriccions"),
                       style: TextStyle(
                           color: Constants.black(context),
                           fontSize: Constants.xl(context),
