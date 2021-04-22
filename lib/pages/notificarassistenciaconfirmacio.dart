@@ -19,6 +19,9 @@ class _Notificarassistenciaconfirmacio
   static bool activeButton = false;
   static bool isLoading = false;
   Function submitAssistencia = (BuildContext context) {};
+  String place = "placeID";
+  String cityLocation = "ciutat";
+  String placeLocation = "Ubicació";
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +50,7 @@ class _Notificarassistenciaconfirmacio
             children: <Widget>[
               Row(children: [
                 Text(
-                  "Parc de Pedralbes",
+                  place,
                   style: TextStyle(
                       color: Constants.black(context),
                       fontWeight: Constants.bolder,
@@ -59,7 +62,7 @@ class _Notificarassistenciaconfirmacio
               //child:
               Row(children: [
                 Text(
-                  "Pedralbes, Barcelona",
+                  cityLocation,
                   style: TextStyle(
                       color: Constants.black(context),
                       fontWeight: Constants.bolder,
@@ -77,7 +80,7 @@ class _Notificarassistenciaconfirmacio
                   Padding(
                     padding: EdgeInsets.only(left: Constants.h1(context)),
                     child: Text(
-                      "Ubicació",
+                      placeLocation,
                       style: TextStyle(
                           color: Constants.black(context),
                           fontSize: Constants.s(context)),
