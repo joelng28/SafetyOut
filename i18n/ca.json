@@ -50,6 +50,7 @@
     "Octubre": "Octubre",
     "Novembre": "Novembre",
     "Desembre": "Desembre",
+    "Aquest lloc no especifica el seu horari": "Aquest lloc no especifica el seu horari",
     "Els_credencials_són_incorrectes": "Els credencials són incorrectes",
     "Acceptar": "Acceptar",
     "Les_contrasenyes_no_coincideixen": "Les contrasenyes no coincideixen",
@@ -66,5 +67,11 @@
     "Recuperar_contrassenya": "Recuperar contrassenya",
     "Configuracio": "Configuració",
     "Tancar_sessió": "Tancar sessió",
-    "Segur_que_vols_tancar_sessió": "Segur que vols tancar sessió?"
+    "Segur_que_vols_tancar_sessió": "Segur que vols tancar sessió?",
+    "Restriccions": "Restriccions",
+    "Suggerencies": "Suggerències",
+    "Cerca_un_espai_obert": "Cerca un espai obert",
+    "Canviar_idioma":"Canviar idioma",
+    "Catala": "Català",
+    "Castella": "Castellà"
 }

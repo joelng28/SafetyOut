@@ -2,7 +2,10 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:app/defaults/constants.dart';
+
 import 'package:app/pages/notificarassistencia.dart';
+
+import 'package:app/pages/consultaraforament.dart';
 import 'package:app/widgets/border_button.dart';
 import 'package:app/widgets/search_input.dart';
 import 'package:flutter/material.dart';
@@ -38,8 +41,40 @@ class _Discover extends State<Discover> {
   String placeName = 'Nom';
   String placeLocation = 'Ciutat, Comarca, País';
   String placeAddress = 'Adreça';
-  String placeOpenHours = 'Horari';
+  String placeOpenHours = 'Aquest lloc no especifica el seu horari ';
   String placeGauge = 'Aforament';
+  Uri placeDetailsUrl;
+
+  Future<String> getDetails(Uri placeDetailsUrl) async {
+    var response = await http.get(placeDetailsUrl);
+    setState(() {
+      Map<String, dynamic> convertDataToJson = jsonDecode(response.body);
+      placeName = convertDataToJson["result"]["name"];
+      placeAddress = convertDataToJson["result"]["formatted_address"];
+
+      var openHours = convertDataToJson["result"]["opening_hours"];
+      placeOpenHours = openHours["weekday_text"].toString();
+
+      var location = convertDataToJson["result"]["address_components"];
+      int max = location.length;
+      int index = 0;
+      while (index < max - 1) {
+        if (location[index]["types"].toString() == "[locality, political]") {
+          placeLocation = location[index]["long_name"];
+        }
+        if (location[index]["types"].toString() ==
+            "[administrative_area_level_2, political]") {
+          placeLocation += ", " + location[index]["long_name"];
+        }
+
+        if (location[index]["types"].toString() == "[country, political]") {
+          placeLocation += ", " + location[index]["long_name"];
+        }
+        ++index;
+      }
+    });
+    return "Success";
+  }
 
   Future<void> onMapCreated(GoogleMapController cntlr) async {
     controller = cntlr;
@@ -79,13 +114,13 @@ class _Discover extends State<Discover> {
             l.latitude.toString() +
             ',' +
             l.longitude.toString() +
-            '&radius=5000&keyword=park|nature|sightseeing|public|terrace|mountain|castle&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,name');
+            '&radius=5000&keyword=park|nature|sightseeing|public|terrace|mountain|castle&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id');
     var urlRes = Uri.parse(
         'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
             l.latitude.toString() +
             ',' +
             l.longitude.toString() +
-            '&radius=5000&keyword=outdoor seating&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,name');
+            '&radius=5000&keyword=outdoor seating&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id');
     Future.wait([http.get(url), http.get(urlRes)]).then((List responses) {
       List<Map<String, dynamic>> places = [];
       Map<String, dynamic> body = jsonDecode(responses[0].body);
@@ -93,7 +128,7 @@ class _Discover extends State<Discover> {
       results.forEach((element) {
         Map<String, dynamic> place = {
           "location": element["geometry"]["location"],
-          "name": element["name"]
+          "place_id": element["place_id"]
         };
         places.add(place);
       });
@@ -102,7 +137,7 @@ class _Discover extends State<Discover> {
       results.forEach((element) {
         Map<String, dynamic> place = {
           "location": element["geometry"]["location"],
-          "name": element["name"]
+          "place_id": element["place_id"]
         };
         places.add(place);
       });
@@ -110,18 +145,22 @@ class _Discover extends State<Discover> {
         markers.clear();
         places.forEach((place) {
           final marker = Marker(
-              markerId: MarkerId(place["name"]),
+              markerId: MarkerId(place["place_id"]),
               anchor: Offset(0, -1),
               icon: BitmapDescriptor.defaultMarker,
               position:
                   LatLng(place["location"]["lat"], place["location"]["lng"]),
               onTap: () {
-                //Llamada a la api buscando con la lat y lng
-                // placeName = el nombre que te retorne
-                // placeLocation = Ciutat, Comarca, País que te retorne como esta hecho en la pagina home
-                // placeAddress = la dirección que te retorne
-                // placeOpenHours = los horarios que te retorne
-                // placeGauge = esto de momento nada
+                String api_key = "AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA";
+                String place_id = place["place_id"];
+                placeDetailsUrl = Uri.parse(
+                    'https://maps.googleapis.com/maps/api/place/details/json?place_id=' +
+                        place_id +
+                        '&key=' +
+                        api_key);
+
+                getDetails(placeDetailsUrl);
+
                 setState(() {
                   viewPlace = true;
                 });
@@ -133,7 +172,7 @@ class _Discover extends State<Discover> {
                             zoom: 18)))
                     .catchError((error) {});
               });
-          markers[place["name"]] = marker;
+          markers[place["place_id"]] = marker;
         });
       });
     }).catchError((error) => {});
@@ -256,7 +295,8 @@ class _Discover extends State<Discover> {
                       child: Row(
                         children: [
                           SearchInput(
-                            labelText: 'Cerca un espai obert',
+                            labelText: AppLocalizations.of(context)
+                                .translate("Cerca_un_espai_obert"),
                           ),
                         ],
                       )),
@@ -279,7 +319,9 @@ class _Discover extends State<Discover> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text('Suggerències',
+                              Text(
+                                  AppLocalizations.of(context)
+                                      .translate("Suggerencies"),
                                   style: TextStyle(
                                       color: Constants.black(context),
                                       fontWeight: Constants.bold,
@@ -395,7 +437,7 @@ class _Discover extends State<Discover> {
                                 padding: EdgeInsets.only(
                                     left: Constants.h1(context)),
                                 child: Text(
-                                  placeName,
+                                  placeAddress,
                                   style: TextStyle(
                                       fontSize: Constants.s(context),
                                       fontWeight: Constants.normal),
@@ -459,7 +501,15 @@ class _Discover extends State<Discover> {
                                       minWidth: Constants.w10(context),
                                       maxWidth: Constants.w11(context)),
                                   child: BorderButton(
-                                      onPressed: () {}, text: 'Veure més')),
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          PageRouteBuilder(
+                                              pageBuilder: (_, __, ___) =>
+                                                  ConsultarAforament()),
+                                        );
+                                      },
+                                      text: 'Veure més')),
                               Container(
                                   constraints: BoxConstraints(
                                       minWidth: Constants.w10(context),

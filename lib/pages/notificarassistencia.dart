@@ -1,4 +1,5 @@
 import 'package:app/defaults/constants.dart';
+import 'package:app/storage/secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_picker/Picker.dart';
 import 'package:flutter_svg/svg.dart';
@@ -19,7 +20,8 @@ class Notificarassistencia extends StatefulWidget {
 class _Notificarassistencia extends State<Notificarassistencia> {
   static bool activeButton = false;
   static bool isLoading = false;
-  DateTime pickedDate = DateTime.now();
+  DateTime startDate = DateTime.now();
+  DateTime endDate = DateTime.now();
   CalendarController _calendarController;
   Function submitAssistencia = (BuildContext context) {};
 
@@ -30,11 +32,26 @@ class _Notificarassistencia extends State<Notificarassistencia> {
     submitAssistencia = (BuildContext context) {
       isLoading = true;
       activeButton = false;
-      var url = Uri.parse('https://safetyout.herokuapp.com/assistance');
+      var url = Uri.parse('https://safetyout.herokuapp.com/assistance/add');
       http.post(url, body: {
-        'user_id': "abcd",
-        'dateTime': "15:00",
-        'num_hours': "2",
+        'user_id': SecureStorage.readSecureStorage('SafetyOUT_userid'),
+        'place': {'longitude': "100", 'latitude': "200"},
+        'dateInterval': {
+          'startDate': {
+            'year': startDate.year,
+            'month': startDate.month,
+            'day': startDate.day,
+            'hour': startDate.hour,
+            'minute': startDate.minute,
+          },
+          'endDate': {
+            'year': endDate.year,
+            'month': endDate.month,
+            'day': endDate.day,
+            'hour': endDate.hour,
+            'minute': endDate.minute,
+          }
+        }
       }).then((res) {
         if (res.statusCode == 201) {
           setState(() {
@@ -170,7 +187,7 @@ class _Notificarassistencia extends State<Notificarassistencia> {
                             startDay: DateTime(1900),
                             endDay: DateTime.now(),
                             calendarController: _calendarController,
-                            initialSelectedDay: pickedDate,
+                            initialSelectedDay: startDate,
                             initialCalendarFormat: CalendarFormat.month,
                             availableCalendarFormats: const {
                               CalendarFormat.month: '',
@@ -219,18 +236,18 @@ class _Notificarassistencia extends State<Notificarassistencia> {
                             ),
                             onDaySelected: (date, events, holidays) =>
                                 setState(() {
-                              pickedDate = date;
-                              _calendarController.setSelectedDay(pickedDate);
+                              startDate = date;
+                              _calendarController.setSelectedDay(startDate);
                             }),
                             onHeaderTapped: (date) {
-                              pickedDate = date;
-                              _calendarController.setSelectedDay(pickedDate);
+                              startDate = date;
+                              _calendarController.setSelectedDay(startDate);
                               Picker(
                                 adapter: DateTimePickerAdapter(
                                     type: 11,
                                     yearBegin: 1900,
                                     yearEnd: DateTime.now().year,
-                                    value: pickedDate,
+                                    value: startDate,
                                     months: [
                                       AppLocalizations.of(context)
                                           .translate("Gener"),
@@ -285,10 +302,9 @@ class _Notificarassistencia extends State<Notificarassistencia> {
                                 backgroundColor: Constants.lightGrey(context),
                                 onConfirm: (Picker picker, List values) =>
                                     setState(() {
-                                  pickedDate = DateTime(1900 + values[0],
-                                      values[1] + 1, pickedDate.day);
-                                  _calendarController
-                                      .setSelectedDay(pickedDate);
+                                  startDate = DateTime(1900 + values[0],
+                                      values[1] + 1, startDate.day);
+                                  _calendarController.setSelectedDay(startDate);
                                 }),
                                 onCancel: () {},
                               ).showDialog(context);
@@ -299,18 +315,36 @@ class _Notificarassistencia extends State<Notificarassistencia> {
                     ]),
               ),
               Padding(
+                padding: EdgeInsets.only(top: Constants.v3(context)),
+                child: Row(children: [
+                  SvgPicture.asset('assets/icons/group.svg',
+                      color: Constants.black(context),
+                      height: Constants.xxl(context),
+                      width: Constants.xxl(context)),
+                  Padding(
+                    padding: EdgeInsets.only(left: Constants.h1(context)),
+                    child: Text(
+                      "Moltes/poques persones",
+                      style: TextStyle(
+                          color: Constants.red(context), //o green segú aforo
+                          fontWeight: Constants.bolder,
+                          fontSize: Constants.l(context)),
+                    ),
+                  ),
+                ]),
+              ),
+              Padding(
                   padding: EdgeInsets.only(top: Constants.v3(context)),
-                  child: Row(children: [
-                    Row(children: [
-                      Text("Moltes persones"),
-                    ]),
-                    Row(children: [
-                      Text("Hi haurà gent/no"),
-                    ]),
-                    Row(children: [
-                      Text("Es recomanda(no) assistir"),
-                    ]),
-                  ])),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text("Hi haura (o no) molta gent",
+                            style: TextStyle(fontSize: Constants.l(context))),
+                      ])),
+              Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                Text("Es recomana no assistir/pots assistir",
+                    style: TextStyle(fontSize: Constants.l(context))),
+              ]),
             ],
           ),
         ),
