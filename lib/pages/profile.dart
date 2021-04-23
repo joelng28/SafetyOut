@@ -24,7 +24,7 @@ class _Profile extends State<Profile> {
   @override
   void initState() {
     super.initState();
-    SecureStorage.readSecureStorage('SafetyOUT_Token').then((id) {
+    SecureStorage.readSecureStorage('SafetyOUT_UserId').then((id) {
       var url =
           Uri.parse('https://safetyout.herokuapp.com/user/getUserInfo/' + id);
       http.get(url).then((res) {
