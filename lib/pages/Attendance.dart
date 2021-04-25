@@ -5,23 +5,25 @@ class Attendance {
   String user_id;
   String latitud;
   String longitud;
-  DateTime fecha;
-  int duracion;
+  String placeName;
+  String placeDescription;
+  DateTime fechaInicial;
+  DateTime fechaFinal;
 
-  String get getPlace{  
-    return null;
+  void getDataGoogle() {
+    //Geolocator().placemarkFromCoordinates(latitud, longitud);
   }
 
-  DateTime get getFechaInicial => fecha;
-  DateTime get getFechaFinal => fecha;
+  DateTime get getFechaInicial => fechaInicial;
+  DateTime get getFechaFinal => fechaFinal;
+  String get getplaceName => placeName;
+  String get getplaceDescription => placeDescription;
 
-  void setFechaInicial(DateTime f){
-    fecha = f;
+  void setFechaInicial(DateTime f) {
+    fechaInicial = f;
   }
 
-  void setFechaFinal(DateTime f){
-    fecha = f;
+  void setFechaFinal(DateTime f) {
+    fechaFinal = f;
   }
-
-
 }
