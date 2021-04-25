@@ -67,5 +67,8 @@
     "Configuracio": "Configuració",
     "Tancar_sessió": "Tancar sessió",
     "Segur_que_vols_tancar_sessió": "Segur que vols tancar sessió?",
-    "Modificar_Assistencia": "Modificar Assisténcia"
+    "Modificar_Assistencia": "Modificar Assisténcia",
+    "Borrar_Assistencia": "Borrar Assisténcia",
+    "Error_borrar_assistencia": "Error al intentar esborrar l'assisténcia",
+    "Error_modificar_assistencia": "Error al intentar modificar l'assiténcia"
 }
