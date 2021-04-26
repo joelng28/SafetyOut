@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:app/defaults/constants.dart';
+
+import 'package:app/pages/notificarassistencia.dart';
+
 import 'package:app/pages/consultaraforament.dart';
 import 'package:app/state/app_language.dart';
 import 'package:app/widgets/border_button.dart';
@@ -933,7 +936,15 @@ class _Discover extends State<Discover> {
                                       minWidth: Constants.w10(context),
                                       maxWidth: Constants.w11(context)),
                                   child: BorderButton(
-                                      onPressed: () {}, text: 'Vull anar-hi')),
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          PageRouteBuilder(
+                                              pageBuilder: (_, __, ___) =>
+                                                  Notificarassistencia()),
+                                        );
+                                      },
+                                      text: 'Vull anar-hi')),
                             ],
                           ),
                         )
