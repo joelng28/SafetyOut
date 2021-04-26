@@ -44,18 +44,20 @@ class _Discover extends State<Discover> {
   List<dynamic> placeOpenHours = [];
   bool placeOpened = false;
   String todaysHours;
-  String placeGauge = 'Aforament';
+  int placeGauge;
   Uri placeDetailsUrl;
+  LatLng placeCords;
 
   void getOcupation(LatLng cords) async {
     DateTime now = DateTime.now();
     Uri url = Uri.parse(
-        'https://safetyout.herokuapp.com/occupation?longitude=' +
+        'https://safetyout.herokuapp.com/place/occupation?longitude=' +
             cords.longitude.toString() +
             '&latitude=' +
             cords.latitude.toString() +
             '&year=' +
             now.year.toString() +
+            '&month=' +
             (now.month - 1).toString() +
             '&day=' +
             now.day.toString() +
@@ -64,12 +66,12 @@ class _Discover extends State<Discover> {
             '&minute=' +
             now.minute.toString());
     await http.get(url).then((res) {
-      print(res.statusCode);
-      print(res.body);
       if (res.statusCode == 200) {
-        setState(() {});
+        Map<String, dynamic> body = jsonDecode(res.body);
+        setState(() {
+          placeGauge = body["occupation"];
+        });
       } else {
-        //print(res.statusCode);
         showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -136,7 +138,6 @@ class _Discover extends State<Discover> {
       placeAddress = address[0];
 
       var openHours = convertDataToJson["result"]["opening_hours"];
-      print(openHours["weekday_text"]);
       placeOpenHours = [];
       openHours["weekday_text"].forEach((p) {
         String ph = '';
@@ -250,6 +251,9 @@ class _Discover extends State<Discover> {
                         place_id +
                         '&key=' +
                         api_key);
+
+                placeCords =
+                    LatLng(place["location"]["lat"], place["location"]["lng"]);
 
                 getDetails(placeDetailsUrl);
 
@@ -569,7 +573,10 @@ class _Discover extends State<Discover> {
                                     Text(
                                       placeOpenHours.isEmpty
                                           ? 'Aquest espai no té horaris.'
-                                          : todaysHours,
+                                          : todaysHours == 'Open 24 hours'
+                                              ? AppLocalizations.of(context)
+                                                  .translate("Obert_24_hores")
+                                              : todaysHours,
                                       style: TextStyle(
                                           fontSize: Constants.s(context),
                                           fontWeight: Constants.normal),
@@ -648,7 +655,13 @@ class _Discover extends State<Discover> {
                                                           Constants.normal)),
                                               Text(
                                                   placeOpenHours[0] != null
-                                                      ? placeOpenHours[0]
+                                                      ? placeOpenHours[0] ==
+                                                              'Open 24 hours'
+                                                          ? AppLocalizations.of(
+                                                                  context)
+                                                              .translate(
+                                                                  "Obert_24_hores")
+                                                          : placeOpenHours[0]
                                                       : "Tancat",
                                                   style: TextStyle(
                                                       fontSize:
@@ -675,7 +688,13 @@ class _Discover extends State<Discover> {
                                                           Constants.normal)),
                                               Text(
                                                   placeOpenHours[1] != null
-                                                      ? placeOpenHours[1]
+                                                      ? placeOpenHours[1] ==
+                                                              'Open 24 hours'
+                                                          ? AppLocalizations.of(
+                                                                  context)
+                                                              .translate(
+                                                                  "Obert_24_hores")
+                                                          : placeOpenHours[1]
                                                       : "Tancat",
                                                   style: TextStyle(
                                                       fontSize:
@@ -702,7 +721,13 @@ class _Discover extends State<Discover> {
                                                           Constants.normal)),
                                               Text(
                                                   placeOpenHours[2] != null
-                                                      ? placeOpenHours[2]
+                                                      ? placeOpenHours[2] ==
+                                                              'Open 24 hours'
+                                                          ? AppLocalizations.of(
+                                                                  context)
+                                                              .translate(
+                                                                  "Obert_24_hores")
+                                                          : placeOpenHours[2]
                                                       : "Tancat",
                                                   style: TextStyle(
                                                       fontSize:
@@ -731,7 +756,18 @@ class _Discover extends State<Discover> {
                                                               .normal)),
                                                   Text(
                                                       placeOpenHours[3] != null
-                                                          ? placeOpenHours[3]
+                                                          ? placeOpenHours[3] ==
+                                                                  AppLocalizations.of(
+                                                                          context)
+                                                                      .translate(
+                                                                          "Obert_24_hores")
+                                                              ? AppLocalizations
+                                                                      .of(
+                                                                          context)
+                                                                  .translate(
+                                                                      "Obert_24_hores")
+                                                              : placeOpenHours[
+                                                                  3]
                                                           : "Tancat",
                                                       style: TextStyle(
                                                           fontSize: Constants.s(
@@ -756,7 +792,13 @@ class _Discover extends State<Discover> {
                                                           Constants.normal)),
                                               Text(
                                                   placeOpenHours[4] != null
-                                                      ? placeOpenHours[4]
+                                                      ? placeOpenHours[4] ==
+                                                              'Open 24 hours'
+                                                          ? AppLocalizations.of(
+                                                                  context)
+                                                              .translate(
+                                                                  "Obert_24_hores")
+                                                          : placeOpenHours[4]
                                                       : "Tancat",
                                                   style: TextStyle(
                                                       fontSize:
@@ -783,7 +825,13 @@ class _Discover extends State<Discover> {
                                                           Constants.normal)),
                                               Text(
                                                   placeOpenHours[5] != null
-                                                      ? placeOpenHours[5]
+                                                      ? placeOpenHours[5] ==
+                                                              'Open 24 hours'
+                                                          ? AppLocalizations.of(
+                                                                  context)
+                                                              .translate(
+                                                                  "Obert_24_hores")
+                                                          : placeOpenHours[5]
                                                       : "Tancat",
                                                   style: TextStyle(
                                                       fontSize:
@@ -810,7 +858,13 @@ class _Discover extends State<Discover> {
                                                           Constants.normal)),
                                               Text(
                                                   placeOpenHours[6] != null
-                                                      ? placeOpenHours[6]
+                                                      ? placeOpenHours[6] ==
+                                                              'Open 24 hours'
+                                                          ? AppLocalizations.of(
+                                                                  context)
+                                                              .translate(
+                                                                  "Obert_24_hores")
+                                                          : placeOpenHours[6]
                                                       : "Tancat",
                                                   style: TextStyle(
                                                       fontSize:
@@ -835,7 +889,12 @@ class _Discover extends State<Discover> {
                                 padding: EdgeInsets.only(
                                     left: Constants.h1(context)),
                                 child: Text(
-                                  placeGauge,
+                                  placeGauge != null
+                                      ? placeGauge.toString() +
+                                          ' ' +
+                                          AppLocalizations.of(context)
+                                              .translate("persones")
+                                      : '',
                                   style: TextStyle(
                                       fontSize: Constants.s(context),
                                       fontWeight: Constants.normal),
@@ -861,7 +920,11 @@ class _Discover extends State<Discover> {
                                           context,
                                           PageRouteBuilder(
                                               pageBuilder: (_, __, ___) =>
-                                                  ConsultarAforament()),
+                                                  ConsultarAforament(
+                                                      placeName,
+                                                      placeLocation,
+                                                      placeAddress,
+                                                      placeCords)),
                                         );
                                       },
                                       text: 'Veure més')),

@@ -1,17 +1,29 @@
+import 'dart:convert';
+
 import 'package:app/defaults/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_picker/Picker.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:table_calendar/table_calendar.dart';
-
+import 'package:http/http.dart' as http;
 import '../app_localizations.dart';
 import 'app.dart';
 
 class ConsultarAforament extends StatefulWidget {
-  ConsultarAforament({Key key}) : super(key: key);
+  ConsultarAforament(
+      this.placeName, this.placeLocation, this.placeAddress, this.cords,
+      {Key key})
+      : super(key: key);
+
+  final String placeName;
+  final String placeLocation;
+  final String placeAddress;
+  final LatLng cords;
 
   @override
-  _ConsultarAforament createState() => _ConsultarAforament();
+  _ConsultarAforament createState() => _ConsultarAforament(
+      this.placeName, this.placeLocation, this.placeAddress, this.cords);
 }
 
 class _ConsultarAforament extends State<ConsultarAforament> {
@@ -21,16 +33,104 @@ class _ConsultarAforament extends State<ConsultarAforament> {
   int pickedHour = DateTime.now().hour;
   int pickedMinute = DateTime.now().minute;
 
+  _ConsultarAforament(
+      this.placeName, this.placeLocation, this.placeAddress, this.cords);
+  final String placeName;
+  final String placeLocation;
+  final String placeAddress;
+  final LatLng cords;
+  int placeGauge;
+
   @override
   void initState() {
     super.initState();
     _calendarController = CalendarController();
+    consultaAforament();
   }
 
   @override
   void dispose() {
     _calendarController.dispose();
     super.dispose();
+  }
+
+  void consultaAforament() async {
+    Uri url = Uri.parse(
+        'https://safetyout.herokuapp.com/place/occupation?longitude=' +
+            cords.longitude.toString() +
+            '&latitude=' +
+            cords.latitude.toString() +
+            '&year=' +
+            pickedDate.year.toString() +
+            '&month=' +
+            (pickedDate.month - 1).toString() +
+            '&day=' +
+            pickedDate.day.toString() +
+            '&hour=' +
+            pickedDate.hour.toString() +
+            '&minute=' +
+            pickedDate.minute.toString());
+    await http.get(url).then((res) {
+      if (res.statusCode == 200) {
+        Map<String, dynamic> body = jsonDecode(res.body);
+        setState(() {
+          placeGauge = body["occupation"];
+        });
+      } else {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                content: SingleChildScrollView(
+                    child: ListBody(
+                  children: <Widget>[
+                    Text(
+                        AppLocalizations.of(context)
+                            .translate("Error_de_xarxa"),
+                        style: TextStyle(fontSize: Constants.m(context))),
+                  ],
+                )),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text(
+                        AppLocalizations.of(context).translate("Acceptar"),
+                        style: TextStyle(color: Constants.black(context))),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            });
+      }
+    }).catchError((err) {
+      //Sale error por pantalla
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+              content: SingleChildScrollView(
+                  child: ListBody(
+                children: <Widget>[
+                  Text(AppLocalizations.of(context).translate("Error_de_xarxa"),
+                      style: TextStyle(fontSize: Constants.m(context))),
+                ],
+              )),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                      AppLocalizations.of(context).translate("Acceptar"),
+                      style: TextStyle(color: Constants.black(context))),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          });
+    });
   }
 
   @override
@@ -87,7 +187,7 @@ class _ConsultarAforament extends State<ConsultarAforament> {
               children: <Widget>[
                 Row(children: [
                   Text(
-                    "Nom",
+                    placeName,
                     style: TextStyle(
                         color: Constants.black(context),
                         fontWeight: Constants.bolder,
@@ -96,7 +196,7 @@ class _ConsultarAforament extends State<ConsultarAforament> {
                 ]),
                 Row(children: [
                   Text(
-                    "Ciutat, comarca, país",
+                    placeLocation,
                     style: TextStyle(
                         color: Constants.black(context),
                         fontWeight: Constants.bolder,
@@ -115,7 +215,7 @@ class _ConsultarAforament extends State<ConsultarAforament> {
                     Padding(
                       padding: EdgeInsets.only(left: Constants.h1(context)),
                       child: Text(
-                        "Ubicació",
+                        placeAddress,
                         style: TextStyle(
                             color: Constants.black(context),
                             fontSize: Constants.s(context)),
@@ -198,6 +298,7 @@ class _ConsultarAforament extends State<ConsultarAforament> {
                                       pickedDate.minute);
                                   _calendarController
                                       .setSelectedDay(pickedDate);
+                                  consultaAforament();
                                 }),
                                 onHeaderTapped: (date) {
                                   pickedDate = DateTime(
@@ -277,6 +378,7 @@ class _ConsultarAforament extends State<ConsultarAforament> {
                                           pickedDate.minute);
                                       _calendarController
                                           .setSelectedDay(pickedDate);
+                                      consultaAforament();
                                     }),
                                     onCancel: () {},
                                   ).showDialog(context);
@@ -330,6 +432,7 @@ class _ConsultarAforament extends State<ConsultarAforament> {
                                           values[1]);
                                       _calendarController
                                           .setSelectedDay(pickedDate);
+                                      consultaAforament();
                                     }),
                                     onCancel: () {},
                                   ).showDialog(context);
@@ -385,16 +488,22 @@ class _ConsultarAforament extends State<ConsultarAforament> {
                     Padding(
                       padding: EdgeInsets.only(left: Constants.h1(context)),
                       child: Text(
-                        "Moltes/poques persones",
+                        placeGauge != null
+                            ? placeGauge.toString() +
+                                ' ' +
+                                AppLocalizations.of(context)
+                                    .translate("persones")
+                            : '',
                         style: TextStyle(
-                            color: Constants.red(context), //o green segú aforo
+                            color:
+                                Constants.black(context), //o green segú aforo
                             fontWeight: Constants.bolder,
                             fontSize: Constants.l(context)),
                       ),
                     ),
                   ]),
                 ),
-                Padding(
+/*                 Padding(
                     padding: EdgeInsets.only(top: Constants.v3(context)),
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -405,7 +514,7 @@ class _ConsultarAforament extends State<ConsultarAforament> {
                 Row(mainAxisAlignment: MainAxisAlignment.start, children: [
                   Text("Es recomana no assistir/pots assistir",
                       style: TextStyle(fontSize: Constants.l(context))),
-                ]),
+                ]), */
               ],
             ),
           ),
