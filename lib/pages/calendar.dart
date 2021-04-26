@@ -24,98 +24,57 @@ class _Calendar extends State<Calendar> {
   Function getActivities = (BuildContext context) {};
 
   String getWeekDay(int num) {
-    if (num == 7)
+    if (num == 7) {
       return AppLocalizations.of(context).translate("Dilluns");
-    else if (num == 1)
+    } else if (num == 1) {
       return AppLocalizations.of(context).translate("Dimarts");
-    else if (num == 2)
+    } else if (num == 2) {
       return AppLocalizations.of(context).translate("Dimecres");
-    else if (num == 3)
+    } else if (num == 3) {
       return AppLocalizations.of(context).translate("Dijous");
-    else if (num == 4)
+    } else if (num == 4) {
       return AppLocalizations.of(context).translate("Divendres");
-    else if (num == 5)
+    } else if (num == 5) {
       return AppLocalizations.of(context).translate("Dissabte");
-    else if (num == 6)
+    } else if (num == 6) {
       return AppLocalizations.of(context).translate("Diumenge");
+    }
+    return '';
   }
 
   String getMonth(int num) {
-    if (num == 1)
+    if (num == 1) {
       return " de gener ";
-    else if (num == 2)
+    } else if (num == 2) {
       return " de febrer ";
-    else if (num == 3)
+    } else if (num == 3) {
       return " de març ";
-    else if (num == 4)
+    } else if (num == 4) {
       return " d'abril ";
-    else if (num == 5)
+    } else if (num == 5) {
       return " de maig ";
-    else if (num == 6)
+    } else if (num == 6) {
       return " de juny ";
-    else if (num == 7)
+    } else if (num == 7) {
       return " de juliol ";
-    else if (num == 8)
+    } else if (num == 8) {
       return " d'agost ";
-    else if (num == 9)
+    } else if (num == 9) {
       return " de setembre ";
-    else if (num == 10)
+    } else if (num == 10) {
       return " d'octubre ";
-    else if (num == 11)
+    } else if (num == 11) {
       return " de novembre ";
-    else if (num == 12) return " de desembre ";
+    } else if (num == 12) {
+      return " de desembre ";
+    }
+    return '';
   }
 
   @override
   void initState() {
     super.initState();
     _calendarController = CalendarController();
-    /*getActivities = (BuildContext context) {
-      var url = Uri.parse ('https://safetyout.herokuapp.com/assistance/consultOnDay');
-      http.get(url, body: {
-        'user_id': SecureStorage.readSecureStorage ('SafetyOUT_UserId'),
-        'startDate': {
-          'year': pickedDate.year,
-          'month': pickedDate.month,
-          'day': pickedDate.day,
-          'hour': pickedDate.hour,
-          'minute': pickedDate.minute
-        }
-
-      }).then(res){
-        if (res.statusCode == 200) {} //retornar dades
-      }
-      else if (res.statusCode == 409) {
-      }).catchError((err) {
-        print(err);
-        //Sale error por pantalla
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
-                content: SingleChildScrollView(
-                    child: ListBody(
-                  children: <Widget>[
-                    Text(
-                        AppLocalizations.of(context)
-                            .translate("Error de xarxa"),
-                        style: TextStyle(fontSize: Constants.m(context))),
-                  ],
-                )),
-                actions: <Widget>[
-                  TextButton(
-                    child: Text(
-                        AppLocalizations.of(context).translate("Acceptar"),
-                        style: TextStyle(color: Constants.black(context))),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              );
-            }); //Error
-    };*/
   }
 
   @override
@@ -299,16 +258,23 @@ class _Calendar extends State<Calendar> {
                             )),
                       ]),
                       Column(children: [
-                        IconButton(
-                          icon: Icon(Icons.more_horiz,
-                              size: Constants.l(context)),
-                          onPressed: () {},
+                        InkWell(
+                          splashColor: Colors.transparent,
+                          focusColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          child: Icon(
+                            Icons.more_horiz,
+                            size: Constants.xxl(context),
+                            color: Constants.black(context),
+                          ),
+                          onTap: () {},
                         )
                       ])
                     ]),
               ),
               Padding(
-                  padding: EdgeInsets.only(right: Constants.h3(context)),
+                  padding: EdgeInsets.only(
+                      right: Constants.h3(context), top: Constants.v1(context)),
                   child: Row(
                     children: [
                       Icon(

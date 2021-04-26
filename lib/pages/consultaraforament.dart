@@ -30,8 +30,6 @@ class _ConsultarAforament extends State<ConsultarAforament> {
   CalendarController _calendarController;
   DateTime pickedDate = DateTime.now();
   DateTime yearDate = DateTime.now();
-  int pickedHour = DateTime.now().hour;
-  int pickedMinute = DateTime.now().minute;
 
   _ConsultarAforament(
       this.placeName, this.placeLocation, this.placeAddress, this.cords);
@@ -395,6 +393,9 @@ class _ConsultarAforament extends State<ConsultarAforament> {
                                 ),
                               ),
                               InkWell(
+                                focusColor: Colors.transparent,
+                                splashColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
                                 onTap: () {
                                   Picker(
                                     adapter: DateTimePickerAdapter(

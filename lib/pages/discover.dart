@@ -941,7 +941,11 @@ class _Discover extends State<Discover> {
                                           context,
                                           PageRouteBuilder(
                                               pageBuilder: (_, __, ___) =>
-                                                  Notificarassistencia()),
+                                                  NotificarAssistencia(
+                                                      placeName,
+                                                      placeLocation,
+                                                      placeAddress,
+                                                      placeCords)),
                                         );
                                       },
                                       text: 'Vull anar-hi')),
