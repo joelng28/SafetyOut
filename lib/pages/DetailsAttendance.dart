@@ -4,7 +4,7 @@ import 'package:flutter_picker/flutter_picker.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../app_localizations.dart';
 import '../defaults/constants.dart';
-import '../pages/Attendance.dart';
+import 'attendance.dart';
 import 'package:http/http.dart' as http;
 
 class DetailsAttendance extends StatefulWidget {
@@ -17,8 +17,8 @@ class DetailsAttendance extends StatefulWidget {
 }
 
 class _DetailsAttendanceState extends State<DetailsAttendance> {
-  Function guardarCanvis =
-      (BuildContext context, Attendance assistencia, TimeOfDay _inici, TimeOfDay _fi, DateTime oldStartDate) {
+  Function guardarCanvis = (BuildContext context, Attendance assistencia,
+      TimeOfDay _inici, TimeOfDay _fi, DateTime oldStartDate) {
     //CRIDA API
     var url = Uri.parse('https://safetyout.herokuapp.com/assistance/modify');
     DateTime startDate = assistencia.getFechaInicial;
@@ -248,135 +248,116 @@ class _DetailsAttendanceState extends State<DetailsAttendance> {
             Text(widget.assistencia.getplaceDescription, //placeLocation,
                 style: TextStyle(color: Constants.black(context))),
             TableCalendar(
-              locale:
-                Localizations.localeOf(context).toLanguageTag(),
-                  startDay: DateTime(1900),
-                  endDay: DateTime.now(),
-                  calendarController: _calendarController,
-                  initialSelectedDay: startDate,
-                  initialCalendarFormat: CalendarFormat.month,
-                  availableCalendarFormats: const {
-                    CalendarFormat.month: '',
-                  },
-                  availableGestures: AvailableGestures.all,
-                  calendarStyle: CalendarStyle(
-                    outsideDaysVisible: false,
-                      weekendStyle: TextStyle(
-                        color: Constants.black(context),
-                          fontSize: Constants.m(context)),
-                        holidayStyle: TextStyle(
-                          color: Constants.black(context),
-                          fontSize: Constants.m(context)),
-                        weekdayStyle: TextStyle(
-                          color: Constants.black(context),
-                          fontSize: Constants.m(context)),
-                        selectedColor: Constants.primary(context),
-                        selectedStyle:
-                          TextStyle(color: Color(0xFF242424)),
-                        todayStyle:
-                          TextStyle(color: Constants.black(context)),
-                        todayColor: Colors.transparent,
-                      ),
-                      daysOfWeekStyle: DaysOfWeekStyle(
-                        weekdayStyle: TextStyle(
-                          color: Constants.darkGrey(context),
-                          fontSize: Constants.m(context),
-                          fontWeight: Constants.bold),
-                        weekendStyle: TextStyle(
-                          color: Constants.darkGrey(context),
-                          fontSize: Constants.m(context),
-                          fontWeight: Constants.bold),
-                      ),
-                      headerStyle: HeaderStyle(
-                        centerHeaderTitle: true,
-                        formatButtonVisible: false,
-                        titleTextStyle: TextStyle(
-                          fontWeight: Constants.bold,
-                          fontSize: Constants.l(context)),
-                        leftChevronIcon: Icon(
-                          Icons.arrow_back_ios_rounded,
-                          color: Constants.black(context)),
-                        rightChevronIcon: Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          color: Constants.black(context)),
-                      ),
-                      onDaySelected: (date, events, holidays) =>
-                        setState(() {
-                          startDate = date;
-                          _calendarController.setSelectedDay(startDate);
-                        }),
-                        onHeaderTapped: (date) {
-                          startDate = date;
-                          _calendarController.setSelectedDay(startDate);
-                          Picker(
-                            adapter: DateTimePickerAdapter(
-                              type: 11,
-                              yearBegin: 1900,
-                              yearEnd: DateTime.now().year,
-                              value: startDate,
-                              months: [
-                                AppLocalizations.of(context)
-                                  .translate("Gener"),
-                                AppLocalizations.of(context)
-                                  .translate("Febrer"),
-                                AppLocalizations.of(context)
-                                  .translate("Març"),
-                                AppLocalizations.of(context)
-                                  .translate("Abril"),
-                                AppLocalizations.of(context)
-                                  .translate("Maig"),
-                                AppLocalizations.of(context)
-                                  .translate("Juny"),
-                                AppLocalizations.of(context)
-                                  .translate("Juliol"),
-                                AppLocalizations.of(context)
-                                  .translate("Agost"),
-                                AppLocalizations.of(context)
-                                  .translate("Setembre"),
-                                AppLocalizations.of(context)
-                                  .translate("Octubre"),
-                                AppLocalizations.of(context)
-                                  .translate("Novembre"),
-                                AppLocalizations.of(context)
-                                  .translate("Desembre"),
-                              ],
-                              customColumnType: [
-                                0,
-                                1
-                              ]),
-                            textStyle: TextStyle(
-                            color: Constants.darkGrey(context),
-                            fontSize: Constants.l(context)),
-                            columnFlex: [2, 3],
-                            confirmText: AppLocalizations.of(context)
-                              .translate("Confirmar"),
-                            cancelText: AppLocalizations.of(context)
-                              .translate("Cancel·lar"),
-                            confirmTextStyle: TextStyle(
-                              color: Constants.darkGrey(context),
-                              fontWeight: Constants.bold,
-                              fontSize: Constants.s(context)),
-                            cancelTextStyle: TextStyle(
-                              color: Constants.darkGrey(context),
-                              fontWeight: Constants.bold,
-                              fontSize: Constants.s(context)),
-                            height: Constants.a11(context),
-                            hideHeader: true,
-                            selectedTextStyle: TextStyle(
-                              color: Constants.black(context),
-                            ),
-                            backgroundColor: Constants.lightGrey(context),
-                            onConfirm: (Picker picker, List values) =>
-                            setState(() {
-                              startDate = DateTime(1900 + values[0],
-                                  values[1] + 1, startDate.day);
-                             _calendarController.setSelectedDay(startDate);
-                            }),
-                            onCancel: () {},
-                          ).showDialog(context);
-                        },
+              locale: Localizations.localeOf(context).toLanguageTag(),
+              startDay: DateTime(1900),
+              endDay: DateTime.now(),
+              calendarController: _calendarController,
+              initialSelectedDay: startDate,
+              initialCalendarFormat: CalendarFormat.month,
+              availableCalendarFormats: const {
+                CalendarFormat.month: '',
+              },
+              availableGestures: AvailableGestures.all,
+              calendarStyle: CalendarStyle(
+                outsideDaysVisible: false,
+                weekendStyle: TextStyle(
+                    color: Constants.black(context),
+                    fontSize: Constants.m(context)),
+                holidayStyle: TextStyle(
+                    color: Constants.black(context),
+                    fontSize: Constants.m(context)),
+                weekdayStyle: TextStyle(
+                    color: Constants.black(context),
+                    fontSize: Constants.m(context)),
+                selectedColor: Constants.primary(context),
+                selectedStyle: TextStyle(color: Color(0xFF242424)),
+                todayStyle: TextStyle(color: Constants.black(context)),
+                todayColor: Colors.transparent,
+              ),
+              daysOfWeekStyle: DaysOfWeekStyle(
+                weekdayStyle: TextStyle(
+                    color: Constants.darkGrey(context),
+                    fontSize: Constants.m(context),
+                    fontWeight: Constants.bold),
+                weekendStyle: TextStyle(
+                    color: Constants.darkGrey(context),
+                    fontSize: Constants.m(context),
+                    fontWeight: Constants.bold),
+              ),
+              headerStyle: HeaderStyle(
+                centerHeaderTitle: true,
+                formatButtonVisible: false,
+                titleTextStyle: TextStyle(
+                    fontWeight: Constants.bold, fontSize: Constants.l(context)),
+                leftChevronIcon: Icon(Icons.arrow_back_ios_rounded,
+                    color: Constants.black(context)),
+                rightChevronIcon: Icon(Icons.arrow_forward_ios_rounded,
+                    color: Constants.black(context)),
+              ),
+              onDaySelected: (date, events, holidays) => setState(() {
+                startDate = date;
+                _calendarController.setSelectedDay(startDate);
+              }),
+              onHeaderTapped: (date) {
+                startDate = date;
+                _calendarController.setSelectedDay(startDate);
+                Picker(
+                  adapter: DateTimePickerAdapter(
+                      type: 11,
+                      yearBegin: 1900,
+                      yearEnd: DateTime.now().year,
+                      value: startDate,
+                      months: [
+                        AppLocalizations.of(context).translate("Gener"),
+                        AppLocalizations.of(context).translate("Febrer"),
+                        AppLocalizations.of(context).translate("Març"),
+                        AppLocalizations.of(context).translate("Abril"),
+                        AppLocalizations.of(context).translate("Maig"),
+                        AppLocalizations.of(context).translate("Juny"),
+                        AppLocalizations.of(context).translate("Juliol"),
+                        AppLocalizations.of(context).translate("Agost"),
+                        AppLocalizations.of(context).translate("Setembre"),
+                        AppLocalizations.of(context).translate("Octubre"),
+                        AppLocalizations.of(context).translate("Novembre"),
+                        AppLocalizations.of(context).translate("Desembre"),
+                      ],
+                      customColumnType: [
+                        0,
+                        1
+                      ]),
+                  textStyle: TextStyle(
+                      color: Constants.darkGrey(context),
+                      fontSize: Constants.l(context)),
+                  columnFlex: [2, 3],
+                  confirmText:
+                      AppLocalizations.of(context).translate("Confirmar"),
+                  cancelText:
+                      AppLocalizations.of(context).translate("Cancel·lar"),
+                  confirmTextStyle: TextStyle(
+                      color: Constants.darkGrey(context),
+                      fontWeight: Constants.bold,
+                      fontSize: Constants.s(context)),
+                  cancelTextStyle: TextStyle(
+                      color: Constants.darkGrey(context),
+                      fontWeight: Constants.bold,
+                      fontSize: Constants.s(context)),
+                  height: Constants.a11(context),
+                  hideHeader: true,
+                  selectedTextStyle: TextStyle(
+                    color: Constants.black(context),
+                  ),
+                  backgroundColor: Constants.lightGrey(context),
+                  onConfirm: (Picker picker, List values) => setState(() {
+                    startDate = DateTime(
+                        1900 + values[0], values[1] + 1, startDate.day);
+                    _calendarController.setSelectedDay(startDate);
+                  }),
+                  onCancel: () {},
+                ).showDialog(context);
+              },
             ),
-            Padding(padding: EdgeInsets.fromLTRB(Constants.h4(context),
+            Padding(
+              padding: EdgeInsets.fromLTRB(Constants.h4(context),
                   Constants.v7(context), Constants.h4(context), 0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -392,7 +373,8 @@ class _DetailsAttendanceState extends State<DetailsAttendance> {
                 ],
               ),
             ),
-            Padding(padding: EdgeInsets.fromLTRB(Constants.h4(context),
+            Padding(
+              padding: EdgeInsets.fromLTRB(Constants.h4(context),
                   Constants.v7(context), Constants.h4(context), 0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -418,8 +400,8 @@ class _DetailsAttendanceState extends State<DetailsAttendance> {
                       border:
                           Border.all(color: Constants.red(context), width: 2)),
                   child: TextButton(
-                      onPressed: () => borrarAssistencia(
-                          context, widget.assistencia, _start, _end, oldStartDate),
+                      onPressed: () => borrarAssistencia(context,
+                          widget.assistencia, _start, _end, oldStartDate),
                       style: ButtonStyle(
                           shape:
                               MaterialStateProperty.all(RoundedRectangleBorder(
