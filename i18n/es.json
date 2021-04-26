@@ -86,6 +86,10 @@
     "Obert_24_hores": "Obert 24 hores",
     "Notificar_assistencia": "Notificar assistència",
     "Lhora_dentrada_ha_de_ser_anterior_a_lhora_de_sortida": "La hora de entrada debe ser anterior a la hora de salida",
-    "Ja_has_notificat_assistència_en_aquest_lloc_data_i_hora": "Ya has notificado una asistencia en este espacio, fecha y hora"
+    "Ja_has_notificat_assistència_en_aquest_lloc_data_i_hora": "Ya has notificado una asistencia en este espacio, fecha y hora",
+    "Modificar_Assistencia": "Modificar Assisténcia",
+    "Borrar_Assistencia": "Borrar Assisténcia",
+    "Error_borrar_assistencia": "Error al intentar esborrar l'assisténcia",
+    "Error_modificar_assistencia": "Error al intentar modificar l'assiténcia"
 }
     
