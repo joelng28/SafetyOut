@@ -83,6 +83,10 @@
     "Diumenge": "Domingo",
     "Aforament_per_hores": "Aforament por horas",
     "persones" : "personas",
-    "Obert_24_hores": "Obert 24 hores"
+    "Obert_24_hores": "Obert 24 hores",
+    "Modificar_Assistencia": "Modificar Assisténcia",
+    "Borrar_Assistencia": "Borrar Assisténcia",
+    "Error_borrar_assistencia": "Error al intentar esborrar l'assisténcia",
+    "Error_modificar_assistencia": "Error al intentar modificar l'assiténcia"
 }
     
