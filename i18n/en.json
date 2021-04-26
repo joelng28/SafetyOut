@@ -72,5 +72,13 @@
     "Cerca_un_espai_obert": "Cerca un espai obert",
     "Canviar_idioma":"Canviar idioma",
     "Catala": "Català",
-    "Castella": "Castellà"
+    "Castella": "Castellà",
+    "Dilluns" : "Dilluns",
+    "Dimarts": "Dimarts",
+    "Dimecres": "Dimecres",
+    "Dijous": "Dijous",
+    "Divendres": "Divendres",
+    "Dissabte": "Dissabte",
+    "Diumenge": "Diumenge",
+    "Aforament_per_hores": "Aforament per hores"
 }
