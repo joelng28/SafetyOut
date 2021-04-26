@@ -1,12 +1,8 @@
 import 'dart:convert';
 import 'dart:math';
-
 import 'package:app/defaults/constants.dart';
-
 import 'package:app/pages/notificarassistencia.dart';
-
 import 'package:app/pages/consultaraforament.dart';
-import 'package:app/state/app_language.dart';
 import 'package:app/widgets/border_button.dart';
 import 'package:app/widgets/search_input.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +13,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 
 import '../app_localizations.dart';
 

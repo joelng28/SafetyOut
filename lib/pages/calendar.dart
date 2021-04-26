@@ -1,11 +1,9 @@
 import 'package:app/app_localizations.dart';
 import 'package:app/defaults/constants.dart';
-import 'package:app/storage/secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_picker/Picker.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:http/http.dart' as http;
 
 class Calendar extends StatefulWidget {
   Calendar({Key key /*, this.title*/}) : super(key: key);
