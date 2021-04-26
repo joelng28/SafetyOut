@@ -121,7 +121,6 @@ class _Home extends State<Home> {
         places.forEach((place) {
           final marker = Marker(
             markerId: MarkerId(place["place_id"]),
-            anchor: Offset(0, -1),
             position:
                 LatLng(place["location"]["lat"], place["location"]["lng"]),
           );

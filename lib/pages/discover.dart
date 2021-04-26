@@ -6,6 +6,7 @@ import 'package:app/defaults/constants.dart';
 import 'package:app/pages/notificarassistencia.dart';
 
 import 'package:app/pages/consultaraforament.dart';
+import 'package:app/state/app_language.dart';
 import 'package:app/widgets/border_button.dart';
 import 'package:app/widgets/search_input.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 import '../app_localizations.dart';
 
@@ -38,24 +40,122 @@ class _Discover extends State<Discover> {
   final Map<String, Marker> markers = {};
 
   bool viewPlace = false;
-  String placeName = 'Nom';
-  String placeLocation = 'Ciutat, Comarca, País';
-  String placeAddress = 'Adreça';
-  String placeOpenHours = 'Aquest lloc no especifica el seu horari ';
+  bool fullHours = false;
+  String placeName = '';
+  String placeLocation = '';
+  String placeAddress = '';
+  List<dynamic> placeOpenHours = [];
+  bool placeOpened = false;
+  String todaysHours;
   String placeGauge = 'Aforament';
   Uri placeDetailsUrl;
+
+  void getOcupation(LatLng cords) async {
+    DateTime now = DateTime.now();
+    Uri url = Uri.parse(
+        'https://safetyout.herokuapp.com/occupation?longitude=' +
+            cords.longitude.toString() +
+            '&latitude=' +
+            cords.latitude.toString() +
+            '&year=' +
+            now.year.toString() +
+            (now.month - 1).toString() +
+            '&day=' +
+            now.day.toString() +
+            '&hour=' +
+            now.hour.toString() +
+            '&minute=' +
+            now.minute.toString());
+    await http.get(url).then((res) {
+      print(res.statusCode);
+      print(res.body);
+      if (res.statusCode == 200) {
+        setState(() {});
+      } else {
+        //print(res.statusCode);
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                content: SingleChildScrollView(
+                    child: ListBody(
+                  children: <Widget>[
+                    Text(
+                        AppLocalizations.of(context)
+                            .translate("Error_de_xarxa"),
+                        style: TextStyle(fontSize: Constants.m(context))),
+                  ],
+                )),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text(
+                        AppLocalizations.of(context).translate("Acceptar"),
+                        style: TextStyle(color: Constants.black(context))),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            });
+      }
+    }).catchError((err) {
+      //Sale error por pantalla
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+              content: SingleChildScrollView(
+                  child: ListBody(
+                children: <Widget>[
+                  Text(AppLocalizations.of(context).translate("Error_de_xarxa"),
+                      style: TextStyle(fontSize: Constants.m(context))),
+                ],
+              )),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                      AppLocalizations.of(context).translate("Acceptar"),
+                      style: TextStyle(color: Constants.black(context))),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          });
+    });
+  }
 
   Future<String> getDetails(Uri placeDetailsUrl) async {
     var response = await http.get(placeDetailsUrl);
     setState(() {
       Map<String, dynamic> convertDataToJson = jsonDecode(response.body);
       placeName = convertDataToJson["result"]["name"];
-      placeAddress = convertDataToJson["result"]["formatted_address"];
+      List<String> address =
+          convertDataToJson["result"]["formatted_address"].split(', ');
+      placeAddress = address[0];
 
       var openHours = convertDataToJson["result"]["opening_hours"];
-      placeOpenHours = openHours["weekday_text"].toString();
+      print(openHours["weekday_text"]);
+      placeOpenHours = [];
+      openHours["weekday_text"].forEach((p) {
+        String ph = '';
+        List<String> aux = p.split(' ');
+        for (int i = 1; i < aux.length; i++) {
+          ph += aux[i] + (i + 1 < aux.length ? ' ' : '');
+        }
+        placeOpenHours.add(ph);
+      });
+
+      placeOpened = openHours["open_now"];
+
+      todaysHours = placeOpenHours[DateTime.now().weekday - 1];
 
       var location = convertDataToJson["result"]["address_components"];
+
       int max = location.length;
       int index = 0;
       while (index < max - 1) {
@@ -64,10 +164,6 @@ class _Discover extends State<Discover> {
         }
         if (location[index]["types"].toString() ==
             "[administrative_area_level_2, political]") {
-          placeLocation += ", " + location[index]["long_name"];
-        }
-
-        if (location[index]["types"].toString() == "[country, political]") {
           placeLocation += ", " + location[index]["long_name"];
         }
         ++index;
@@ -146,7 +242,6 @@ class _Discover extends State<Discover> {
         places.forEach((place) {
           final marker = Marker(
               markerId: MarkerId(place["place_id"]),
-              anchor: Offset(0, -1),
               icon: BitmapDescriptor.defaultMarker,
               position:
                   LatLng(place["location"]["lat"], place["location"]["lng"]),
@@ -160,6 +255,9 @@ class _Discover extends State<Discover> {
                         api_key);
 
                 getDetails(placeDetailsUrl);
+
+                getOcupation(
+                    LatLng(place["location"]["lat"], place["location"]["lng"]));
 
                 setState(() {
                   viewPlace = true;
@@ -458,16 +556,276 @@ class _Discover extends State<Discover> {
                               Padding(
                                 padding: EdgeInsets.only(
                                     left: Constants.h1(context)),
-                                child: Text(
-                                  placeOpenHours,
-                                  style: TextStyle(
-                                      fontSize: Constants.s(context),
-                                      fontWeight: Constants.normal),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      placeOpened == true
+                                          ? 'Obert. '
+                                          : 'Tancat. ',
+                                      style: TextStyle(
+                                          color: placeOpened == true
+                                              ? Constants.green(context)
+                                              : Constants.red(context),
+                                          fontSize: Constants.s(context),
+                                          fontWeight: Constants.normal),
+                                    ),
+                                    Text(
+                                      placeOpenHours.isEmpty
+                                          ? 'Aquest espai no té horaris.'
+                                          : todaysHours,
+                                      style: TextStyle(
+                                          fontSize: Constants.s(context),
+                                          fontWeight: Constants.normal),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          left: Constants.h1(context)),
+                                      child: InkWell(
+                                        onTap: () => setState(() {
+                                          fullHours = !fullHours;
+                                        }),
+                                        child: Icon(
+                                            fullHours == false
+                                                ? FontAwesomeIcons.chevronDown
+                                                : FontAwesomeIcons.chevronUp,
+                                            color: Constants.black(context),
+                                            size: 24.0 /
+                                                (MediaQuery.of(context)
+                                                            .size
+                                                            .height <
+                                                        700
+                                                    ? 1.3
+                                                    : MediaQuery.of(context)
+                                                                .size
+                                                                .height <
+                                                            800
+                                                        ? 1.15
+                                                        : 1)),
+                                      ),
+                                    )
+                                  ],
                                 ),
                               )
                             ],
                           ),
                         ),
+                        placeOpenHours.isNotEmpty
+                            ? AnimatedContainer(
+                                duration: Duration(milliseconds: 300),
+                                decoration: BoxDecoration(
+                                  color: Constants.trueWhite(context),
+                                  borderRadius: BorderRadius.only(
+                                    bottomRight: Radius.circular(30),
+                                    bottomLeft: Radius.circular(30),
+                                  ),
+                                ),
+                                constraints: BoxConstraints(
+                                  maxHeight: fullHours
+                                      ? MediaQuery.of(context).size.height
+                                      : 0,
+                                ),
+                                width: Constants.wFull(context),
+                                child: SingleChildScrollView(
+                                    physics: NeverScrollableScrollPhysics(),
+                                    child: Padding(
+                                      padding: EdgeInsets.only(
+                                          left: Constants.h7(context) +
+                                              Constants.h2(context),
+                                          right: Constants.h7(context) +
+                                              Constants.h2(context)),
+                                      child: Column(children: [
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              top: Constants.v1(context)),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                  AppLocalizations.of(context)
+                                                      .translate("Dilluns"),
+                                                  style: TextStyle(
+                                                      fontSize:
+                                                          Constants.s(context),
+                                                      fontWeight:
+                                                          Constants.normal)),
+                                              Text(
+                                                  placeOpenHours[0] != null
+                                                      ? placeOpenHours[0]
+                                                      : "Tancat",
+                                                  style: TextStyle(
+                                                      fontSize:
+                                                          Constants.s(context),
+                                                      fontWeight:
+                                                          Constants.normal)),
+                                            ],
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              top: Constants.v1(context)),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                  AppLocalizations.of(context)
+                                                      .translate("Dimarts"),
+                                                  style: TextStyle(
+                                                      fontSize:
+                                                          Constants.s(context),
+                                                      fontWeight:
+                                                          Constants.normal)),
+                                              Text(
+                                                  placeOpenHours[1] != null
+                                                      ? placeOpenHours[1]
+                                                      : "Tancat",
+                                                  style: TextStyle(
+                                                      fontSize:
+                                                          Constants.s(context),
+                                                      fontWeight:
+                                                          Constants.normal)),
+                                            ],
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              top: Constants.v1(context)),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                  AppLocalizations.of(context)
+                                                      .translate("Dimecres"),
+                                                  style: TextStyle(
+                                                      fontSize:
+                                                          Constants.s(context),
+                                                      fontWeight:
+                                                          Constants.normal)),
+                                              Text(
+                                                  placeOpenHours[2] != null
+                                                      ? placeOpenHours[2]
+                                                      : "Tancat",
+                                                  style: TextStyle(
+                                                      fontSize:
+                                                          Constants.s(context),
+                                                      fontWeight:
+                                                          Constants.normal)),
+                                            ],
+                                          ),
+                                        ),
+                                        Padding(
+                                            padding: EdgeInsets.only(
+                                                top: Constants.v1(context)),
+                                            child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                      AppLocalizations.of(
+                                                              context)
+                                                          .translate("Dijous"),
+                                                      style: TextStyle(
+                                                          fontSize: Constants.s(
+                                                              context),
+                                                          fontWeight: Constants
+                                                              .normal)),
+                                                  Text(
+                                                      placeOpenHours[3] != null
+                                                          ? placeOpenHours[3]
+                                                          : "Tancat",
+                                                      style: TextStyle(
+                                                          fontSize: Constants.s(
+                                                              context),
+                                                          fontWeight: Constants
+                                                              .normal)),
+                                                ])),
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              top: Constants.v1(context)),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                  AppLocalizations.of(context)
+                                                      .translate("Divendres"),
+                                                  style: TextStyle(
+                                                      fontSize:
+                                                          Constants.s(context),
+                                                      fontWeight:
+                                                          Constants.normal)),
+                                              Text(
+                                                  placeOpenHours[4] != null
+                                                      ? placeOpenHours[4]
+                                                      : "Tancat",
+                                                  style: TextStyle(
+                                                      fontSize:
+                                                          Constants.s(context),
+                                                      fontWeight:
+                                                          Constants.normal)),
+                                            ],
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              top: Constants.v1(context)),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                  AppLocalizations.of(context)
+                                                      .translate("Dissabte"),
+                                                  style: TextStyle(
+                                                      fontSize:
+                                                          Constants.s(context),
+                                                      fontWeight:
+                                                          Constants.normal)),
+                                              Text(
+                                                  placeOpenHours[5] != null
+                                                      ? placeOpenHours[5]
+                                                      : "Tancat",
+                                                  style: TextStyle(
+                                                      fontSize:
+                                                          Constants.s(context),
+                                                      fontWeight:
+                                                          Constants.normal)),
+                                            ],
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              top: Constants.v1(context)),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                  AppLocalizations.of(context)
+                                                      .translate("Diumenge"),
+                                                  style: TextStyle(
+                                                      fontSize:
+                                                          Constants.s(context),
+                                                      fontWeight:
+                                                          Constants.normal)),
+                                              Text(
+                                                  placeOpenHours[6] != null
+                                                      ? placeOpenHours[6]
+                                                      : "Tancat",
+                                                  style: TextStyle(
+                                                      fontSize:
+                                                          Constants.s(context),
+                                                      fontWeight:
+                                                          Constants.normal)),
+                                            ],
+                                          ),
+                                        ),
+                                      ]),
+                                    )))
+                            : Container(),
                         Padding(
                           padding: EdgeInsets.only(top: Constants.v1(context)),
                           child: Row(

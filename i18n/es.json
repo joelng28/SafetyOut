@@ -73,6 +73,14 @@
     "Cerca_un_espai_obert": "Busca un espacio abierto",
     "Canviar_idioma":"Cambiar idioma",
     "Catala": "Catalan",
-    "Castella": "Castellano"
+    "Castella": "Castellano",
+    "Dilluns" : "Lunes",
+    "Dimarts": "Martes",
+    "Dimecres": "Miércoles",
+    "Dijous": "Jueves",
+    "Divendres": "Viernes",
+    "Dissabte": "Sábado",
+    "Diumenge": "Domingo",
+    "Aforament_per_hores": "Aforament por horas"
 }
     
