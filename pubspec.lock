@@ -216,13 +216,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.4.0"
-  flutter_google_places:
-    dependency: "direct main"
-    description:
-      name: flutter_google_places
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.3.0"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
@@ -248,7 +241,7 @@ packages:
       name: flutter_platform_widgets
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.0"
+    version: "1.5.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -308,13 +301,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
-  google_api_headers:
-    dependency: transitive
-    description:
-      name: google_api_headers
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0"
   google_maps_flutter:
     dependency: "direct main"
     description:
@@ -329,13 +315,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
-  google_maps_webservice:
-    dependency: transitive
+  google_place:
+    dependency: "direct main"
     description:
-      name: google_maps_webservice
+      name: google_place
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.20-nullsafety.3"
+    version: "0.4.0"
   graphs:
     dependency: transitive
     description:
@@ -462,13 +448,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.9.3"
-  package_info:
-    dependency: transitive
-    description:
-      name: package_info
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.0"
   page_transition:
     dependency: "direct main"
     description:
@@ -581,13 +560,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.8"
-  rxdart:
-    dependency: transitive
-    description:
-      name: rxdart
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.26.0"
   shared_preferences:
     dependency: "direct main"
     description:

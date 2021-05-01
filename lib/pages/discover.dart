@@ -137,18 +137,21 @@ class _Discover extends State<Discover> {
 
       var openHours = convertDataToJson["result"]["opening_hours"];
       placeOpenHours = [];
-      openHours["weekday_text"].forEach((p) {
-        String ph = '';
-        List<String> aux = p.split(' ');
-        for (int i = 1; i < aux.length; i++) {
-          ph += aux[i] + (i + 1 < aux.length ? ' ' : '');
-        }
-        placeOpenHours.add(ph);
-      });
-
-      placeOpened = openHours["open_now"];
-
-      todaysHours = placeOpenHours[DateTime.now().weekday - 1];
+      if (openHours != null) {
+        openHours["weekday_text"].forEach((p) {
+          String ph = '';
+          List<String> aux = p.split(' ');
+          for (int i = 1; i < aux.length; i++) {
+            ph += aux[i] + (i + 1 < aux.length ? ' ' : '');
+          }
+          placeOpenHours.add(ph);
+        });
+        placeOpened = openHours["open_now"];
+        todaysHours = placeOpenHours[DateTime.now().weekday - 1];
+      } else {
+        placeOpened = true;
+        todaysHours = "";
+      }
 
       var location = convertDataToJson["result"]["address_components"];
 
@@ -201,37 +204,91 @@ class _Discover extends State<Discover> {
   }
 
   void retrievePlaces(LatLng l) {
-    var url = Uri.parse(
+    var urlPark = Uri.parse(
         'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
             l.latitude.toString() +
             ',' +
             l.longitude.toString() +
-            '&radius=5000&keyword=park|nature|sightseeing|public|terrace|mountain|castle&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id');
+            '&radius=5000&keyword=park&language=' +
+            Localizations.localeOf(context).languageCode +
+            '&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id');
+    var urlNature = Uri.parse(
+        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
+            l.latitude.toString() +
+            ',' +
+            l.longitude.toString() +
+            '&radius=5000&keyword=nature&language=' +
+            Localizations.localeOf(context).languageCode +
+            '&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id');
+    var urlSight = Uri.parse(
+        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
+            l.latitude.toString() +
+            ',' +
+            l.longitude.toString() +
+            '&radius=5000&keyword=sightseeing&languaage=' +
+            Localizations.localeOf(context).languageCode +
+            '&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id');
+    var urlPublic = Uri.parse(
+        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
+            l.latitude.toString() +
+            ',' +
+            l.longitude.toString() +
+            '&radius=5000&keyword=public&language=' +
+            Localizations.localeOf(context).languageCode +
+            '&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id');
+    var urlTerrace = Uri.parse(
+        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
+            l.latitude.toString() +
+            ',' +
+            l.longitude.toString() +
+            '&radius=5000&keyword=terrace&language=' +
+            Localizations.localeOf(context).languageCode +
+            '&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id');
+    var urlMountain = Uri.parse(
+        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
+            l.latitude.toString() +
+            ',' +
+            l.longitude.toString() +
+            '&radius=5000&keyword=mountain&language=' +
+            Localizations.localeOf(context).languageCode +
+            '&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id');
+    var urlCastle = Uri.parse(
+        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
+            l.latitude.toString() +
+            ',' +
+            l.longitude.toString() +
+            '&radius=5000&keyword=castle&language=' +
+            Localizations.localeOf(context).languageCode +
+            '&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id');
     var urlRes = Uri.parse(
         'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
             l.latitude.toString() +
             ',' +
             l.longitude.toString() +
-            '&radius=5000&keyword=outdoor seating&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id');
-    Future.wait([http.get(url), http.get(urlRes)]).then((List responses) {
+            '&radius=5000&keyword=outdoor seating&language=' +
+            Localizations.localeOf(context).languageCode +
+            '&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id');
+    Future.wait([
+      http.get(urlPark),
+      http.get(urlNature),
+      http.get(urlSight),
+      http.get(urlPublic),
+      http.get(urlTerrace),
+      http.get(urlMountain),
+      http.get(urlCastle),
+      http.get(urlRes)
+    ]).then((List responses) {
       List<Map<String, dynamic>> places = [];
-      Map<String, dynamic> body = jsonDecode(responses[0].body);
-      List<dynamic> results = body["results"];
-      results.forEach((element) {
-        Map<String, dynamic> place = {
-          "location": element["geometry"]["location"],
-          "place_id": element["place_id"]
-        };
-        places.add(place);
-      });
-      body = jsonDecode(responses[1].body);
-      results = body["results"];
-      results.forEach((element) {
-        Map<String, dynamic> place = {
-          "location": element["geometry"]["location"],
-          "place_id": element["place_id"]
-        };
-        places.add(place);
+      responses.forEach((r) {
+        Map<String, dynamic> body = jsonDecode(r.body);
+        List<dynamic> results = body["results"];
+        results.forEach((element) {
+          Map<String, dynamic> place = {
+            "location": element["geometry"]["location"],
+            "place_id": element["place_id"]
+          };
+          places.add(place);
+        });
       });
       setState(() {
         markers.clear();
@@ -242,6 +299,8 @@ class _Discover extends State<Discover> {
               position:
                   LatLng(place["location"]["lat"], place["location"]["lng"]),
               onTap: () {
+                handlePinTap(place["place_id"],
+                    LatLng(place["location"]["lat"], place["location"]["lng"]));
                 String api_key = "AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA";
                 String place_id = place["place_id"];
                 placeDetailsUrl = Uri.parse(
@@ -311,6 +370,27 @@ class _Discover extends State<Discover> {
     });
   }
 
+  void handlePinTap(String placeId, LatLng loc) {
+    String api_key = "AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA";
+    placeDetailsUrl = Uri.parse(
+        'https://maps.googleapis.com/maps/api/place/details/json?place_id=' +
+            placeId +
+            '&key=' +
+            api_key);
+
+    getDetails(placeDetailsUrl);
+
+    getOcupation(loc);
+
+    setState(() {
+      viewPlace = true;
+    });
+    controller
+        .animateCamera(CameraUpdate.newCameraPosition(
+            CameraPosition(target: loc, zoom: 18)))
+        .catchError((error) {});
+  }
+
   @override
   void initState() {
     super.initState();
@@ -343,10 +423,10 @@ class _Discover extends State<Discover> {
                       setState(() {
                         if (pow(movingCamPos.latitude - lastLatLng.latitude,
                                     2) >=
-                                0.0000000100000 ||
+                                0.0100000000000 ||
                             pow(movingCamPos.longitude - lastLatLng.longitude,
                                     2) >=
-                                0.0000000100000) {
+                                0.0100000000000) {
                           lastLatLng = movingCamPos;
                           retrievePlaces(movingCamPos);
                         }
@@ -375,30 +455,11 @@ class _Discover extends State<Discover> {
                   top: Constants.v3(context),
                   right: Constants.h6(context),
                   left: Constants.h6(context)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Stack(
                 children: [
-                  Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        boxShadow: [
-                          BoxShadow(
-                            offset: Offset(0, 5),
-                            blurRadius: 5,
-                            color: Color.fromARGB(100, 0, 0, 0),
-                          )
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          SearchInput(
-                            labelText: AppLocalizations.of(context)
-                                .translate("Cerca_un_espai_obert"),
-                          ),
-                        ],
-                      )),
                   Padding(
-                    padding: EdgeInsets.only(top: Constants.v3(context)),
+                    padding: EdgeInsets.only(
+                        top: Constants.v7(context) + Constants.v7(context)),
                     child: Container(
                         height: Constants.a7(context),
                         decoration: BoxDecoration(
@@ -454,6 +515,26 @@ class _Discover extends State<Discover> {
                                   Constants.trueWhite(context))),
                         )),
                   ),
+                  Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        boxShadow: [
+                          BoxShadow(
+                            offset: Offset(0, 5),
+                            blurRadius: 5,
+                            color: Color.fromARGB(100, 0, 0, 0),
+                          )
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          SearchInput(
+                            labelText: AppLocalizations.of(context)
+                                .translate("Cerca_un_espai_obert"),
+                            onTapPlace: handlePinTap,
+                          ),
+                        ],
+                      )),
                 ],
               ),
             ),
