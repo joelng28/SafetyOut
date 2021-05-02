@@ -3,15 +3,18 @@ import 'dart:convert';
 import 'package:app/app_localizations.dart';
 import 'package:app/defaults/constants.dart';
 import 'package:app/pages/profileconfig.dart';
+import 'package:app/pages/signup/bombolles.dart';
+import 'package:app/pages/signup/contactes.dart';
+import 'package:app/pages/signup/xats.dart';
 import 'package:app/storage/secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 
+enum ProfileTab { CONTACTS, BUBBLES, CHATS }
+
 class Profile extends StatefulWidget {
   Profile({Key key}) : super(key: key);
-
-  //final String title;
 
   @override
   _Profile createState() => _Profile();
@@ -20,6 +23,7 @@ class Profile extends StatefulWidget {
 class _Profile extends State<Profile> {
   String name = '';
   String surnames = '';
+  ProfileTab tab = ProfileTab.CONTACTS;
 
   @override
   void initState() {
@@ -139,89 +143,223 @@ class _Profile extends State<Profile> {
                       ),
                     ),
                   )
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(left: Constants.h7(context)),
-                        child: Column(
+                : Expanded(
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            //Imagen perfil
-                            Container(
-                              width: Constants.w10(context),
-                              height: Constants.a10(context),
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  image: DecorationImage(
-                                      fit: BoxFit.fill, image: NetworkImage(
-                                          //Imagen de prueba, se colocará la imagen del usuario
-                                          "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"))),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            right: Constants.h1(context),
-                            left: Constants.h7(context)),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                //Nombre usuario
-                                SizedBox(
-                                  width: Constants.w11(context),
-                                  child: Text(
-                                    name + ' ' + surnames,
-                                    maxLines: 2,
-                                    style: TextStyle(
-                                      fontSize: Constants.l(context),
-                                      fontWeight: Constants.bolder,
-                                    ),
-                                    overflow: TextOverflow.clip,
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(left: Constants.h7(context)),
+                              child: Column(
+                                children: [
+                                  //Imagen perfil
+                                  Container(
+                                    width: Constants.w9(context),
+                                    height: Constants.w9(context),
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        image: DecorationImage(
+                                            fit: BoxFit.fill,
+                                            image: NetworkImage(
+                                                //Imagen de prueba, se colocará la imagen del usuario
+                                                "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"))),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                            Row(
-                              children: [
-                                //Boton editar perfil
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      top: Constants.v1(context)),
-                                  child: Container(
-                                    height: Constants.a6(context) +
-                                        Constants.a2(context),
-                                    child: TextButton(
-                                      child: Text(
-                                        AppLocalizations.of(context)
-                                            .translate("Editar_perfil"),
-                                        style: TextStyle(
-                                            fontSize: Constants.xs(context),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  right: Constants.h1(context),
+                                  left: Constants.h1(context)),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      //Nombre usuario
+                                      SizedBox(
+                                        width: Constants.w11(context),
+                                        child: Text(
+                                          name + ' ' + surnames,
+                                          maxLines: 1,
+                                          style: TextStyle(
+                                            fontSize: Constants.l(context),
                                             fontWeight: Constants.bolder,
-                                            color: Constants.black(context)),
-                                      ),
-                                      onPressed: () {},
-                                      style: ElevatedButton.styleFrom(
-                                          primary: Constants.trueWhite(context),
-                                          textStyle: TextStyle(
-                                            color: Constants.black(context),
                                           ),
-                                          side: BorderSide(
-                                              color: Constants.black(context)),
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10.0))),
-                                    ),
+                                          overflow: TextOverflow.clip,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ],
+                                  Row(
+                                    children: [
+                                      //Boton editar perfil
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            top: Constants.v1(context)),
+                                        child: Container(
+                                          height: Constants.a6(context) +
+                                              Constants.a2(context),
+                                          width: Constants.w10(context),
+                                          child: TextButton(
+                                            child: Text(
+                                              AppLocalizations.of(context)
+                                                  .translate("Editar_perfil"),
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      Constants.xs(context),
+                                                  fontWeight: Constants.bolder,
+                                                  color:
+                                                      Constants.black(context)),
+                                            ),
+                                            onPressed: () {},
+                                            style: ElevatedButton.styleFrom(
+                                                primary: Constants.trueWhite(
+                                                    context),
+                                                textStyle: TextStyle(
+                                                  color:
+                                                      Constants.black(context),
+                                                ),
+                                                side: BorderSide(
+                                                    color: Constants.black(
+                                                        context)),
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10.0))),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
-                      ),
-                    ],
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(Constants.h7(context),
+                              Constants.v7(context), Constants.h7(context), 0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              InkWell(
+                                focusColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                splashColor: Colors.transparent,
+                                onTap: () {
+                                  setState(() {
+                                    tab = ProfileTab.CONTACTS;
+                                  });
+                                },
+                                child: Container(
+                                  width: Constants.w9(context),
+                                  child: Container(
+                                    padding: EdgeInsets.only(
+                                        bottom: Constants.v1(context)),
+                                    decoration: tab == ProfileTab.CONTACTS
+                                        ? BoxDecoration(
+                                            border: Border(
+                                                bottom: BorderSide(
+                                                    color: Constants.black(
+                                                        context),
+                                                    width: 2)))
+                                        : null,
+                                    child: Text(
+                                      'Contactes',
+                                      style: TextStyle(
+                                          color: tab == ProfileTab.CONTACTS
+                                              ? Constants.black(context)
+                                              : Constants.grey(context),
+                                          fontSize: Constants.m(context),
+                                          fontWeight: Constants.bold),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              InkWell(
+                                focusColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                splashColor: Colors.transparent,
+                                onTap: () {
+                                  setState(() {
+                                    tab = ProfileTab.BUBBLES;
+                                  });
+                                },
+                                child: Container(
+                                  width: Constants.w9(context),
+                                  child: Container(
+                                    padding: EdgeInsets.only(
+                                        bottom: Constants.v1(context)),
+                                    decoration: tab == ProfileTab.BUBBLES
+                                        ? BoxDecoration(
+                                            border: Border(
+                                                bottom: BorderSide(
+                                                    color: Constants.black(
+                                                        context),
+                                                    width: 2)))
+                                        : null,
+                                    child: Text(
+                                      'Bombolles',
+                                      style: TextStyle(
+                                          color: tab == ProfileTab.BUBBLES
+                                              ? Constants.black(context)
+                                              : Constants.grey(context),
+                                          fontSize: Constants.m(context),
+                                          fontWeight: Constants.bold),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              InkWell(
+                                focusColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                splashColor: Colors.transparent,
+                                onTap: () {
+                                  setState(() {
+                                    tab = ProfileTab.CHATS;
+                                  });
+                                },
+                                child: Container(
+                                  width: Constants.w9(context),
+                                  child: Container(
+                                    padding: EdgeInsets.only(
+                                        bottom: Constants.v1(context)),
+                                    decoration: tab == ProfileTab.CHATS
+                                        ? BoxDecoration(
+                                            border: Border(
+                                                bottom: BorderSide(
+                                                    color: Constants.black(
+                                                        context),
+                                                    width: 2)))
+                                        : null,
+                                    child: Text(
+                                      'Xats',
+                                      style: TextStyle(
+                                          color: tab == ProfileTab.CHATS
+                                              ? Constants.black(context)
+                                              : Constants.grey(context),
+                                          fontSize: Constants.m(context),
+                                          fontWeight: Constants.bold),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        tab == ProfileTab.CONTACTS
+                            ? Contacts()
+                            : tab == ProfileTab.BUBBLES
+                                ? Bubbles()
+                                : Chats(),
+                      ],
+                    ),
                   ),
           ],
         ),
