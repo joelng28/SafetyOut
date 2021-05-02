@@ -89,7 +89,7 @@ class _Home extends State<Home> {
             l.latitude.toString() +
             ',' +
             l.longitude.toString() +
-            '&radius=5000&keyword=park|nature|sightseeing|public|terrace|mountain|castle&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id');
+            '&radius=5000&keyword=park|nature|sightseeing|terrace|mountain|castle&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id');
     var urlRes = Uri.parse(
         'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
             l.latitude.toString() +

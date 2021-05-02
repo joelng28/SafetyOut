@@ -45,47 +45,41 @@ class SearchInputState extends State<SearchInput> {
     var urlPark = Uri.parse(
         "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" +
             value +
-            "keyword=park&fields=geometry,place_id,name&language=" +
+            "&keyword=park&fields=geometry,place_id,name&language=" +
             Localizations.localeOf(context).languageCode +
             "&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA");
     var urlNature = Uri.parse(
         "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" +
             value +
-            "keyword=nature&fields=geometry,place_id,name&language=" +
+            "&keyword=nature&fields=geometry,place_id,name&language=" +
             Localizations.localeOf(context).languageCode +
             "&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA");
     var urlSight = Uri.parse(
         "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" +
             value +
-            "keyword=sightseeing&fields=geometry,place_id,name&language=" +
-            Localizations.localeOf(context).languageCode +
-            "&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA");
-    var urlPublic = Uri.parse(
-        "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" +
-            value +
-            "keyword=public&fields=geometry,place_id,name&language=" +
+            "&keyword=sightseeing&fields=geometry,place_id,name&language=" +
             Localizations.localeOf(context).languageCode +
             "&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA");
     var urlTerrace = Uri.parse(
         "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" +
             value +
-            "keyword=terracefields=geometry,place_id,name&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA");
+            "&keyword=terrace&fields=geometry,place_id,name&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA");
     var urlMountain = Uri.parse(
         "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" +
             value +
-            "keyword=mountain&fields=geometry,place_id,name&language=" +
+            "&keyword=mountain&fields=geometry,place_id,name&language=" +
             Localizations.localeOf(context).languageCode +
             "&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA");
     var urlCastle = Uri.parse(
         "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" +
             value +
-            "keyword=castle&fields=geometry,place_id,name&language=" +
+            "&keyword=castle&fields=geometry,place_id,name&language=" +
             Localizations.localeOf(context).languageCode +
             "&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA");
     var urlRes = Uri.parse(
         "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" +
             value +
-            "keyword=outdoor seating&fields=geometry,place_id,name&language=" +
+            "&keyword=outdoor seating&fields=geometry,place_id,name&language=" +
             Localizations.localeOf(context).languageCode +
             "&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA");
 
@@ -95,7 +89,6 @@ class SearchInputState extends State<SearchInput> {
       http.get(urlPark),
       http.get(urlNature),
       http.get(urlSight),
-      http.get(urlPublic),
       http.get(urlTerrace),
       http.get(urlMountain),
       http.get(urlCastle),
@@ -112,6 +105,8 @@ class SearchInputState extends State<SearchInput> {
         ;
       });
       setState(() {
+        final ids = pres.map((e) => e["place_id"]).toSet();
+        pres.retainWhere((x) => ids.remove(x["place_id"]));
         predictions = pres;
       });
     });
@@ -131,7 +126,9 @@ class SearchInputState extends State<SearchInput> {
               ),
             ),
             constraints: BoxConstraints(
-              maxHeight: predictions.isNotEmpty ? Constants.a12(context) : 0,
+              maxHeight: predictions.isNotEmpty && focusNode.hasFocus
+                  ? Constants.a12(context)
+                  : 0,
             ),
             width: Constants.wFull(context),
             child: Padding(
@@ -168,22 +165,28 @@ class SearchInputState extends State<SearchInput> {
             child: TextField(
                 focusNode: focusNode,
                 onChanged: (value) {
-                  if (debounce != null && debounce.isActive == false) {
+                  if (debounce != null && debounce.isActive) {
                     debounce.cancel();
                   }
-                  debounce = Timer(Duration(milliseconds: 500), () {
-                    if (value.isNotEmpty) {
+
+                  if (value.isNotEmpty) {
+                    debounce = Timer(Duration(milliseconds: 1000), () {
                       autoCompleteSearch(value);
-                    } else {
-                      if (predictions.isNotEmpty && mounted) {
-                        setState(() {
-                          predictions = [];
-                        });
-                      }
+                    });
+                  } else {
+                    if (predictions.isNotEmpty) {
+                      debounce.cancel();
+                      setState(() {
+                        predictions = [];
+                      });
                     }
-                  });
+                  }
+                  ;
                 },
                 autocorrect: false,
+                onSubmitted: (value) {
+                  focusNode.unfocus();
+                },
                 style: TextStyle(color: Constants.black(context)),
                 decoration: InputDecoration(
                     contentPadding:

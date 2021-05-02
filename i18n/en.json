@@ -89,5 +89,8 @@
     "Modificar_Assistencia": "Modificar Assisténcia",
     "Borrar_Assistencia": "Esborrar Assisténcia",
     "Error_borrar_assistencia": "Error al intentar esborrar l'assisténcia",
-    "Error_modificar_assistencia": "Error al intentar modificar l'assiténcia"
+    "Error_modificar_assistencia": "Error al intentar modificar l'assiténcia",
+    "Tancat": "Tancat",
+    "Obert": "Obert",
+    "Aquest_espai_no_te_horaris": "Aquest espai no té horaris"
 }

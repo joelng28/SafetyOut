@@ -45,6 +45,7 @@ class _Discover extends State<Discover> {
   int placeGauge;
   Uri placeDetailsUrl;
   LatLng placeCords;
+  FocusNode searchNode = FocusNode();
 
   void getOcupation(LatLng cords) async {
     DateTime now = DateTime.now();
@@ -211,7 +212,7 @@ class _Discover extends State<Discover> {
             l.longitude.toString() +
             '&radius=5000&keyword=park&language=' +
             Localizations.localeOf(context).languageCode +
-            '&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id');
+            '&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id,name');
     var urlNature = Uri.parse(
         'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
             l.latitude.toString() +
@@ -219,23 +220,15 @@ class _Discover extends State<Discover> {
             l.longitude.toString() +
             '&radius=5000&keyword=nature&language=' +
             Localizations.localeOf(context).languageCode +
-            '&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id');
+            '&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id,name');
     var urlSight = Uri.parse(
         'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
             l.latitude.toString() +
             ',' +
             l.longitude.toString() +
-            '&radius=5000&keyword=sightseeing&languaage=' +
+            '&radius=5000&keyword=sightseeing&language=' +
             Localizations.localeOf(context).languageCode +
-            '&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id');
-    var urlPublic = Uri.parse(
-        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
-            l.latitude.toString() +
-            ',' +
-            l.longitude.toString() +
-            '&radius=5000&keyword=public&language=' +
-            Localizations.localeOf(context).languageCode +
-            '&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id');
+            '&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id,name');
     var urlTerrace = Uri.parse(
         'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
             l.latitude.toString() +
@@ -243,7 +236,15 @@ class _Discover extends State<Discover> {
             l.longitude.toString() +
             '&radius=5000&keyword=terrace&language=' +
             Localizations.localeOf(context).languageCode +
-            '&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id');
+            '&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id,name');
+    var urlPublic = Uri.parse(
+        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
+            l.latitude.toString() +
+            ',' +
+            l.longitude.toString() +
+            '&radius=5000&keyword=public&language=' +
+            Localizations.localeOf(context).languageCode +
+            '&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id,name');
     var urlMountain = Uri.parse(
         'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
             l.latitude.toString() +
@@ -251,7 +252,7 @@ class _Discover extends State<Discover> {
             l.longitude.toString() +
             '&radius=5000&keyword=mountain&language=' +
             Localizations.localeOf(context).languageCode +
-            '&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id');
+            '&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id,name');
     var urlCastle = Uri.parse(
         'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
             l.latitude.toString() +
@@ -259,7 +260,7 @@ class _Discover extends State<Discover> {
             l.longitude.toString() +
             '&radius=5000&keyword=castle&language=' +
             Localizations.localeOf(context).languageCode +
-            '&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id');
+            '&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id,name');
     var urlRes = Uri.parse(
         'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
             l.latitude.toString() +
@@ -267,7 +268,7 @@ class _Discover extends State<Discover> {
             l.longitude.toString() +
             '&radius=5000&keyword=outdoor seating&language=' +
             Localizations.localeOf(context).languageCode +
-            '&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id');
+            '&fields=geometry,place_id,name&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA');
     Future.wait([
       http.get(urlPark),
       http.get(urlNature),
@@ -285,7 +286,8 @@ class _Discover extends State<Discover> {
         results.forEach((element) {
           Map<String, dynamic> place = {
             "location": element["geometry"]["location"],
-            "place_id": element["place_id"]
+            "place_id": element["place_id"],
+            "name": element["name"]
           };
           places.add(place);
         });
@@ -408,6 +410,7 @@ class _Discover extends State<Discover> {
                     onTap: (lat) {
                       setState(() {
                         viewPlace = false;
+                        searchNode.unfocus();
                       });
                     },
                     initialCameraPosition: firstLocation
@@ -423,10 +426,10 @@ class _Discover extends State<Discover> {
                       setState(() {
                         if (pow(movingCamPos.latitude - lastLatLng.latitude,
                                     2) >=
-                                0.0100000000000 ||
+                                0.0010000000000 ||
                             pow(movingCamPos.longitude - lastLatLng.longitude,
                                     2) >=
-                                0.0100000000000) {
+                                0.0010000000000) {
                           lastLatLng = movingCamPos;
                           retrievePlaces(movingCamPos);
                         }
@@ -532,6 +535,7 @@ class _Discover extends State<Discover> {
                             labelText: AppLocalizations.of(context)
                                 .translate("Cerca_un_espai_obert"),
                             onTapPlace: handlePinTap,
+                            focusNode: searchNode,
                           ),
                         ],
                       )),
@@ -640,8 +644,12 @@ class _Discover extends State<Discover> {
                                   children: [
                                     Text(
                                       placeOpened == true
-                                          ? 'Obert. '
-                                          : 'Tancat. ',
+                                          ? AppLocalizations.of(context)
+                                                  .translate("Obert") +
+                                              '. '
+                                          : AppLocalizations.of(context)
+                                                  .translate("Tancat") +
+                                              '. ',
                                       style: TextStyle(
                                           color: placeOpened == true
                                               ? Constants.green(context)
@@ -651,11 +659,16 @@ class _Discover extends State<Discover> {
                                     ),
                                     Text(
                                       placeOpenHours.isEmpty
-                                          ? 'Aquest espai no té horaris.'
+                                          ? AppLocalizations.of(context)
+                                              .translate(
+                                                  "Aquest_espai_no_te_horaris")
                                           : todaysHours == 'Open 24 hours'
                                               ? AppLocalizations.of(context)
                                                   .translate("Obert_24_hores")
-                                              : todaysHours,
+                                              : todaysHours == 'Closed'
+                                                  ? AppLocalizations.of(context)
+                                                      .translate("Tancat")
+                                                  : todaysHours,
                                       style: TextStyle(
                                           fontSize: Constants.s(context),
                                           fontWeight: Constants.normal),
@@ -740,8 +753,18 @@ class _Discover extends State<Discover> {
                                                                   context)
                                                               .translate(
                                                                   "Obert_24_hores")
-                                                          : placeOpenHours[0]
-                                                      : "Tancat",
+                                                          : placeOpenHours[0] ==
+                                                                  'Closed'
+                                                              ? AppLocalizations
+                                                                      .of(
+                                                                          context)
+                                                                  .translate(
+                                                                      "Tancat")
+                                                              : placeOpenHours[
+                                                                  0]
+                                                      : AppLocalizations.of(
+                                                              context)
+                                                          .translate("Tancat"),
                                                   style: TextStyle(
                                                       fontSize:
                                                           Constants.s(context),
@@ -773,8 +796,18 @@ class _Discover extends State<Discover> {
                                                                   context)
                                                               .translate(
                                                                   "Obert_24_hores")
-                                                          : placeOpenHours[1]
-                                                      : "Tancat",
+                                                          : placeOpenHours[1] ==
+                                                                  'Closed'
+                                                              ? AppLocalizations
+                                                                      .of(
+                                                                          context)
+                                                                  .translate(
+                                                                      "Tancat")
+                                                              : placeOpenHours[
+                                                                  1]
+                                                      : AppLocalizations.of(
+                                                              context)
+                                                          .translate("Tancat"),
                                                   style: TextStyle(
                                                       fontSize:
                                                           Constants.s(context),
@@ -806,8 +839,18 @@ class _Discover extends State<Discover> {
                                                                   context)
                                                               .translate(
                                                                   "Obert_24_hores")
-                                                          : placeOpenHours[2]
-                                                      : "Tancat",
+                                                          : placeOpenHours[2] ==
+                                                                  'Closed'
+                                                              ? AppLocalizations
+                                                                      .of(
+                                                                          context)
+                                                                  .translate(
+                                                                      "Tancat")
+                                                              : placeOpenHours[
+                                                                  2]
+                                                      : AppLocalizations.of(
+                                                              context)
+                                                          .translate("Tancat"),
                                                   style: TextStyle(
                                                       fontSize:
                                                           Constants.s(context),
@@ -840,14 +883,22 @@ class _Discover extends State<Discover> {
                                                                           context)
                                                                       .translate(
                                                                           "Obert_24_hores")
-                                                              ? AppLocalizations
-                                                                      .of(
-                                                                          context)
+                                                              ? AppLocalizations.of(
+                                                                      context)
                                                                   .translate(
                                                                       "Obert_24_hores")
-                                                              : placeOpenHours[
-                                                                  3]
-                                                          : "Tancat",
+                                                              : placeOpenHours[3] ==
+                                                                      'Closed'
+                                                                  ? AppLocalizations.of(
+                                                                          context)
+                                                                      .translate(
+                                                                          "Tancat")
+                                                                  : placeOpenHours[
+                                                                      3]
+                                                          : AppLocalizations.of(
+                                                                  context)
+                                                              .translate(
+                                                                  "Tancat"),
                                                       style: TextStyle(
                                                           fontSize: Constants.s(
                                                               context),
@@ -877,8 +928,18 @@ class _Discover extends State<Discover> {
                                                                   context)
                                                               .translate(
                                                                   "Obert_24_hores")
-                                                          : placeOpenHours[4]
-                                                      : "Tancat",
+                                                          : placeOpenHours[4] ==
+                                                                  'Closed'
+                                                              ? AppLocalizations
+                                                                      .of(
+                                                                          context)
+                                                                  .translate(
+                                                                      "Tancat")
+                                                              : placeOpenHours[
+                                                                  4]
+                                                      : AppLocalizations.of(
+                                                              context)
+                                                          .translate("Tancat"),
                                                   style: TextStyle(
                                                       fontSize:
                                                           Constants.s(context),
@@ -910,8 +971,18 @@ class _Discover extends State<Discover> {
                                                                   context)
                                                               .translate(
                                                                   "Obert_24_hores")
-                                                          : placeOpenHours[5]
-                                                      : "Tancat",
+                                                          : placeOpenHours[5] ==
+                                                                  'Closed'
+                                                              ? AppLocalizations
+                                                                      .of(
+                                                                          context)
+                                                                  .translate(
+                                                                      "Tancat")
+                                                              : placeOpenHours[
+                                                                  5]
+                                                      : AppLocalizations.of(
+                                                              context)
+                                                          .translate("Tancat"),
                                                   style: TextStyle(
                                                       fontSize:
                                                           Constants.s(context),
@@ -943,8 +1014,18 @@ class _Discover extends State<Discover> {
                                                                   context)
                                                               .translate(
                                                                   "Obert_24_hores")
-                                                          : placeOpenHours[6]
-                                                      : "Tancat",
+                                                          : placeOpenHours[6] ==
+                                                                  'Closed'
+                                                              ? AppLocalizations
+                                                                      .of(
+                                                                          context)
+                                                                  .translate(
+                                                                      "Tancat")
+                                                              : placeOpenHours[
+                                                                  6]
+                                                      : AppLocalizations.of(
+                                                              context)
+                                                          .translate("Tancat"),
                                                   style: TextStyle(
                                                       fontSize:
                                                           Constants.s(context),
