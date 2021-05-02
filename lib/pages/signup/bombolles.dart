@@ -11,11 +11,12 @@ class Bubbles extends StatefulWidget {
 class _Bubbles extends State<Bubbles> {
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Center(
-          // Center is a layout widget. It takes a single child and positions it
-          // in the middle of the parent.
-          child: Text('Bombolles')),
+    return Expanded(
+      child: ListView(
+        children: [
+          Text('Bombolles'),
+        ],
+      ),
     );
   }
 }
