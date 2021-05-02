@@ -241,14 +241,6 @@ class _Discover extends State<Discover> {
             '&radius=5000&keyword=terrace&language=' +
             Localizations.localeOf(context).languageCode +
             '&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id,name');
-    var urlPublic = Uri.parse(
-        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
-            l.latitude.toString() +
-            ',' +
-            l.longitude.toString() +
-            '&radius=5000&keyword=public&language=' +
-            Localizations.localeOf(context).languageCode +
-            '&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id,name');
     var urlMountain = Uri.parse(
         'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
             l.latitude.toString() +

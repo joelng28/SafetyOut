@@ -32,6 +32,7 @@ class _Home extends State<Home> {
   LatLng lastLatLng = LatLng(20.5937, 78.9629);
   Location location = Location();
   final Map<String, Marker> markers = {};
+  List<Map<String, dynamic>> places = [];
 
   Future<void> onMapCreated(GoogleMapController cntlr) async {
     String mapStyle;
@@ -83,61 +84,111 @@ class _Home extends State<Home> {
     });
   }
 
-  void retrievePlaces(LatLng l) {
-    var url = Uri.parse(
+  void retrievePlaces(LatLng l) async {
+    var urlPark = Uri.parse(
         'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
             l.latitude.toString() +
             ',' +
             l.longitude.toString() +
-            '&radius=5000&keyword=park|nature|sightseeing|terrace|mountain|castle&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id');
+            '&radius=5000&keyword=park&language=' +
+            Localizations.localeOf(context).languageCode +
+            '&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id,name');
+    var urlNature = Uri.parse(
+        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
+            l.latitude.toString() +
+            ',' +
+            l.longitude.toString() +
+            '&radius=5000&keyword=nature&language=' +
+            Localizations.localeOf(context).languageCode +
+            '&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id,name');
+    var urlSight = Uri.parse(
+        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
+            l.latitude.toString() +
+            ',' +
+            l.longitude.toString() +
+            '&radius=5000&keyword=sightseeing&language=' +
+            Localizations.localeOf(context).languageCode +
+            '&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id,name');
+    var urlTerrace = Uri.parse(
+        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
+            l.latitude.toString() +
+            ',' +
+            l.longitude.toString() +
+            '&radius=5000&keyword=terrace&language=' +
+            Localizations.localeOf(context).languageCode +
+            '&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id,name');
+    var urlMountain = Uri.parse(
+        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
+            l.latitude.toString() +
+            ',' +
+            l.longitude.toString() +
+            '&radius=5000&keyword=mountain&language=' +
+            Localizations.localeOf(context).languageCode +
+            '&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id,name');
+    var urlCastle = Uri.parse(
+        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
+            l.latitude.toString() +
+            ',' +
+            l.longitude.toString() +
+            '&radius=5000&keyword=castle&language=' +
+            Localizations.localeOf(context).languageCode +
+            '&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id,name');
     var urlRes = Uri.parse(
         'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
             l.latitude.toString() +
             ',' +
             l.longitude.toString() +
-            '&radius=5000&keyword=outdoor seating&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=geometry,place_id');
-    Future.wait([http.get(url), http.get(urlRes)]).then((List responses) {
-      List<Map<String, dynamic>> places = [];
-      Map<String, dynamic> body = jsonDecode(responses[0].body);
-      List<dynamic> results = body["results"];
-      results.forEach((element) {
-        Map<String, dynamic> place = {
-          "location": element["geometry"]["location"],
-          "place_id": element["place_id"]
-        };
-        places.add(place);
-      });
-      body = jsonDecode(responses[1].body);
-      results = body["results"];
-      results.forEach((element) {
-        Map<String, dynamic> place = {
-          "location": element["geometry"]["location"],
-          "place_id": element["place_id"]
-        };
-        places.add(place);
-      });
-      setState(() {
-        markers.clear();
-        places.forEach((place) {
-          final marker = Marker(
-            markerId: MarkerId(place["place_id"]),
-            position:
-                LatLng(place["location"]["lat"], place["location"]["lng"]),
-          );
-          markers[place["place_id"]] = marker;
+            '&radius=5000&keyword=takeout&language=' +
+            Localizations.localeOf(context).languageCode +
+            '&fields=geometry,place_id,name&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA');
+    places = [];
+    await Future.wait([
+      http.get(urlPark),
+      http.get(urlNature),
+      http.get(urlSight),
+      http.get(urlTerrace),
+      http.get(urlMountain),
+      http.get(urlCastle),
+      http.get(urlRes)
+    ]).then((List responses) {
+      responses.forEach((r) {
+        Map<String, dynamic> body = jsonDecode(r.body);
+        List<dynamic> results = body["results"];
+        results.forEach((element) {
+          Map<String, dynamic> place = {
+            "location": element["geometry"]["location"],
+            "place_id": element["place_id"],
+            "name": element["name"]
+          };
+          places.add(place);
         });
-        Geocoder.local
-            .findAddressesFromCoordinates(Coordinates(l.latitude, l.longitude))
-            .then((addresses) {
-          Address newAddress = addresses.first;
-          address = newAddress.locality.toString() +
-              ', ' +
-              newAddress.adminArea.toString() +
-              ', ' +
-              newAddress.countryName.toString();
-        }).catchError((error) => {});
       });
     }).catchError((error) => {});
+
+    final ids = places.toList().map((e) => e["place_id"]).toList().toSet();
+    places.toList().retainWhere((x) => ids.remove(x["place_id"]));
+
+    setState(() {
+      markers.clear();
+      places.forEach((place) {
+        final marker = Marker(
+            markerId: MarkerId(place["place_id"]),
+            icon: BitmapDescriptor.defaultMarker,
+            position:
+                LatLng(place["location"]["lat"], place["location"]["lng"]));
+        markers[place["place_id"]] = marker;
+      });
+      Geocoder.local
+          .findAddressesFromCoordinates(Coordinates(l.latitude, l.longitude))
+          .then((addresses) {
+        Address newAddress = addresses.first;
+        address = newAddress.locality.toString() +
+            ', ' +
+            newAddress.adminArea.toString() +
+            ', ' +
+            newAddress.countryName.toString();
+      }).catchError((error) => {});
+    });
   }
 
   void getFirstLocation() {
