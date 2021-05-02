@@ -162,7 +162,7 @@ class _Profile extends State<Profile> {
                       ),
                       Padding(
                         padding: EdgeInsets.only(
-                            right: Constants.h3(context),
+                            right: Constants.h1(context),
                             left: Constants.h7(context)),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -179,7 +179,7 @@ class _Profile extends State<Profile> {
                                       fontSize: Constants.l(context),
                                       fontWeight: Constants.bolder,
                                     ),
-                                    overflow: TextOverflow.ellipsis,
+                                    overflow: TextOverflow.clip,
                                   ),
                                 ),
                               ],

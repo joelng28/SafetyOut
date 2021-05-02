@@ -92,5 +92,7 @@
     "Error_modificar_assistencia": "Error al intentar modificar l'assiténcia",
     "Tancat": "Tancat",
     "Obert": "Obert",
-    "Aquest_espai_no_te_horaris": "Aquest espai no té horaris"
+    "Aquest_espai_no_te_horaris": "Sense horaris",
+    "Mes": "Més",
+    "Menys": "Menys"
 }

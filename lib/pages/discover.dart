@@ -34,6 +34,7 @@ class _Discover extends State<Discover> {
   Location location = Location();
   final Map<String, Marker> markers = {};
 
+  List<Map<String, dynamic>> places = [];
   bool viewPlace = false;
   bool fullHours = false;
   String placeName = '';
@@ -46,6 +47,9 @@ class _Discover extends State<Discover> {
   Uri placeDetailsUrl;
   LatLng placeCords;
   FocusNode searchNode = FocusNode();
+
+  bool viewSug = false;
+  bool fullSugs = false;
 
   void getOcupation(LatLng cords) async {
     DateTime now = DateTime.now();
@@ -204,7 +208,7 @@ class _Discover extends State<Discover> {
     }
   }
 
-  void retrievePlaces(LatLng l) {
+  void retrievePlaces(LatLng l) async {
     var urlPark = Uri.parse(
         'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
             l.latitude.toString() +
@@ -266,20 +270,19 @@ class _Discover extends State<Discover> {
             l.latitude.toString() +
             ',' +
             l.longitude.toString() +
-            '&radius=5000&keyword=outdoor seating&language=' +
+            '&radius=5000&keyword=takeout&language=' +
             Localizations.localeOf(context).languageCode +
             '&fields=geometry,place_id,name&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA');
-    Future.wait([
+    places = [];
+    await Future.wait([
       http.get(urlPark),
       http.get(urlNature),
       http.get(urlSight),
-      http.get(urlPublic),
       http.get(urlTerrace),
       http.get(urlMountain),
       http.get(urlCastle),
       http.get(urlRes)
     ]).then((List responses) {
-      List<Map<String, dynamic>> places = [];
       responses.forEach((r) {
         Map<String, dynamic> body = jsonDecode(r.body);
         List<dynamic> results = body["results"];
@@ -292,48 +295,51 @@ class _Discover extends State<Discover> {
           places.add(place);
         });
       });
-      setState(() {
-        markers.clear();
-        places.forEach((place) {
-          final marker = Marker(
-              markerId: MarkerId(place["place_id"]),
-              icon: BitmapDescriptor.defaultMarker,
-              position:
-                  LatLng(place["location"]["lat"], place["location"]["lng"]),
-              onTap: () {
-                handlePinTap(place["place_id"],
-                    LatLng(place["location"]["lat"], place["location"]["lng"]));
-                String api_key = "AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA";
-                String place_id = place["place_id"];
-                placeDetailsUrl = Uri.parse(
-                    'https://maps.googleapis.com/maps/api/place/details/json?place_id=' +
-                        place_id +
-                        '&key=' +
-                        api_key);
-
-                placeCords =
-                    LatLng(place["location"]["lat"], place["location"]["lng"]);
-
-                getDetails(placeDetailsUrl);
-
-                getOcupation(
-                    LatLng(place["location"]["lat"], place["location"]["lng"]));
-
-                setState(() {
-                  viewPlace = true;
-                });
-                controller
-                    .animateCamera(CameraUpdate.newCameraPosition(
-                        CameraPosition(
-                            target: LatLng(place["location"]["lat"],
-                                place["location"]["lng"]),
-                            zoom: 18)))
-                    .catchError((error) {});
-              });
-          markers[place["place_id"]] = marker;
-        });
-      });
     }).catchError((error) => {});
+
+    final ids = places.toList().map((e) => e["place_id"]).toList().toSet();
+    places.toList().retainWhere((x) => ids.remove(x["place_id"]));
+
+    setState(() {
+      markers.clear();
+      places.forEach((place) {
+        final marker = Marker(
+            markerId: MarkerId(place["place_id"]),
+            icon: BitmapDescriptor.defaultMarker,
+            position:
+                LatLng(place["location"]["lat"], place["location"]["lng"]),
+            onTap: () {
+              handlePinTap(place["place_id"],
+                  LatLng(place["location"]["lat"], place["location"]["lng"]));
+              String api_key = "AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA";
+              String place_id = place["place_id"];
+              placeDetailsUrl = Uri.parse(
+                  'https://maps.googleapis.com/maps/api/place/details/json?place_id=' +
+                      place_id +
+                      '&key=' +
+                      api_key);
+
+              placeCords =
+                  LatLng(place["location"]["lat"], place["location"]["lng"]);
+
+              getDetails(placeDetailsUrl);
+
+              getOcupation(
+                  LatLng(place["location"]["lat"], place["location"]["lng"]));
+
+              setState(() {
+                viewPlace = true;
+              });
+              controller
+                  .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+                      target: LatLng(
+                          place["location"]["lat"], place["location"]["lng"]),
+                      zoom: 18)))
+                  .catchError((error) {});
+            });
+        markers[place["place_id"]] = marker;
+      });
+    });
   }
 
   void getFirstLocation() {
@@ -386,6 +392,9 @@ class _Discover extends State<Discover> {
 
     setState(() {
       viewPlace = true;
+      viewSug = false;
+      fullSugs = false;
+      searchNode.unfocus();
     });
     controller
         .animateCamera(CameraUpdate.newCameraPosition(
@@ -463,60 +472,261 @@ class _Discover extends State<Discover> {
                   Padding(
                     padding: EdgeInsets.only(
                         top: Constants.v7(context) + Constants.v7(context)),
-                    child: Container(
-                        height: Constants.a7(context),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          boxShadow: [
-                            BoxShadow(
-                              offset: Offset(0, 5),
-                              blurRadius: 5,
-                              color: Color.fromARGB(100, 0, 0, 0),
-                            )
-                          ],
-                        ),
-                        child: TextButton(
-                          onPressed: () {},
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                  AppLocalizations.of(context)
-                                      .translate("Suggerencies"),
-                                  style: TextStyle(
-                                      color: Constants.black(context),
-                                      fontWeight: Constants.bold,
-                                      fontSize: Constants.m(context))),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    left: Constants.h1(context)),
-                                child: Icon(FontAwesomeIcons.chevronDown,
-                                    color: Constants.black(context),
-                                    size: 24.0 /
-                                        (MediaQuery.of(context).size.height <
-                                                700
-                                            ? 1.3
-                                            : MediaQuery.of(context)
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                            height: Constants.a7(context),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              boxShadow: [
+                                BoxShadow(
+                                  offset: Offset(0, 5),
+                                  blurRadius: 5,
+                                  color: Color.fromARGB(100, 0, 0, 0),
+                                )
+                              ],
+                            ),
+                            child: TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  viewSug = !viewSug;
+                                });
+                              },
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                      AppLocalizations.of(context)
+                                          .translate("Suggerencies"),
+                                      style: TextStyle(
+                                          color: Constants.black(context),
+                                          fontWeight: Constants.bold,
+                                          fontSize: Constants.m(context))),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        left: Constants.h1(context)),
+                                    child: Icon(
+                                        viewSug
+                                            ? FontAwesomeIcons.chevronUp
+                                            : FontAwesomeIcons.chevronDown,
+                                        color: Constants.black(context),
+                                        size: 24.0 /
+                                            (MediaQuery.of(context)
                                                         .size
                                                         .height <
-                                                    800
-                                                ? 1.15
-                                                : 1)),
-                              )
-                            ],
+                                                    700
+                                                ? 1.3
+                                                : MediaQuery.of(context)
+                                                            .size
+                                                            .height <
+                                                        800
+                                                    ? 1.15
+                                                    : 1)),
+                                  )
+                                ],
+                              ),
+                              style: ButtonStyle(
+                                  padding: MaterialStateProperty.all(
+                                      EdgeInsets.symmetric(
+                                          vertical: Constants.v1(context),
+                                          horizontal: Constants.h1(context))),
+                                  shape: MaterialStateProperty.all(
+                                      RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30.0),
+                                  )),
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Constants.trueWhite(context))),
+                            )),
+                        AnimatedContainer(
+                          duration: Duration(milliseconds: 300),
+                          constraints: BoxConstraints(
+                            maxHeight: viewSug
+                                ? MediaQuery.of(context).size.height
+                                : 0,
                           ),
-                          style: ButtonStyle(
-                              padding: MaterialStateProperty.all(
-                                  EdgeInsets.symmetric(
-                                      vertical: Constants.v1(context),
-                                      horizontal: Constants.h1(context))),
-                              shape: MaterialStateProperty.all(
-                                  RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30.0),
-                              )),
-                              backgroundColor: MaterialStateProperty.all(
-                                  Constants.trueWhite(context))),
-                        )),
+                          width: Constants.wFull(context),
+                          child: SingleChildScrollView(
+                            physics: NeverScrollableScrollPhysics(),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      top: Constants.v2(context),
+                                      bottom: Constants.v2(context)),
+                                  child: Container(
+                                    height: fullSugs
+                                        ? Constants.a13(context)
+                                        : Constants.a11(context),
+                                    child: ListView.builder(
+                                      itemCount:
+                                          fullSugs ? places.toList().length : 3,
+                                      itemBuilder: (context, index) {
+                                        return Padding(
+                                          padding: EdgeInsets.only(
+                                              bottom: Constants.v2(context)),
+                                          child: Row(
+                                            children: [
+                                              Container(
+                                                  constraints: BoxConstraints(
+                                                      maxWidth: Constants.w14(
+                                                          context)),
+                                                  height: Constants.a7(context),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            30),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        offset: Offset(0, 5),
+                                                        blurRadius: 5,
+                                                        color: Color.fromARGB(
+                                                            100, 0, 0, 0),
+                                                      )
+                                                    ],
+                                                  ),
+                                                  child: TextButton(
+                                                    onPressed: () {
+                                                      handlePinTap(
+                                                          places.toList()[index]
+                                                              ["place_id"],
+                                                          LatLng(
+                                                              places.toList()[
+                                                                          index]
+                                                                      [
+                                                                      "location"]
+                                                                  ["lat"],
+                                                              places.toList()[
+                                                                          index]
+                                                                      [
+                                                                      "location"]
+                                                                  ["lng"]));
+                                                      setState(() {
+                                                        viewSug = false;
+                                                        fullSugs = false;
+                                                      });
+                                                    },
+                                                    child: Container(
+                                                      constraints:
+                                                          BoxConstraints(
+                                                              maxWidth:
+                                                                  Constants.w12(
+                                                                      context)),
+                                                      child: Text(
+                                                        places
+                                                                .toList()
+                                                                .isNotEmpty
+                                                            ? places.toList()[
+                                                                index]["name"]
+                                                            : '',
+                                                        style: TextStyle(
+                                                            color:
+                                                                Constants.black(
+                                                                    context),
+                                                            fontWeight:
+                                                                Constants.bold,
+                                                            fontSize:
+                                                                Constants.m(
+                                                                    context)),
+                                                        overflow:
+                                                            TextOverflow.clip,
+                                                      ),
+                                                    ),
+                                                    style: ButtonStyle(
+                                                        padding: MaterialStateProperty.all(
+                                                            EdgeInsets.symmetric(
+                                                                vertical:
+                                                                    Constants.v1(
+                                                                        context),
+                                                                horizontal:
+                                                                    Constants.h1(
+                                                                        context))),
+                                                        shape: MaterialStateProperty
+                                                            .all(
+                                                                RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      30.0),
+                                                        )),
+                                                        backgroundColor:
+                                                            MaterialStateProperty
+                                                                .all(Constants
+                                                                    .trueWhite(
+                                                                        context))),
+                                                  )),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      bottom: Constants.v2(context)),
+                                  child: Container(
+                                      height: Constants.a7(context),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(30),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            offset: Offset(0, 5),
+                                            blurRadius: 5,
+                                            color: Color.fromARGB(100, 0, 0, 0),
+                                          )
+                                        ],
+                                      ),
+                                      child: TextButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            fullSugs = !fullSugs;
+                                          });
+                                        },
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                                fullSugs
+                                                    ? AppLocalizations.of(
+                                                            context)
+                                                        .translate("Menys")
+                                                    : AppLocalizations.of(
+                                                            context)
+                                                        .translate("Mes"),
+                                                style: TextStyle(
+                                                    color: Constants.black(
+                                                        context),
+                                                    fontWeight: Constants.bold,
+                                                    fontSize:
+                                                        Constants.m(context))),
+                                          ],
+                                        ),
+                                        style: ButtonStyle(
+                                            padding: MaterialStateProperty.all(
+                                                EdgeInsets.symmetric(
+                                                    vertical:
+                                                        Constants.v1(context),
+                                                    horizontal:
+                                                        Constants.h1(context))),
+                                            shape: MaterialStateProperty.all(
+                                                RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(30.0),
+                                            )),
+                                            backgroundColor:
+                                                MaterialStateProperty.all(
+                                                    Constants.trueWhite(
+                                                        context))),
+                                      )),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   Container(
                       decoration: BoxDecoration(
@@ -583,11 +793,16 @@ class _Discover extends State<Discover> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              placeName,
-                              style: TextStyle(
-                                  fontSize: Constants.l(context),
-                                  fontWeight: Constants.bolder),
+                            SizedBox(
+                              width: Constants.w12(context),
+                              child: Text(
+                                placeName,
+                                style: TextStyle(
+                                    fontSize: Constants.l(context),
+                                    fontWeight: Constants.bolder),
+                                overflow: TextOverflow.clip,
+                                maxLines: 1,
+                              ),
                             ),
                             InkWell(
                               child: Icon(Icons.close,
@@ -601,11 +816,14 @@ class _Discover extends State<Discover> {
                             ),
                           ],
                         ),
-                        Text(
-                          placeLocation,
-                          style: TextStyle(
-                              fontSize: Constants.m(context),
-                              fontWeight: Constants.bold),
+                        SizedBox(
+                          width: Constants.w12(context),
+                          child: Text(placeLocation,
+                              style: TextStyle(
+                                  fontSize: Constants.m(context),
+                                  fontWeight: Constants.bold),
+                              overflow: TextOverflow.clip,
+                              maxLines: 1),
                         ),
                         Padding(
                           padding: EdgeInsets.only(top: Constants.v3(context)),
@@ -618,11 +836,16 @@ class _Discover extends State<Discover> {
                               Padding(
                                 padding: EdgeInsets.only(
                                     left: Constants.h1(context)),
-                                child: Text(
-                                  placeAddress,
-                                  style: TextStyle(
-                                      fontSize: Constants.s(context),
-                                      fontWeight: Constants.normal),
+                                child: SizedBox(
+                                  width: Constants.w10(context),
+                                  child: Text(
+                                    placeAddress,
+                                    style: TextStyle(
+                                        fontSize: Constants.s(context),
+                                        fontWeight: Constants.normal),
+                                    overflow: TextOverflow.clip,
+                                    maxLines: 1,
+                                  ),
                                 ),
                               )
                             ],
@@ -656,6 +879,7 @@ class _Discover extends State<Discover> {
                                               : Constants.red(context),
                                           fontSize: Constants.s(context),
                                           fontWeight: Constants.normal),
+                                      overflow: TextOverflow.clip,
                                     ),
                                     Text(
                                       placeOpenHours.isEmpty
@@ -672,6 +896,7 @@ class _Discover extends State<Discover> {
                                       style: TextStyle(
                                           fontSize: Constants.s(context),
                                           fontWeight: Constants.normal),
+                                      overflow: TextOverflow.clip,
                                     ),
                                     Padding(
                                       padding: EdgeInsets.only(
@@ -738,38 +963,40 @@ class _Discover extends State<Discover> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                  AppLocalizations.of(context)
-                                                      .translate("Dilluns"),
-                                                  style: TextStyle(
-                                                      fontSize:
-                                                          Constants.s(context),
-                                                      fontWeight:
-                                                          Constants.normal)),
+                                                AppLocalizations.of(context)
+                                                    .translate("Dilluns"),
+                                                style: TextStyle(
+                                                    fontSize:
+                                                        Constants.s(context),
+                                                    fontWeight:
+                                                        Constants.normal),
+                                                overflow: TextOverflow.clip,
+                                              ),
                                               Text(
-                                                  placeOpenHours[0] != null
-                                                      ? placeOpenHours[0] ==
-                                                              'Open 24 hours'
-                                                          ? AppLocalizations.of(
-                                                                  context)
-                                                              .translate(
-                                                                  "Obert_24_hores")
-                                                          : placeOpenHours[0] ==
-                                                                  'Closed'
-                                                              ? AppLocalizations
-                                                                      .of(
-                                                                          context)
-                                                                  .translate(
-                                                                      "Tancat")
-                                                              : placeOpenHours[
-                                                                  0]
-                                                      : AppLocalizations.of(
-                                                              context)
-                                                          .translate("Tancat"),
-                                                  style: TextStyle(
-                                                      fontSize:
-                                                          Constants.s(context),
-                                                      fontWeight:
-                                                          Constants.normal)),
+                                                placeOpenHours[0] != null
+                                                    ? placeOpenHours[0] ==
+                                                            'Open 24 hours'
+                                                        ? AppLocalizations.of(
+                                                                context)
+                                                            .translate(
+                                                                "Obert_24_hores")
+                                                        : placeOpenHours[0] ==
+                                                                'Closed'
+                                                            ? AppLocalizations
+                                                                    .of(context)
+                                                                .translate(
+                                                                    "Tancat")
+                                                            : placeOpenHours[0]
+                                                    : AppLocalizations.of(
+                                                            context)
+                                                        .translate("Tancat"),
+                                                style: TextStyle(
+                                                    fontSize:
+                                                        Constants.s(context),
+                                                    fontWeight:
+                                                        Constants.normal),
+                                                overflow: TextOverflow.clip,
+                                              ),
                                             ],
                                           ),
                                         ),
@@ -781,38 +1008,40 @@ class _Discover extends State<Discover> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                  AppLocalizations.of(context)
-                                                      .translate("Dimarts"),
-                                                  style: TextStyle(
-                                                      fontSize:
-                                                          Constants.s(context),
-                                                      fontWeight:
-                                                          Constants.normal)),
+                                                AppLocalizations.of(context)
+                                                    .translate("Dimarts"),
+                                                style: TextStyle(
+                                                    fontSize:
+                                                        Constants.s(context),
+                                                    fontWeight:
+                                                        Constants.normal),
+                                                overflow: TextOverflow.clip,
+                                              ),
                                               Text(
-                                                  placeOpenHours[1] != null
-                                                      ? placeOpenHours[1] ==
-                                                              'Open 24 hours'
-                                                          ? AppLocalizations.of(
-                                                                  context)
-                                                              .translate(
-                                                                  "Obert_24_hores")
-                                                          : placeOpenHours[1] ==
-                                                                  'Closed'
-                                                              ? AppLocalizations
-                                                                      .of(
-                                                                          context)
-                                                                  .translate(
-                                                                      "Tancat")
-                                                              : placeOpenHours[
-                                                                  1]
-                                                      : AppLocalizations.of(
-                                                              context)
-                                                          .translate("Tancat"),
-                                                  style: TextStyle(
-                                                      fontSize:
-                                                          Constants.s(context),
-                                                      fontWeight:
-                                                          Constants.normal)),
+                                                placeOpenHours[1] != null
+                                                    ? placeOpenHours[1] ==
+                                                            'Open 24 hours'
+                                                        ? AppLocalizations.of(
+                                                                context)
+                                                            .translate(
+                                                                "Obert_24_hores")
+                                                        : placeOpenHours[1] ==
+                                                                'Closed'
+                                                            ? AppLocalizations
+                                                                    .of(context)
+                                                                .translate(
+                                                                    "Tancat")
+                                                            : placeOpenHours[1]
+                                                    : AppLocalizations.of(
+                                                            context)
+                                                        .translate("Tancat"),
+                                                style: TextStyle(
+                                                    fontSize:
+                                                        Constants.s(context),
+                                                    fontWeight:
+                                                        Constants.normal),
+                                                overflow: TextOverflow.clip,
+                                              ),
                                             ],
                                           ),
                                         ),
@@ -824,38 +1053,40 @@ class _Discover extends State<Discover> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                  AppLocalizations.of(context)
-                                                      .translate("Dimecres"),
-                                                  style: TextStyle(
-                                                      fontSize:
-                                                          Constants.s(context),
-                                                      fontWeight:
-                                                          Constants.normal)),
+                                                AppLocalizations.of(context)
+                                                    .translate("Dimecres"),
+                                                style: TextStyle(
+                                                    fontSize:
+                                                        Constants.s(context),
+                                                    fontWeight:
+                                                        Constants.normal),
+                                                overflow: TextOverflow.clip,
+                                              ),
                                               Text(
-                                                  placeOpenHours[2] != null
-                                                      ? placeOpenHours[2] ==
-                                                              'Open 24 hours'
-                                                          ? AppLocalizations.of(
-                                                                  context)
-                                                              .translate(
-                                                                  "Obert_24_hores")
-                                                          : placeOpenHours[2] ==
-                                                                  'Closed'
-                                                              ? AppLocalizations
-                                                                      .of(
-                                                                          context)
-                                                                  .translate(
-                                                                      "Tancat")
-                                                              : placeOpenHours[
-                                                                  2]
-                                                      : AppLocalizations.of(
-                                                              context)
-                                                          .translate("Tancat"),
-                                                  style: TextStyle(
-                                                      fontSize:
-                                                          Constants.s(context),
-                                                      fontWeight:
-                                                          Constants.normal)),
+                                                placeOpenHours[2] != null
+                                                    ? placeOpenHours[2] ==
+                                                            'Open 24 hours'
+                                                        ? AppLocalizations.of(
+                                                                context)
+                                                            .translate(
+                                                                "Obert_24_hores")
+                                                        : placeOpenHours[2] ==
+                                                                'Closed'
+                                                            ? AppLocalizations
+                                                                    .of(context)
+                                                                .translate(
+                                                                    "Tancat")
+                                                            : placeOpenHours[2]
+                                                    : AppLocalizations.of(
+                                                            context)
+                                                        .translate("Tancat"),
+                                                style: TextStyle(
+                                                    fontSize:
+                                                        Constants.s(context),
+                                                    fontWeight:
+                                                        Constants.normal),
+                                                overflow: TextOverflow.clip,
+                                              ),
                                             ],
                                           ),
                                         ),
@@ -868,42 +1099,46 @@ class _Discover extends State<Discover> {
                                                         .spaceBetween,
                                                 children: [
                                                   Text(
-                                                      AppLocalizations.of(
-                                                              context)
-                                                          .translate("Dijous"),
-                                                      style: TextStyle(
-                                                          fontSize: Constants.s(
-                                                              context),
-                                                          fontWeight: Constants
-                                                              .normal)),
+                                                    AppLocalizations.of(context)
+                                                        .translate("Dijous"),
+                                                    style: TextStyle(
+                                                        fontSize: Constants.s(
+                                                            context),
+                                                        fontWeight:
+                                                            Constants.normal),
+                                                    overflow: TextOverflow.clip,
+                                                  ),
                                                   Text(
-                                                      placeOpenHours[3] != null
-                                                          ? placeOpenHours[3] ==
-                                                                  AppLocalizations.of(
-                                                                          context)
-                                                                      .translate(
-                                                                          "Obert_24_hores")
-                                                              ? AppLocalizations.of(
-                                                                      context)
-                                                                  .translate(
-                                                                      "Obert_24_hores")
-                                                              : placeOpenHours[3] ==
-                                                                      'Closed'
-                                                                  ? AppLocalizations.of(
-                                                                          context)
-                                                                      .translate(
-                                                                          "Tancat")
-                                                                  : placeOpenHours[
-                                                                      3]
-                                                          : AppLocalizations.of(
-                                                                  context)
-                                                              .translate(
-                                                                  "Tancat"),
-                                                      style: TextStyle(
-                                                          fontSize: Constants.s(
-                                                              context),
-                                                          fontWeight: Constants
-                                                              .normal)),
+                                                    placeOpenHours[3] != null
+                                                        ? placeOpenHours[3] ==
+                                                                AppLocalizations.of(
+                                                                        context)
+                                                                    .translate(
+                                                                        "Obert_24_hores")
+                                                            ? AppLocalizations
+                                                                    .of(context)
+                                                                .translate(
+                                                                    "Obert_24_hores")
+                                                            : placeOpenHours[
+                                                                        3] ==
+                                                                    'Closed'
+                                                                ? AppLocalizations.of(
+                                                                        context)
+                                                                    .translate(
+                                                                        "Tancat")
+                                                                : placeOpenHours[
+                                                                    3]
+                                                        : AppLocalizations.of(
+                                                                context)
+                                                            .translate(
+                                                                "Tancat"),
+                                                    style: TextStyle(
+                                                        fontSize: Constants.s(
+                                                            context),
+                                                        fontWeight:
+                                                            Constants.normal),
+                                                    overflow: TextOverflow.clip,
+                                                  ),
                                                 ])),
                                         Padding(
                                           padding: EdgeInsets.only(
@@ -913,38 +1148,40 @@ class _Discover extends State<Discover> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                  AppLocalizations.of(context)
-                                                      .translate("Divendres"),
-                                                  style: TextStyle(
-                                                      fontSize:
-                                                          Constants.s(context),
-                                                      fontWeight:
-                                                          Constants.normal)),
+                                                AppLocalizations.of(context)
+                                                    .translate("Divendres"),
+                                                style: TextStyle(
+                                                    fontSize:
+                                                        Constants.s(context),
+                                                    fontWeight:
+                                                        Constants.normal),
+                                                overflow: TextOverflow.clip,
+                                              ),
                                               Text(
-                                                  placeOpenHours[4] != null
-                                                      ? placeOpenHours[4] ==
-                                                              'Open 24 hours'
-                                                          ? AppLocalizations.of(
-                                                                  context)
-                                                              .translate(
-                                                                  "Obert_24_hores")
-                                                          : placeOpenHours[4] ==
-                                                                  'Closed'
-                                                              ? AppLocalizations
-                                                                      .of(
-                                                                          context)
-                                                                  .translate(
-                                                                      "Tancat")
-                                                              : placeOpenHours[
-                                                                  4]
-                                                      : AppLocalizations.of(
-                                                              context)
-                                                          .translate("Tancat"),
-                                                  style: TextStyle(
-                                                      fontSize:
-                                                          Constants.s(context),
-                                                      fontWeight:
-                                                          Constants.normal)),
+                                                placeOpenHours[4] != null
+                                                    ? placeOpenHours[4] ==
+                                                            'Open 24 hours'
+                                                        ? AppLocalizations.of(
+                                                                context)
+                                                            .translate(
+                                                                "Obert_24_hores")
+                                                        : placeOpenHours[4] ==
+                                                                'Closed'
+                                                            ? AppLocalizations
+                                                                    .of(context)
+                                                                .translate(
+                                                                    "Tancat")
+                                                            : placeOpenHours[4]
+                                                    : AppLocalizations.of(
+                                                            context)
+                                                        .translate("Tancat"),
+                                                style: TextStyle(
+                                                    fontSize:
+                                                        Constants.s(context),
+                                                    fontWeight:
+                                                        Constants.normal),
+                                                overflow: TextOverflow.clip,
+                                              ),
                                             ],
                                           ),
                                         ),
@@ -956,38 +1193,40 @@ class _Discover extends State<Discover> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                  AppLocalizations.of(context)
-                                                      .translate("Dissabte"),
-                                                  style: TextStyle(
-                                                      fontSize:
-                                                          Constants.s(context),
-                                                      fontWeight:
-                                                          Constants.normal)),
+                                                AppLocalizations.of(context)
+                                                    .translate("Dissabte"),
+                                                style: TextStyle(
+                                                    fontSize:
+                                                        Constants.s(context),
+                                                    fontWeight:
+                                                        Constants.normal),
+                                                overflow: TextOverflow.clip,
+                                              ),
                                               Text(
-                                                  placeOpenHours[5] != null
-                                                      ? placeOpenHours[5] ==
-                                                              'Open 24 hours'
-                                                          ? AppLocalizations.of(
-                                                                  context)
-                                                              .translate(
-                                                                  "Obert_24_hores")
-                                                          : placeOpenHours[5] ==
-                                                                  'Closed'
-                                                              ? AppLocalizations
-                                                                      .of(
-                                                                          context)
-                                                                  .translate(
-                                                                      "Tancat")
-                                                              : placeOpenHours[
-                                                                  5]
-                                                      : AppLocalizations.of(
-                                                              context)
-                                                          .translate("Tancat"),
-                                                  style: TextStyle(
-                                                      fontSize:
-                                                          Constants.s(context),
-                                                      fontWeight:
-                                                          Constants.normal)),
+                                                placeOpenHours[5] != null
+                                                    ? placeOpenHours[5] ==
+                                                            'Open 24 hours'
+                                                        ? AppLocalizations.of(
+                                                                context)
+                                                            .translate(
+                                                                "Obert_24_hores")
+                                                        : placeOpenHours[5] ==
+                                                                'Closed'
+                                                            ? AppLocalizations
+                                                                    .of(context)
+                                                                .translate(
+                                                                    "Tancat")
+                                                            : placeOpenHours[5]
+                                                    : AppLocalizations.of(
+                                                            context)
+                                                        .translate("Tancat"),
+                                                style: TextStyle(
+                                                    fontSize:
+                                                        Constants.s(context),
+                                                    fontWeight:
+                                                        Constants.normal),
+                                                overflow: TextOverflow.clip,
+                                              ),
                                             ],
                                           ),
                                         ),
@@ -999,38 +1238,40 @@ class _Discover extends State<Discover> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                  AppLocalizations.of(context)
-                                                      .translate("Diumenge"),
-                                                  style: TextStyle(
-                                                      fontSize:
-                                                          Constants.s(context),
-                                                      fontWeight:
-                                                          Constants.normal)),
+                                                AppLocalizations.of(context)
+                                                    .translate("Diumenge"),
+                                                style: TextStyle(
+                                                    fontSize:
+                                                        Constants.s(context),
+                                                    fontWeight:
+                                                        Constants.normal),
+                                                overflow: TextOverflow.clip,
+                                              ),
                                               Text(
-                                                  placeOpenHours[6] != null
-                                                      ? placeOpenHours[6] ==
-                                                              'Open 24 hours'
-                                                          ? AppLocalizations.of(
-                                                                  context)
-                                                              .translate(
-                                                                  "Obert_24_hores")
-                                                          : placeOpenHours[6] ==
-                                                                  'Closed'
-                                                              ? AppLocalizations
-                                                                      .of(
-                                                                          context)
-                                                                  .translate(
-                                                                      "Tancat")
-                                                              : placeOpenHours[
-                                                                  6]
-                                                      : AppLocalizations.of(
-                                                              context)
-                                                          .translate("Tancat"),
-                                                  style: TextStyle(
-                                                      fontSize:
-                                                          Constants.s(context),
-                                                      fontWeight:
-                                                          Constants.normal)),
+                                                placeOpenHours[6] != null
+                                                    ? placeOpenHours[6] ==
+                                                            'Open 24 hours'
+                                                        ? AppLocalizations.of(
+                                                                context)
+                                                            .translate(
+                                                                "Obert_24_hores")
+                                                        : placeOpenHours[6] ==
+                                                                'Closed'
+                                                            ? AppLocalizations
+                                                                    .of(context)
+                                                                .translate(
+                                                                    "Tancat")
+                                                            : placeOpenHours[6]
+                                                    : AppLocalizations.of(
+                                                            context)
+                                                        .translate("Tancat"),
+                                                style: TextStyle(
+                                                    fontSize:
+                                                        Constants.s(context),
+                                                    fontWeight:
+                                                        Constants.normal),
+                                                overflow: TextOverflow.clip,
+                                              ),
                                             ],
                                           ),
                                         ),
@@ -1058,6 +1299,7 @@ class _Discover extends State<Discover> {
                                   style: TextStyle(
                                       fontSize: Constants.s(context),
                                       fontWeight: Constants.normal),
+                                  overflow: TextOverflow.clip,
                                 ),
                               )
                             ],
@@ -1133,6 +1375,7 @@ class _Discover extends State<Discover> {
             });
             setState(() {
               viewPlace = false;
+              searchNode.unfocus();
             });
           },
           child: Icon(

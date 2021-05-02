@@ -93,6 +93,8 @@
     "Error_modificar_assistencia": "Error al intentar modificar l'assiténcia",
     "Tancat": "Cerrado",
     "Obert": "Abierto",
-    "Aquest_espai_no_te_horaris": "Este espacio no tiene horarios"
+    "Aquest_espai_no_te_horaris": "Sin horarios",
+    "Mes": "Más",
+    "Menys": "Menos"
 }
     

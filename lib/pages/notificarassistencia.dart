@@ -334,21 +334,31 @@ class _NotificarAssistencia extends State<NotificarAssistencia> {
             child: Column(
               children: <Widget>[
                 Row(children: [
-                  Text(
-                    placeName,
-                    style: TextStyle(
-                        color: Constants.black(context),
-                        fontWeight: Constants.bolder,
-                        fontSize: Constants.l(context)),
+                  SizedBox(
+                    width: Constants.w12(context),
+                    child: Text(
+                      placeName,
+                      style: TextStyle(
+                          color: Constants.black(context),
+                          fontWeight: Constants.bolder,
+                          fontSize: Constants.l(context)),
+                      overflow: TextOverflow.clip,
+                      maxLines: 1,
+                    ),
                   )
                 ]),
                 Row(children: [
-                  Text(
-                    placeLocation,
-                    style: TextStyle(
-                        color: Constants.black(context),
-                        fontWeight: Constants.bolder,
-                        fontSize: Constants.m(context)),
+                  SizedBox(
+                    width: Constants.w12(context),
+                    child: Text(
+                      placeLocation,
+                      style: TextStyle(
+                          color: Constants.black(context),
+                          fontWeight: Constants.bolder,
+                          fontSize: Constants.m(context)),
+                      overflow: TextOverflow.clip,
+                      maxLines: 1,
+                    ),
                   ),
                 ]),
                 Padding(
@@ -362,11 +372,16 @@ class _NotificarAssistencia extends State<NotificarAssistencia> {
                         width: Constants.xxl(context)),
                     Padding(
                       padding: EdgeInsets.only(left: Constants.h1(context)),
-                      child: Text(
-                        placeAddress,
-                        style: TextStyle(
-                            color: Constants.black(context),
-                            fontSize: Constants.s(context)),
+                      child: SizedBox(
+                        width: Constants.w12(context),
+                        child: Text(
+                          placeAddress,
+                          style: TextStyle(
+                              color: Constants.black(context),
+                              fontSize: Constants.s(context)),
+                          overflow: TextOverflow.clip,
+                          maxLines: 1,
+                        ),
                       ),
                     ),
                   ]),
