@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:app/defaults/constants.dart';
+import 'package:app/pages/restriccions.dart';
 import 'package:app/widgets/location_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -365,7 +366,8 @@ class _Home extends State<Home> {
                           fontWeight: Constants.bold)),
                 ],
               ),
-            )
+            ),
+            Restrictions()
           ],
         ),
       ),

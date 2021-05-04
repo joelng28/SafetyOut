@@ -146,7 +146,11 @@ class SearchInputState extends State<SearchInput> {
                         color: Constants.grey(context),
                       ),
                     ),
-                    title: Text(predictions[index]["name"]),
+                    title: Text(predictions[index]["name"],
+                        style: TextStyle(
+                          color: Constants.black(context),
+                          fontSize: Constants.s(context),
+                        )),
                     onTap: () {
                       onTapPlace(
                           predictions[index]["place_id"],
