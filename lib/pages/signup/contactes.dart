@@ -1,3 +1,4 @@
+import 'package:app/defaults/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -9,13 +10,30 @@ class Contacts extends StatefulWidget {
 }
 
 class _Contacts extends State<Contacts> {
+  List<String> Contactos = ['Contacto1', 'Contacto2'];
+  
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: ListView(
-        children: [
-          Text('Contactes'),
-        ],
+      child: ListView.separated(
+        itemBuilder: (_, index) =>
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children:[
+              Image(
+                image: AssetImage('icons/user.svg'),
+                color: Constants.black(context),
+                width: Constants.xxl(context),
+                height:Constants.xxl(context),
+              ),
+              Expanded(
+                child: Text(Contactos[index])
+              )
+            ]
+            
+          ),
+        separatorBuilder: (_, _) => Divider(),
+        itemCount: Contactos.length,
       ),
     );
   }

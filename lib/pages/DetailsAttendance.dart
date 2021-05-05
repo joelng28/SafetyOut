@@ -4,7 +4,7 @@ import 'package:flutter_picker/flutter_picker.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../app_localizations.dart';
 import '../defaults/constants.dart';
-import 'attendance.dart';
+import 'package:app/pages/Attendance.dart';
 import 'package:http/http.dart' as http;
 
 class DetailsAttendance extends StatefulWidget {

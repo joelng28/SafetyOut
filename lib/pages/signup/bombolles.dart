@@ -1,3 +1,4 @@
+import 'package:app/defaults/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -9,13 +10,30 @@ class Bubbles extends StatefulWidget {
 }
 
 class _Bubbles extends State<Bubbles> {
+  List<String> Pomp = ['Bubble1', 'Bubble2'];
+  
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: ListView(
-        children: [
-          Text('Bombolles'),
-        ],
+      child: ListView.separated(
+        itemBuilder: (_, index) =>
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children:[
+              Image(
+                image: AssetImage('icons/bubbles.svg'),
+                color: Constants.black(context),
+                width: Constants.xxl(context),
+                height:Constants.xxl(context),
+              ),
+              Expanded(
+                child: Text(Pomp[index])
+              )
+            ]
+            
+          ),
+        separatorBuilder: (_, _) => Divider(),
+        itemCount: Pomp.length,
       ),
     );
   }
