@@ -1,16 +1,15 @@
 import 'package:app/defaults/constants.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class Contacts extends StatefulWidget {
-  Contacts({Key key}) : super(key: key);
+class Bubbles extends StatefulWidget {
+  Bubbles({Key key}) : super(key: key);
 
   @override
-  _Contacts createState() => _Contacts();
+  _Bubbles createState() => _Bubbles();
 }
 
-class _Contacts extends State<Contacts> {
-  List<String> Contactos = ['Contacto1', 'Contacto2'];
+class _Bubbles extends State<Bubbles> {
+  List<String> Pomp = ['Bubble1', 'Bubble2'];
   
   @override
   Widget build(BuildContext context) {
@@ -21,19 +20,19 @@ class _Contacts extends State<Contacts> {
             mainAxisAlignment: MainAxisAlignment.center,
             children:[
               Image(
-                image: AssetImage('icons/user.svg'),
+                image: AssetImage('icons/bubbles.svg'),
                 color: Constants.black(context),
                 width: Constants.xxl(context),
                 height:Constants.xxl(context),
               ),
               Expanded(
-                child: Text(Contactos[index])
+                child: Text(Pomp[index])
               )
             ]
             
           ),
-        separatorBuilder: (_, _) => Divider(),
-        itemCount: Contactos.length,
+        separatorBuilder: (_, __) => Divider(),
+        itemCount: Pomp.length,
       ),
     );
   }
