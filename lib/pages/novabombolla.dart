@@ -15,8 +15,8 @@ class _newBubble extends State<newBubble> {
   static List<String> contactes;
   var participants = List<bool>.filled(contactes.length, false);
 
-  Function newBubble() {}
-  
+  Function newBubble = () {};
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
