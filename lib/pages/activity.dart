@@ -31,11 +31,14 @@ class _Activity extends State<Activity> {
           child:
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Column(children: [
-              Text("Lloc",
-                  style: TextStyle(
-                    color: Constants.black(context),
-                    fontSize: Constants.m(context),
-                  )),
+              Container(
+                constraints: BoxConstraints(maxWidth: Constants.w10(context)),
+                child: Text("Lloc",
+                    style: TextStyle(
+                      color: Constants.black(context),
+                      fontSize: Constants.m(context),
+                    )),
+              ),
             ]),
             Column(children: [
               InkWell(
@@ -48,7 +51,7 @@ class _Activity extends State<Activity> {
                   color: Constants.black(context),
                 ),
                 onTap: () {},
-              )
+              ),
             ])
           ]),
         ),

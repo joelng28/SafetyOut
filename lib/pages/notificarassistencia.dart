@@ -79,7 +79,7 @@ class _NotificarAssistencia extends State<NotificarAssistencia> {
             });
       } else {
         await SecureStorage.readSecureStorage('SafetyOUT_UserId').then((val) {
-          var url = Uri.parse('https://safetyout.herokuapp.com/assistance/add');
+          var url = Uri.parse('https://safetyout.herokuapp.com/assistance');
           var body = jsonEncode({
             'user_id': val,
             'place': {
@@ -107,7 +107,6 @@ class _NotificarAssistencia extends State<NotificarAssistencia> {
               .post(url,
                   headers: {"Content-Type": "application/json"}, body: body)
               .then((res) {
-            print(res.statusCode);
             if (res.statusCode == 201) {
               Navigator.of(context).pop();
             } //Correcte, guardar, notificació assitència ok i tornar a pantalla discover

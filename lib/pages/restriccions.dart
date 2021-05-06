@@ -44,112 +44,114 @@ class _Restrictions extends State<Restrictions> {
     if (response.statusCode == 200) {
       Map<String, dynamic> body = jsonDecode(response.body);
 
-      setState(() {
-        List<Widget> m = [];
-        body["movility"].forEach((val) {
-          m.add(Text(val,
-              style: TextStyle(
-                  fontSize: Constants.xs(context),
-                  color: Constants.black(context))));
-        });
-        restrictions["movility"] = m;
-
-        List<Widget> c = [];
-        body["curfew"].forEach((val) {
-          c.add(Text(val,
-              style: TextStyle(
-                  fontSize: Constants.xs(context),
-                  color: Constants.black(context))));
-        });
-        restrictions["curfew"] = c;
-        ;
-
-        List<Widget> g = [];
-        body["groups"].forEach((val) {
-          g.add(Text(val,
-              style: TextStyle(
-                  fontSize: Constants.xs(context),
-                  color: Constants.black(context))));
-        });
-        restrictions["groups"] = g;
-        ;
-
-        List<Widget> r = [];
-        body["restaurants"].forEach((key, val) {
-          r.add(Text(key,
-              style: TextStyle(
-                  fontSize: Constants.s(context),
-                  color: Constants.black(context),
-                  fontWeight: Constants.bold)));
-          val.forEach((val) {
-            r.add(Text(val,
+      if (mounted) {
+        setState(() {
+          List<Widget> m = [];
+          body["movility"].forEach((val) {
+            m.add(Text(val,
                 style: TextStyle(
                     fontSize: Constants.xs(context),
                     color: Constants.black(context))));
           });
-        });
-        restrictions["restaurants"] = r;
+          restrictions["movility"] = m;
 
-        List<Widget> e = [];
-        body["commerce"].forEach((key, val) {
-          e.add(Padding(
-            padding: EdgeInsets.only(top: Constants.v1(context)),
-            child: Text(key,
+          List<Widget> c = [];
+          body["curfew"].forEach((val) {
+            c.add(Text(val,
+                style: TextStyle(
+                    fontSize: Constants.xs(context),
+                    color: Constants.black(context))));
+          });
+          restrictions["curfew"] = c;
+          ;
+
+          List<Widget> g = [];
+          body["groups"].forEach((val) {
+            g.add(Text(val,
+                style: TextStyle(
+                    fontSize: Constants.xs(context),
+                    color: Constants.black(context))));
+          });
+          restrictions["groups"] = g;
+          ;
+
+          List<Widget> r = [];
+          body["restaurants"].forEach((key, val) {
+            r.add(Text(key,
                 style: TextStyle(
                     fontSize: Constants.s(context),
                     color: Constants.black(context),
-                    fontWeight: Constants.bold)),
-          ));
-          if (val.runtimeType.toString() ==
-              '_InternalLinkedHashMap<String, dynamic>') {
-            val.forEach((key, val) {
-              e.add(Text(key,
+                    fontWeight: Constants.bold)));
+            val.forEach((val) {
+              r.add(Text(val,
                   style: TextStyle(
                       fontSize: Constants.xs(context),
+                      color: Constants.black(context))));
+            });
+          });
+          restrictions["restaurants"] = r;
+
+          List<Widget> e = [];
+          body["commerce"].forEach((key, val) {
+            e.add(Padding(
+              padding: EdgeInsets.only(top: Constants.v1(context)),
+              child: Text(key,
+                  style: TextStyle(
+                      fontSize: Constants.s(context),
                       color: Constants.black(context),
-                      fontWeight: Constants.bold)));
+                      fontWeight: Constants.bold)),
+            ));
+            if (val.runtimeType.toString() ==
+                '_InternalLinkedHashMap<String, dynamic>') {
+              val.forEach((key, val) {
+                e.add(Text(key,
+                    style: TextStyle(
+                        fontSize: Constants.xs(context),
+                        color: Constants.black(context),
+                        fontWeight: Constants.bold)));
+                val.forEach((val) {
+                  e.add(Text(val,
+                      style: TextStyle(
+                          fontSize: Constants.xs(context),
+                          color: Constants.black(context))));
+                });
+              });
+            } else if (val.runtimeType.toString() == 'List<dynamic>') {
               val.forEach((val) {
                 e.add(Text(val,
                     style: TextStyle(
                         fontSize: Constants.xs(context),
                         color: Constants.black(context))));
               });
-            });
-          } else if (val.runtimeType.toString() == 'List<dynamic>') {
-            val.forEach((val) {
-              e.add(Text(val,
-                  style: TextStyle(
-                      fontSize: Constants.xs(context),
-                      color: Constants.black(context))));
-            });
-          }
-        });
-        restrictions["commerce"] = e;
-        List<Widget> p = [];
-        body["public transport"].forEach((val) {
-          p.add(Text(val,
-              style: TextStyle(
-                  fontSize: Constants.xs(context),
-                  color: Constants.black(context))));
-        });
-        restrictions["public transport"] = p;
-
-        List<Widget> t = [];
-        body["culture"].forEach((key, val) {
-          t.add(Text(key,
-              style: TextStyle(
-                  fontSize: Constants.s(context),
-                  color: Constants.black(context),
-                  fontWeight: Constants.bold)));
-          val.forEach((val) {
-            t.add(Text(val,
+            }
+          });
+          restrictions["commerce"] = e;
+          List<Widget> p = [];
+          body["public transport"].forEach((val) {
+            p.add(Text(val,
                 style: TextStyle(
                     fontSize: Constants.xs(context),
                     color: Constants.black(context))));
           });
+          restrictions["public transport"] = p;
+
+          List<Widget> t = [];
+          body["culture"].forEach((key, val) {
+            t.add(Text(key,
+                style: TextStyle(
+                    fontSize: Constants.s(context),
+                    color: Constants.black(context),
+                    fontWeight: Constants.bold)));
+            val.forEach((val) {
+              t.add(Text(val,
+                  style: TextStyle(
+                      fontSize: Constants.xs(context),
+                      color: Constants.black(context))));
+            });
+          });
+          restrictions["culture"] = t;
         });
-        restrictions["culture"] = t;
-      });
+      }
     } else {
       await showDialog(
           context: context,

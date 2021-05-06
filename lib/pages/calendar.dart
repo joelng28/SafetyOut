@@ -32,59 +32,35 @@ class _Calendar extends State<Calendar> {
   DateTime pickedDate = DateTime.now();
 
   void getAssistencies() async {
-/*     await SecureStorage.readSecureStorage('SafetyOUT_UserId').then((val) {
-      var url = Uri.parse('https://safetyout.herokuapp.com/assistance/add');
-      var body = jsonEncode({'user_id': val, 'startDate': pickedDate});
-      http
-          .post(url, headers: {"Content-Type": "application/json"}, body: body)
-          .then((res) {
+    await SecureStorage.readSecureStorage('SafetyOUT_UserId').then((val) {
+      var url = Uri.parse(
+          'https://safetyout.herokuapp.com/assistance/consultOnDate?user_id=' +
+              val +
+              '&year=' +
+              pickedDate.year.toString() +
+              '&month=' +
+              (pickedDate.month - 1).toString() +
+              '&day=' +
+              pickedDate.day.toString());
+      http.get(url).then((res) {
+        print(val);
         print(res.statusCode);
         if (res.statusCode == 200) {
           setState(() {
             Map<String, dynamic> body = jsonDecode(res.body);
-            print(res.body);
-            List<Map<String, dynamic>> assistances = body['currentAssistances'];
+            List<dynamic> assistances = body['message'];
+            print(body);
             assistances.forEach((a) async {
               var urlRes = Uri.parse(
-                  'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
-                      a['place']['latitude'] +
-                      ',' +
-                      a['place']['longitude'] +
-                      '&radius=5000&keyword=outdoor seating&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA&fields=name');
-              var response = await http.get(urlRes).then((p) {
+                  'https://maps.googleapis.com/maps/api/place/nearbysearch/json?place_id=' +
+                      a['placeId'] +
+                      '&fields=name&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA');
+              await http.get(urlRes).then((p) {
                 Map<String, dynamic> body = jsonDecode(p.body);
                 List<dynamic> results = body["results"];
               });
             });
           });
-        } //Correcte, guardar, notificació assitència ok i tornar a pantalla discover
-        else if (res.statusCode == 409) {
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
-                  content: SingleChildScrollView(
-                      child: ListBody(
-                    children: <Widget>[
-                      Text(
-                          AppLocalizations.of(context).translate(
-                              "Ja_has_notificat_assistència_en_aquest_lloc_data_i_hora"),
-                          style: TextStyle(fontSize: Constants.m(context))),
-                    ],
-                  )),
-                  actions: <Widget>[
-                    TextButton(
-                      child: Text(
-                          AppLocalizations.of(context).translate("Acceptar"),
-                          style: TextStyle(color: Constants.black(context))),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
-                );
-              });
         } else {
           showDialog(
               context: context,
@@ -114,7 +90,7 @@ class _Calendar extends State<Calendar> {
               });
         }
       });
-    }); */
+    });
   }
 
   String getWeekDay(int num) {
@@ -138,29 +114,29 @@ class _Calendar extends State<Calendar> {
 
   String getMonth(int num) {
     if (num == 1) {
-      return " de gener ";
+      return AppLocalizations.of(context).translate("de_gener");
     } else if (num == 2) {
-      return " de febrer ";
+      return AppLocalizations.of(context).translate("de_febrer");
     } else if (num == 3) {
-      return " de març ";
+      return AppLocalizations.of(context).translate("de_març");
     } else if (num == 4) {
-      return " d'abril ";
+      return AppLocalizations.of(context).translate("dabril'");
     } else if (num == 5) {
-      return " de maig ";
+      return AppLocalizations.of(context).translate("de_maig");
     } else if (num == 6) {
-      return " de juny ";
+      return AppLocalizations.of(context).translate("de_juny");
     } else if (num == 7) {
-      return " de juliol ";
+      return AppLocalizations.of(context).translate("de_juliol");
     } else if (num == 8) {
-      return " d'agost ";
+      return AppLocalizations.of(context).translate("dagost");
     } else if (num == 9) {
-      return " de setembre ";
+      return AppLocalizations.of(context).translate("de_setembre");
     } else if (num == 10) {
-      return " d'octubre ";
+      return AppLocalizations.of(context).translate("doctubre");
     } else if (num == 11) {
-      return " de novembre ";
+      return AppLocalizations.of(context).translate("de_novembre");
     } else if (num == 12) {
-      return " de desembre ";
+      return AppLocalizations.of(context).translate("de_desembre");
     }
     return '';
   }
@@ -169,6 +145,9 @@ class _Calendar extends State<Calendar> {
   void initState() {
     super.initState();
     _calendarController = CalendarController();
+    if (mounted) {
+      getAssistencies();
+    }
   }
 
   @override
@@ -183,7 +162,7 @@ class _Calendar extends State<Calendar> {
         body: SafeArea(
             child: Padding(
       padding: EdgeInsets.fromLTRB(Constants.h7(context), Constants.v5(context),
-          Constants.h7(context), Constants.v7(context)),
+          Constants.h7(context), 0),
       child: Column(children: <Widget>[
         Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <
             Widget>[
@@ -194,8 +173,8 @@ class _Calendar extends State<Calendar> {
                   borderRadius: BorderRadius.all(Radius.circular(20))),
               child: TableCalendar(
                 locale: Localizations.localeOf(context).toLanguageTag(),
-                startDay: DateTime(1900),
-                endDay: DateTime.now(),
+                startDay: DateTime.now(),
+                endDay: DateTime(DateTime.now().year + 1),
                 calendarController: _calendarController,
                 initialSelectedDay: pickedDate,
                 initialCalendarFormat: CalendarFormat.month,
@@ -243,6 +222,7 @@ class _Calendar extends State<Calendar> {
                 onDaySelected: (date, events, holidays) => setState(() {
                   pickedDate = date;
                   _calendarController.setSelectedDay(pickedDate);
+                  getAssistencies();
                 }),
                 onHeaderTapped: (date) {
                   pickedDate = date;
@@ -250,8 +230,8 @@ class _Calendar extends State<Calendar> {
                   Picker(
                     adapter: DateTimePickerAdapter(
                         type: 11,
-                        yearBegin: 1900,
-                        yearEnd: DateTime.now().year,
+                        yearBegin: DateTime.now().year,
+                        yearEnd: DateTime.now().year + 1,
                         value: pickedDate,
                         months: [
                           AppLocalizations.of(context).translate("Gener"),
@@ -294,8 +274,8 @@ class _Calendar extends State<Calendar> {
                     ),
                     backgroundColor: Constants.lightGrey(context),
                     onConfirm: (Picker picker, List values) => setState(() {
-                      pickedDate = DateTime(
-                          1900 + values[0], values[1] + 1, pickedDate.day);
+                      pickedDate = DateTime(DateTime.now().year + values[0],
+                          values[1] + 1, pickedDate.day);
                       _calendarController.setSelectedDay(pickedDate);
                       getAssistencies();
                     }),
@@ -309,7 +289,7 @@ class _Calendar extends State<Calendar> {
         Padding(
           padding: EdgeInsets.only(top: Constants.v2(context)),
           child: Row(children: [
-            Text("Activitats",
+            Text(AppLocalizations.of(context).translate("Activitats"),
                 style: TextStyle(
                     color: Constants.black(context),
                     fontSize: Constants.xl(context),
@@ -321,12 +301,13 @@ class _Calendar extends State<Calendar> {
               getWeekDay(pickedDate.weekday) +
                   ", " +
                   pickedDate.day.toString() +
+                  " " +
                   getMonth(pickedDate.month) +
-                  "de " +
+                  " de " +
                   pickedDate.year.toString(),
               style: TextStyle(
                 color: Constants.black(context),
-                fontSize: Constants.xl(context),
+                fontSize: Constants.l(context),
               )),
         ]),
         Expanded(child: ListView(children: activitats)),
