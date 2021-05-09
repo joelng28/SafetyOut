@@ -3,7 +3,7 @@ import 'package:app/defaults/constants.dart';
 import 'package:app/pages/calendar.dart';
 import 'package:app/pages/discover.dart';
 import 'package:app/pages/home.dart';
-import 'package:app/pages/profile.dart';
+import 'package:app/pages/conversa.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -38,7 +38,7 @@ class _App extends State<App> {
     Home(mapPressed: mapPressed),
     Discover(),
     Calendar(),
-    Profile(),
+    ChatPage(),
   ];
 
   void onItemTapped(int newIndex) {

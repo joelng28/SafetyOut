@@ -5,7 +5,7 @@ import 'package:app/defaults/constants.dart';
 import 'package:app/pages/profileconfig.dart';
 import 'package:app/pages/bombolles.dart';
 import 'package:app/pages/contactes.dart';
-import 'package:app/pages/xats.dart';
+import 'package:app/pages/conversa.dart';
 import 'package:app/storage/secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -357,7 +357,7 @@ class _Profile extends State<Profile> {
                             ? Contacts()
                             : tab == ProfileTab.BUBBLES
                                 ? Bubbles()
-                                : Chats(),
+                                : ChatPage(),
                       ],
                     ),
                   ),
