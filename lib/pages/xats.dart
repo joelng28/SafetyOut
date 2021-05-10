@@ -2,6 +2,7 @@ import 'package:app/defaults/constants.dart';
 import 'package:app/pages/newchat.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:app/models/chatModel.dart';
 
@@ -16,8 +17,13 @@ class Chats extends StatefulWidget {
 
 class _Chats extends State<Chats> {
   final textController = TextEditingController();
-  List<Message> chats = [
-    Message(messageContent: "Hello", messageType: "receiver"),
+  List<String> chats = [
+    /*"Chat 1",
+    "Chat 2",
+    "Chat 3",
+    "Chat 4",
+    "Chat 5",
+    "Chat 6",*/
   ];
 
   /*@override
@@ -34,16 +40,58 @@ class _Chats extends State<Chats> {
   Widget build(BuildContext context) {
     return Expanded(
         child: Scaffold(
-      floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              PageRouteBuilder(pageBuilder: (_, __, ___) => NewChat()),
-            );
-          },
-          child: const Icon(Icons.chat_outlined, color: Colors.black),
-          backgroundColor: Constants.green(context)),
-      /*body: Stack(
+            floatingActionButton: FloatingActionButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(pageBuilder: (_, __, ___) => NewChat()),
+                  );
+                },
+                child: const Icon(Icons.chat_outlined, color: Colors.black),
+                backgroundColor: Constants.green(context)),
+            body: Stack(children: [
+              Padding(
+                  padding: EdgeInsets.all(25),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("Aixó està molt tranquil",
+                              style: TextStyle(
+                                  color: Constants.grey(context),
+                                  fontSize: Constants.l(context),
+                                  fontWeight: Constants.bolder))
+                        ],
+                      ),
+                      Padding(
+                          padding: EdgeInsets.only(
+                              top: Constants.a7(context),
+                              bottom: Constants.a3(context)),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset('assets/icons/park.svg',
+                                  color: Constants.grey(context), height: 150)
+                            ],
+                          )),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                                "Inicia un xat amb un dels teus" +
+                                    "\n" +
+                                    "contactes polsant el botó inferior",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Constants.grey(context),
+                                    fontSize: Constants.l(context),
+                                    fontWeight: Constants.bolder))
+                          ]),
+                    ],
+                  )),
+            ])
+            /*body: Stack(
           children: <Widget>[
             ListView.builder(
               itemCount: messages.length,
@@ -111,6 +159,6 @@ class _Chats extends State<Chats> {
                 ))
           ],
         )*/
-    ));
+            ));
   }
 }
