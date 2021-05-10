@@ -1,49 +1,57 @@
 import 'package:app/defaults/constants.dart';
-import 'package:app/pages/newchat.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_socket_io/flutter_socket_io.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:app/models/chatModel.dart';
 
 import '../app_localizations.dart';
 
-class Chats extends StatefulWidget {
-  Chats({Key key}) : super(key: key);
+class Conversa extends StatefulWidget {
+  Conversa({Key key}) : super(key: key);
 
   @override
-  _Chats createState() => _Chats();
+  _Conversa createState() => _Conversa();
 }
 
-class _Chats extends State<Chats> {
+class _Conversa extends State<Conversa> {
   final textController = TextEditingController();
-  List<Message> chats = [
+  List<Message> messages = [
     Message(messageContent: "Hello", messageType: "receiver"),
   ];
 
-  /*@override
+  @override
   void dispose() {
+    textController.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-  }*/
+
+    IO.Socket socket = IO.io('https://safetyout.herokuapp.com/');
+    socket.connect();
+    socket.emit('join', {
+      'user1_id': '6081a40d875b4b3864bd1f21',
+      'user2_id': '609116e842fa750022ab15b7'
+    });
+    //socket.emit('message', {'chatRoom': })
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-        child: Scaffold(
-      floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              PageRouteBuilder(pageBuilder: (_, __, ___) => NewChat()),
-            );
-          },
-          child: const Icon(Icons.chat_outlined, color: Colors.black),
-          backgroundColor: Constants.green(context)),
-      /*body: Stack(
+    return Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          title: Text("Nom d'usuari"),
+        ),
+        body: Stack(
           children: <Widget>[
             ListView.builder(
               itemCount: messages.length,
@@ -110,7 +118,6 @@ class _Chats extends State<Chats> {
                   ],
                 ))
           ],
-        )*/
-    ));
+        ));
   }
 }
