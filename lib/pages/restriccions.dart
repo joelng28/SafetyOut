@@ -278,7 +278,6 @@ class _Restrictions extends State<Restrictions> {
           AnimatedContainer(
             duration: Duration(milliseconds: 100),
             decoration: BoxDecoration(
-              color: Constants.trueWhite(context),
               borderRadius: BorderRadius.all(
                 Radius.circular(30),
               ),
@@ -401,7 +400,6 @@ class _Restrictions extends State<Restrictions> {
           AnimatedContainer(
             duration: Duration(milliseconds: 100),
             decoration: BoxDecoration(
-              color: Constants.trueWhite(context),
               borderRadius: BorderRadius.all(
                 Radius.circular(30),
               ),
@@ -524,7 +522,6 @@ class _Restrictions extends State<Restrictions> {
           AnimatedContainer(
             duration: Duration(milliseconds: 100),
             decoration: BoxDecoration(
-              color: Constants.trueWhite(context),
               borderRadius: BorderRadius.all(
                 Radius.circular(30),
               ),
@@ -648,7 +645,6 @@ class _Restrictions extends State<Restrictions> {
           AnimatedContainer(
             duration: Duration(milliseconds: 100),
             decoration: BoxDecoration(
-              color: Constants.trueWhite(context),
               borderRadius: BorderRadius.all(
                 Radius.circular(30),
               ),
@@ -771,7 +767,6 @@ class _Restrictions extends State<Restrictions> {
           AnimatedContainer(
             duration: Duration(milliseconds: 100),
             decoration: BoxDecoration(
-              color: Constants.trueWhite(context),
               borderRadius: BorderRadius.all(
                 Radius.circular(30),
               ),
@@ -894,7 +889,6 @@ class _Restrictions extends State<Restrictions> {
           AnimatedContainer(
             duration: Duration(milliseconds: 100),
             decoration: BoxDecoration(
-              color: Constants.trueWhite(context),
               borderRadius: BorderRadius.all(
                 Radius.circular(30),
               ),
@@ -1018,7 +1012,6 @@ class _Restrictions extends State<Restrictions> {
           AnimatedContainer(
             duration: Duration(milliseconds: 100),
             decoration: BoxDecoration(
-              color: Constants.trueWhite(context),
               borderRadius: BorderRadius.all(
                 Radius.circular(30),
               ),
@@ -1142,7 +1135,6 @@ class _Restrictions extends State<Restrictions> {
           AnimatedContainer(
             duration: Duration(milliseconds: 100),
             decoration: BoxDecoration(
-              color: Constants.trueWhite(context),
               borderRadius: BorderRadius.all(
                 Radius.circular(30),
               ),

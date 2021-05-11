@@ -22,16 +22,24 @@ class Calendar extends StatefulWidget {
 
 class _Calendar extends State<Calendar> {
   CalendarController _calendarController;
-  List<Activity> activitats = [
-    Activity('Lloc', DateTime.now(), 2),
-    Activity('Lloc', DateTime.now(), 2),
-    Activity('Lloc', DateTime.now(), 2),
-    Activity('Lloc', DateTime.now(), 2)
-  ];
+  List<Activity> activitats = [];
 
   DateTime pickedDate = DateTime.now();
 
+  String getHour(String t) {
+    List<String> l = t.split("-");
+    Characters cs = l[2].characters;
+    return cs.characterAt(3).toString() +
+        cs.characterAt(4).toString() +
+        cs.characterAt(5).toString() +
+        cs.characterAt(6).toString() +
+        cs.characterAt(7).toString();
+  }
+
   void getAssistencies() async {
+    setState(() {
+      activitats.clear();
+    });
     await SecureStorage.readSecureStorage('SafetyOUT_UserId').then((val) {
       var url = Uri.parse(
           'https://safetyout.herokuapp.com/assistance/consultOnDate?user_id=' +
@@ -43,14 +51,18 @@ class _Calendar extends State<Calendar> {
               '&day=' +
               pickedDate.day.toString());
       http.get(url).then((res) {
-        print(val);
-        print(res.statusCode);
         if (res.statusCode == 200) {
           setState(() {
             Map<String, dynamic> body = jsonDecode(res.body);
             List<dynamic> assistances = body['message'];
             print(body);
-            assistances.forEach((a) async {
+            assistances.forEach((a) {
+              setState(() {
+                activitats.add(Activity(
+                    'Lloc', getHour(a["dateInterval"]["startDate"]), 0));
+              });
+            });
+            /* assistances.forEach((a) async {
               var urlRes = Uri.parse(
                   'https://maps.googleapis.com/maps/api/place/nearbysearch/json?place_id=' +
                       a['placeId'] +
@@ -59,7 +71,7 @@ class _Calendar extends State<Calendar> {
                 Map<String, dynamic> body = jsonDecode(p.body);
                 List<dynamic> results = body["results"];
               });
-            });
+            }); */
           });
         } else {
           showDialog(
@@ -310,7 +322,9 @@ class _Calendar extends State<Calendar> {
                 fontSize: Constants.l(context),
               )),
         ]),
-        Expanded(child: ListView(children: activitats)),
+        Visibility(
+            visible: activitats.isNotEmpty,
+            child: Expanded(child: ListView(children: activitats))),
       ]),
     )));
   }

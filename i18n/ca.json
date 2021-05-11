@@ -117,5 +117,9 @@
     "doctubre": "d'octubre",
     "de_novembre": "de novembre",
     "de_desembre": "de desembre",
-    "Activitats": "Activitats"
+    "Activitats": "Activitats",
+    "Eliminar": "Eliminar",
+    "Editar": "Editar",
+    "Segur_que_vols_eliminar_aquesta_assistencia": "Segur que vols eliminar aquesta assistència?",
+    "Editar_assistencia": "Editar assistència"
 }

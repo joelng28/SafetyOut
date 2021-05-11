@@ -1,6 +1,9 @@
 import 'package:app/defaults/constants.dart';
+import 'package:app/pages/editar_assistencia.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+
+import '../app_localizations.dart';
 
 class Activity extends StatefulWidget {
   Activity(this.placeName, this.time, this.placeGauge,
@@ -8,7 +11,7 @@ class Activity extends StatefulWidget {
       : super(key: key);
 
   final String placeName;
-  final DateTime time;
+  final String time;
   final int placeGauge;
 
   @override
@@ -19,81 +22,295 @@ class Activity extends StatefulWidget {
 class _Activity extends State<Activity> {
   _Activity(this.placeName, this.time, this.placeGauge);
   final String placeName;
-  final DateTime time;
+  final String time;
   final int placeGauge;
+  bool more = false;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: EdgeInsets.only(top: Constants.v2(context)),
-          child:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Column(children: [
-              Container(
-                constraints: BoxConstraints(maxWidth: Constants.w10(context)),
-                child: Text("Lloc",
-                    style: TextStyle(
-                      color: Constants.black(context),
-                      fontSize: Constants.m(context),
+    return Padding(
+      padding: EdgeInsets.only(top: Constants.v2(context)),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(children: [
+                        Container(
+                          constraints:
+                              BoxConstraints(maxWidth: Constants.w10(context)),
+                          child: Text(placeName,
+                              style: TextStyle(
+                                color: Constants.black(context),
+                                fontSize: Constants.m(context),
+                              )),
+                        ),
+                      ]),
+                      Column(children: [
+                        InkWell(
+                          splashColor: Colors.transparent,
+                          focusColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          child: Icon(
+                            more ? Icons.remove_rounded : Icons.more_horiz,
+                            size: Constants.xxl(context),
+                            color: Constants.black(context),
+                          ),
+                          onTap: () {
+                            setState(() {
+                              more = !more;
+                            });
+                          },
+                        ),
+                      ])
+                    ]),
+                Padding(
+                    padding: EdgeInsets.only(top: Constants.v1(context)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          physics: NeverScrollableScrollPhysics(),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.access_time_outlined,
+                                size: Constants.xxl(context),
+                                color: Constants.black(context),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    left: Constants.h1(context)),
+                                child: Text(time,
+                                    style: TextStyle(
+                                      color: Constants.black(context),
+                                      fontSize: Constants.s(context),
+                                    )),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            AnimatedContainer(
+                              duration: Duration(milliseconds: 100),
+                              constraints: BoxConstraints(
+                                maxWidth: more ? Constants.w11(context) : 0,
+                              ),
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                physics: NeverScrollableScrollPhysics(),
+                                child: Container(
+                                  color: Constants.orange(context),
+                                  height: Constants.a7(context),
+                                  width: Constants.w11(context),
+                                  child: InkWell(
+                                    splashColor: Colors.transparent,
+                                    focusColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                        PageRouteBuilder(
+                                            pageBuilder: (_, __, ___) =>
+                                                EditarAssistencia(
+                                                    placeName,
+                                                    "location",
+                                                    "address",
+                                                    "id")),
+                                      );
+                                    },
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              AppLocalizations.of(context)
+                                                  .translate("Editar"),
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      Constants.s(context),
+                                                  color: Colors.black),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     )),
-              ),
-            ]),
-            Column(children: [
-              InkWell(
-                splashColor: Colors.transparent,
-                focusColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                child: Icon(
-                  Icons.more_horiz,
-                  size: Constants.xxl(context),
-                  color: Constants.black(context),
-                ),
-                onTap: () {},
-              ),
-            ])
-          ]),
-        ),
-        Padding(
-            padding: EdgeInsets.only(
-                right: Constants.h3(context), top: Constants.v1(context)),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.access_time_outlined,
-                  size: Constants.xxl(context),
-                  color: Constants.black(context),
-                ),
                 Padding(
-                  padding: EdgeInsets.only(left: Constants.h1(context)),
-                  child: Text("Hora",
-                      style: TextStyle(
-                        color: Constants.black(context),
-                        fontSize: Constants.s(context),
-                      )),
+                    padding: EdgeInsets.only(
+                      top: Constants.v1(context),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            physics: NeverScrollableScrollPhysics(),
+                            child: Row(
+                              children: [
+                                SvgPicture.asset('assets/icons/group.svg',
+                                    color: Constants.black(context),
+                                    height: Constants.xxl(context),
+                                    width: Constants.xxl(context)),
+                                Padding(
+                                    padding: EdgeInsets.only(
+                                        left: Constants.h1(context)),
+                                    child: Text(
+                                        placeGauge.toString() +
+                                            " " +
+                                            AppLocalizations.of(context)
+                                                .translate("persones"),
+                                        style: TextStyle(
+                                          color: Constants.black(context),
+                                          fontSize: Constants.s(context),
+                                        ))),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            AnimatedContainer(
+                              duration: Duration(milliseconds: 100),
+                              constraints: BoxConstraints(
+                                maxWidth: more ? Constants.w11(context) : 0,
+                              ),
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                physics: NeverScrollableScrollPhysics(),
+                                child: Container(
+                                  color: Constants.red(context),
+                                  height: Constants.a7(context),
+                                  width: Constants.w11(context),
+                                  child: InkWell(
+                                    splashColor: Colors.transparent,
+                                    focusColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    onTap: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              contentPadding:
+                                                  EdgeInsets.fromLTRB(
+                                                      24, 20, 24, 0),
+                                              content: SingleChildScrollView(
+                                                  child: ListBody(
+                                                children: <Widget>[
+                                                  Text(
+                                                      AppLocalizations.of(
+                                                              context)
+                                                          .translate(
+                                                              "Segur_que_vols_eliminar_aquesta_assistencia"),
+                                                      style: TextStyle(
+                                                          fontSize: Constants.m(
+                                                              context))),
+                                                ],
+                                              )),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  child: Text(
+                                                      AppLocalizations.of(
+                                                              context)
+                                                          .translate(
+                                                              "Eliminar"),
+                                                      style: TextStyle(
+                                                          color: Constants.red(
+                                                              context))),
+                                                  onPressed: () {
+                                                    //Aquí es farà la call
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                ),
+                                                TextButton(
+                                                  child: Text(
+                                                      AppLocalizations.of(
+                                                              context)
+                                                          .translate(
+                                                              "Cancel·lar"),
+                                                      style: TextStyle(
+                                                          color:
+                                                              Constants.black(
+                                                                  context))),
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                ),
+                                              ],
+                                            );
+                                          });
+                                    },
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              AppLocalizations.of(context)
+                                                  .translate("Eliminar"),
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      Constants.s(context),
+                                                  color: Colors.black),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    )),
+              ],
+            ),
+          ),
+/*           Expanded(
+            child: Column(
+              children: [
+                Container(
+                  color: Colors.orange,
+                  height: Constants.a7(context),
+                ),
+                Container(
+                  color: Colors.red,
+                  height: Constants.a7(context),
                 ),
               ],
-            )),
-        Padding(
-            padding: EdgeInsets.only(
-                top: Constants.v1(context), right: Constants.h3(context)),
-            child: Row(
-              children: [
-                SvgPicture.asset('assets/icons/group.svg',
-                    color: Constants.black(context),
-                    height: Constants.xxl(context),
-                    width: Constants.xxl(context)),
-                Padding(
-                    padding: EdgeInsets.only(left: Constants.h1(context)),
-                    child: Text("Moltes/poques persones",
-                        style: TextStyle(
-                          color: Constants.black(context),
-                          fontSize: Constants.s(context),
-                        ))),
-              ],
-            )),
-      ],
+            ),
+          ) */
+        ],
+      ),
     );
   }
 }
