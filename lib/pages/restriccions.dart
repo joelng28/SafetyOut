@@ -159,7 +159,7 @@ class _Restrictions extends State<Restrictions> {
               content: SingleChildScrollView(
                   child: ListBody(
                 children: <Widget>[
-                  Text(AppLocalizations.of(context).translate("Error de xarxa"),
+                  Text(AppLocalizations.of(context).translate("Error_de_xarxa"),
                       style: TextStyle(fontSize: Constants.m(context))),
                 ],
               )),
