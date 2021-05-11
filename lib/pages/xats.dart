@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:app/models/chatModel.dart';
+import 'package:app/models/contactChat.dart';
 
 import '../app_localizations.dart';
 
@@ -17,14 +18,8 @@ class Chats extends StatefulWidget {
 
 class _Chats extends State<Chats> {
   final textController = TextEditingController();
-  List<String> chats = [
-    /*"Chat 1",
-    "Chat 2",
-    "Chat 3",
-    "Chat 4",
-    "Chat 5",
-    "Chat 6",*/
-  ];
+
+  List<Contact> chats = [];
 
   /*@override
   void dispose() {

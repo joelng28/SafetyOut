@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_socket_io/flutter_socket_io.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:app/models/chatModel.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 
 import '../app_localizations.dart';
 
@@ -19,6 +20,26 @@ class _Conversa extends State<Conversa> {
   List<Message> messages = [
     Message(messageContent: "Hello", messageType: "receiver"),
   ];
+  IO.Socket socket;
+  dynamic id;
+  bool isConected = false;
+
+  void sendMessage() {
+    /*socket.emit('message', {
+      'chatRoom': id.toString(),
+      'author': '6081a40d875b4b3864bd1f21',
+      'message': textController.text.toString()
+    });*/
+    messages.add(Message(
+        messageContent: textController.text.toString(), messageType: "sender"));
+    textController.clear();
+  }
+
+  void handleJoin(dynamic data) {
+    id = data;
+    isConected = true;
+    print(id);
+  }
 
   @override
   void dispose() {
@@ -30,12 +51,21 @@ class _Conversa extends State<Conversa> {
   void initState() {
     super.initState();
 
-    IO.Socket socket = IO.io('https://safetyout.herokuapp.com/');
-    socket.connect();
-    socket.emit('join', {
+    IO.Socket socket = IO.io('https://safetyout.herokuapp.com/',
+        OptionBuilder().setTransports(['websocket']).build());
+    socket.onConnect((_) {
+      print('connect');
+      socket.emit('join', {
+        'user1_id': '6081a40d875b4b3864bd1f21',
+        'user2_id': '609116e842fa750022ab15b7'
+      });
+    });
+    socket.on('joined', (data) => handleJoin(data));
+
+    /*socket.emit('join', {
       'user1_id': '6081a40d875b4b3864bd1f21',
       'user2_id': '609116e842fa750022ab15b7'
-    });
+    });*/
     //socket.emit('message', {'chatRoom': })
   }
 
@@ -103,9 +133,7 @@ class _Conversa extends State<Conversa> {
                     Padding(
                       padding: EdgeInsets.all(15.0),
                       child: FloatingActionButton(
-                        onPressed: () => setState(() => messages.add(Message(
-                            messageContent: textController.text.toString(),
-                            messageType: "receiver"))),
+                        onPressed: () => setState(() => sendMessage()),
                         child: Icon(
                           Icons.send,
                           color: Colors.white,
