@@ -3,11 +3,10 @@ import 'package:app/pages/newchat.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
-import 'package:app/models/chatModel.dart';
 import 'package:app/models/contactChat.dart';
 
 import '../app_localizations.dart';
+import 'conversa.dart';
 
 class Chats extends StatefulWidget {
   Chats({Key key}) : super(key: key);
@@ -19,7 +18,10 @@ class Chats extends StatefulWidget {
 class _Chats extends State<Chats> {
   final textController = TextEditingController();
 
-  List<Contact> chats = [];
+  List<Contact> chats = [
+    Contact(name: 'Joel', lastMessage: "Hola que tal"),
+    Contact(name: 'Joel2', lastMessage: "Hola que tal2")
+  ];
 
   /*@override
   void dispose() {
@@ -33,127 +35,108 @@ class _Chats extends State<Chats> {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-        child: Scaffold(
-            floatingActionButton: FloatingActionButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    PageRouteBuilder(pageBuilder: (_, __, ___) => NewChat()),
-                  );
+    if (chats.isNotEmpty) {
+      return Expanded(
+          child: Scaffold(
+        body: Stack(
+          children: [
+            ListView.separated(
+                padding: EdgeInsets.only(
+                    top: Constants.a5(context), bottom: Constants.a5(context)),
+                separatorBuilder: (context, index) {
+                  return Divider();
                 },
-                child: const Icon(Icons.chat_outlined, color: Colors.black),
-                backgroundColor: Constants.green(context)),
-            body: Stack(children: [
-              Padding(
-                  padding: EdgeInsets.all(25),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("Aixó està molt tranquil",
-                              style: TextStyle(
-                                  color: Constants.grey(context),
-                                  fontSize: Constants.l(context),
-                                  fontWeight: Constants.bolder))
-                        ],
-                      ),
-                      Padding(
-                          padding: EdgeInsets.only(
-                              top: Constants.a7(context),
-                              bottom: Constants.a3(context)),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset('assets/icons/park.svg',
-                                  color: Constants.grey(context), height: 150)
-                            ],
-                          )),
-                      Row(
+                itemCount: chats.length,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return Container(
+                      child: ListTile(
+                    leading: Container(
+                      width: Constants.w7(context),
+                      height: Constants.w7(context),
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(fit: BoxFit.fill, image: NetworkImage(
+                              //Imagen de prueba, se colocará la imagen del usuario
+                              "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"))),
+                    ),
+                    title: Text(
+                      chats[index].name,
+                      style: TextStyle(
+                          fontWeight: Constants.bolder,
+                          fontSize: Constants.l(context)),
+                    ),
+                    subtitle: Text(
+                      chats[index].lastMessage,
+                      style: TextStyle(fontSize: Constants.s(context)),
+                    ),
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Conversa()));
+                    },
+                  ));
+                })
+          ],
+        ),
+      ));
+    } else {
+      return Expanded(
+          child: Scaffold(
+              floatingActionButton: FloatingActionButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(pageBuilder: (_, __, ___) => NewChat()),
+                    );
+                  },
+                  child: const Icon(Icons.chat_outlined, color: Colors.black),
+                  backgroundColor: Constants.green(context)),
+              body: Stack(children: [
+                Padding(
+                    padding: EdgeInsets.all(25),
+                    child: Column(
+                      children: [
+                        Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                                "Inicia un xat amb un dels teus" +
-                                    "\n" +
-                                    "contactes polsant el botó inferior",
-                                textAlign: TextAlign.center,
+                                AppLocalizations.of(context)
+                                    .translate("Aixó_està_molt_tranquil"),
                                 style: TextStyle(
                                     color: Constants.grey(context),
                                     fontSize: Constants.l(context),
                                     fontWeight: Constants.bolder))
-                          ]),
-                    ],
-                  )),
-            ])
-            /*body: Stack(
-          children: <Widget>[
-            ListView.builder(
-              itemCount: messages.length,
-              shrinkWrap: true,
-              padding: EdgeInsets.only(top: 5, bottom: 5),
-              physics: AlwaysScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                return Container(
-                    padding: EdgeInsets.only(
-                        left: 16, right: 16, top: 10, bottom: 10),
-                    child: Align(
-                        alignment: (messages[index].messageType == "receiver"
-                            ? Alignment.topLeft
-                            : Alignment.topRight),
-                        child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: Colors.black),
-                                color:
-                                    (messages[index].messageType == "receiver"
-                                        ? Colors.white
-                                        : Colors.green)),
-                            padding: EdgeInsets.all(16),
-                            child: Text(messages[index].messageContent,
-                                style: TextStyle(
-                                    fontSize: Constants.s(context))))));
-              },
-            ),
-            Align(
-                alignment: Alignment.bottomCenter,
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.all(15.0),
-                        child: TextField(
-                          controller: textController,
-                          decoration: InputDecoration(
-                              hintText: AppLocalizations.of(context)
-                                  .translate("Escriu_un_missatge"),
-                              hintStyle: TextStyle(color: Colors.black54),
-                              border: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.black)),
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.black))),
+                          ],
                         ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(15.0),
-                      child: FloatingActionButton(
-                        onPressed: () => setState(() => messages.add(Message(
-                            messageContent: textController.text.toString(),
-                            messageType: "receiver"))),
-                        child: Icon(
-                          Icons.send,
-                          color: Colors.white,
-                          size: 18,
-                        ),
-                        backgroundColor: Colors.green,
-                        elevation: 0,
-                      ),
-                    ),
-                  ],
-                ))
-          ],
-        )*/
-            ));
+                        Padding(
+                            padding: EdgeInsets.only(
+                                top: Constants.a7(context),
+                                bottom: Constants.a3(context)),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset('assets/icons/park.svg',
+                                    color: Constants.grey(context), height: 150)
+                              ],
+                            )),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                  AppLocalizations.of(context).translate(
+                                          "Inicia_un_xat_amb_un_dels_teus") +
+                                      "\n" +
+                                      AppLocalizations.of(context).translate(
+                                          "contactes_polsant_el_botó_inferior"),
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Constants.grey(context),
+                                      fontSize: Constants.l(context),
+                                      fontWeight: Constants.bolder))
+                            ]),
+                      ],
+                    )),
+              ])));
+    }
   }
 }

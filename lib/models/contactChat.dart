@@ -4,5 +4,5 @@ class Contact {
   String id;
   String name;
   String lastMessage;
-  Contact({@required this.name, thislastMessage});
+  Contact({@required this.name, this.lastMessage});
 }

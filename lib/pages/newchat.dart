@@ -32,6 +32,7 @@ class _NewChat extends State<NewChat> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: Constants.white(context),
           centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back_ios),

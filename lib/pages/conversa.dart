@@ -73,6 +73,7 @@ class _Conversa extends State<Conversa> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: Constants.white(context),
           centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back_ios),
@@ -88,12 +89,14 @@ class _Conversa extends State<Conversa> {
             ListView.builder(
               itemCount: messages.length,
               shrinkWrap: true,
-              padding: EdgeInsets.only(top: 5, bottom: 5),
+              padding: EdgeInsets.only(top: 10, bottom: 10),
               physics: AlwaysScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 return Container(
-                    padding: EdgeInsets.only(
-                        left: 16, right: 16, top: 10, bottom: 10),
+                    width: 80,
+                    height: 80,
+                    padding:
+                        EdgeInsets.only(left: 16, right: 16, top: 5, bottom: 5),
                     child: Align(
                         alignment: (messages[index].messageType == "receiver"
                             ? Alignment.topLeft
@@ -106,7 +109,7 @@ class _Conversa extends State<Conversa> {
                                     (messages[index].messageType == "receiver"
                                         ? Constants.white(context)
                                         : Constants.green(context))),
-                            padding: EdgeInsets.all(16),
+                            padding: EdgeInsets.all(10),
                             child: Text(messages[index].messageContent,
                                 style: TextStyle(
                                     fontSize: Constants.s(context))))));
@@ -118,33 +121,46 @@ class _Conversa extends State<Conversa> {
                   children: <Widget>[
                     Expanded(
                       child: Padding(
-                        padding: EdgeInsets.all(15.0),
-                        child: TextField(
-                          controller: textController,
-                          decoration: InputDecoration(
-                              hintText: AppLocalizations.of(context)
-                                  .translate("Escriu_un_missatge"),
-                              hintStyle: TextStyle(color: Colors.black54),
-                              border: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.black)),
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.black))),
-                        ),
-                      ),
+                          padding: EdgeInsets.only(
+                              left: 15.0, bottom: 15.0, right: 10.0),
+                          child: SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: TextField(
+                              controller: textController,
+                              decoration: InputDecoration(
+                                  hintText: AppLocalizations.of(context)
+                                      .translate("Escriu_un_missatge"),
+                                  contentPadding:
+                                      const EdgeInsets.only(left: 20.0),
+                                  hintStyle: TextStyle(color: Colors.black54),
+                                  border: OutlineInputBorder(
+                                      borderSide: BorderSide.none,
+                                      borderRadius: BorderRadius.circular(30)),
+                                  filled: true,
+                                  fillColor: Constants.lightGrey(context),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide.none,
+                                      borderRadius: BorderRadius.circular(30))),
+                            ),
+                          )),
                     ),
                     Padding(
-                      padding: EdgeInsets.all(15.0),
-                      child: FloatingActionButton(
-                        onPressed: () => setState(() => sendMessage()),
-                        child: Icon(
-                          Icons.send,
-                          color: Colors.white,
-                          size: 18,
-                        ),
-                        backgroundColor: Constants.green(context),
-                        elevation: 0,
-                      ),
-                    ),
+                        padding: EdgeInsets.only(right: 15.0, bottom: 15.0),
+                        child: SizedBox(
+                          width: 50,
+                          height: 50,
+                          child: FloatingActionButton(
+                            onPressed: () => setState(() => sendMessage()),
+                            child: Icon(
+                              Icons.send,
+                              color: Colors.white,
+                              size: 18,
+                            ),
+                            backgroundColor: Constants.green(context),
+                            elevation: 0,
+                          ),
+                        )),
                   ],
                 ))
           ],
