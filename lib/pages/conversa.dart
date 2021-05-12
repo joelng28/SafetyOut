@@ -73,6 +73,7 @@ class _Conversa extends State<Conversa> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back_ios),
             onPressed: () {
@@ -80,6 +81,7 @@ class _Conversa extends State<Conversa> {
             },
           ),
           title: Text("Nom d'usuari"),
+          actions: [IconButton(icon: Icon(Icons.more_horiz), onPressed: () {})],
         ),
         body: Stack(
           children: <Widget>[
@@ -99,11 +101,11 @@ class _Conversa extends State<Conversa> {
                         child: Container(
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: Colors.black),
+                                //border: Border.all(color: Colors.black),
                                 color:
                                     (messages[index].messageType == "receiver"
-                                        ? Colors.white
-                                        : Colors.green)),
+                                        ? Constants.white(context)
+                                        : Constants.green(context))),
                             padding: EdgeInsets.all(16),
                             child: Text(messages[index].messageContent,
                                 style: TextStyle(
@@ -139,7 +141,7 @@ class _Conversa extends State<Conversa> {
                           color: Colors.white,
                           size: 18,
                         ),
-                        backgroundColor: Colors.green,
+                        backgroundColor: Constants.green(context),
                         elevation: 0,
                       ),
                     ),
