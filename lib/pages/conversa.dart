@@ -17,6 +17,7 @@ class Conversa extends StatefulWidget {
 
 class _Conversa extends State<Conversa> {
   final textController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   List<Message> messages = [
     Message(messageContent: "Hello", messageType: "receiver"),
   ];
@@ -32,6 +33,11 @@ class _Conversa extends State<Conversa> {
     });*/
     messages.add(Message(
         messageContent: textController.text.toString(), messageType: "sender"));
+    _scrollController.animateTo(
+      messages.length.toDouble() * 70.0,
+      curve: Curves.easeOut,
+      duration: const Duration(milliseconds: 300),
+    );
     textController.clear();
   }
 
@@ -87,9 +93,10 @@ class _Conversa extends State<Conversa> {
         body: Stack(
           children: <Widget>[
             ListView.builder(
+              controller: _scrollController,
               itemCount: messages.length,
               shrinkWrap: true,
-              padding: EdgeInsets.only(top: 10, bottom: 10),
+              padding: EdgeInsets.only(top: 10, bottom: 50),
               physics: AlwaysScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 return Container(
@@ -154,10 +161,10 @@ class _Conversa extends State<Conversa> {
                             onPressed: () => setState(() => sendMessage()),
                             child: Icon(
                               Icons.send,
-                              color: Colors.white,
-                              size: 18,
+                              color: Constants.grey(context),
+                              size: 25,
                             ),
-                            backgroundColor: Constants.green(context),
+                            backgroundColor: Constants.lightGrey(context),
                             elevation: 0,
                           ),
                         )),
