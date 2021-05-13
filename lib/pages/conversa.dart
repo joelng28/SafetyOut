@@ -84,12 +84,6 @@ class _Conversa extends State<Conversa> {
     } catch (e) {
       print(e.toString());
     }
-
-    /*socket.emit('join', {
-      'user1_id': '6081a40d875b4b3864bd1f21',
-      'user2_id': '609116e842fa750022ab15b7'
-    });*/
-    //socket.emit('message', {'chatRoom': })
   }
 
   @override
