@@ -225,7 +225,7 @@ class _Restrictions extends State<Restrictions> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SvgPicture.asset('assets/icons/barrier.svg',
-                            color: Constants.black(context),
+                            color: Color(0xFF242424),
                             height: 28 /
                                 (MediaQuery.of(context).size.width < 380
                                     ? 1.3
@@ -347,7 +347,7 @@ class _Restrictions extends State<Restrictions> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SvgPicture.asset('assets/icons/clock.svg',
-                            color: Constants.black(context),
+                            color: Color(0xFF242424),
                             height: 35 /
                                 (MediaQuery.of(context).size.width < 380
                                     ? 1.3
@@ -469,7 +469,7 @@ class _Restrictions extends State<Restrictions> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SvgPicture.asset('assets/icons/group.svg',
-                            color: Constants.black(context),
+                            color: Color(0xFF242424),
                             height: 35 /
                                 (MediaQuery.of(context).size.width < 380
                                     ? 1.3
@@ -591,7 +591,7 @@ class _Restrictions extends State<Restrictions> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SvgPicture.asset('assets/icons/restaurant.svg',
-                            color: Constants.black(context),
+                            color: Color(0xFF242424),
                             height: 35 /
                                 (MediaQuery.of(context).size.width < 380
                                     ? 1.3
@@ -714,7 +714,7 @@ class _Restrictions extends State<Restrictions> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SvgPicture.asset('assets/icons/shop.svg',
-                            color: Constants.black(context),
+                            color: Color(0xFF242424),
                             height: 34 /
                                 (MediaQuery.of(context).size.width < 380
                                     ? 1.3
@@ -836,7 +836,7 @@ class _Restrictions extends State<Restrictions> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SvgPicture.asset('assets/icons/bus.svg',
-                            color: Constants.black(context),
+                            color: Color(0xFF242424),
                             height: 32 /
                                 (MediaQuery.of(context).size.width < 380
                                     ? 1.3
@@ -958,7 +958,7 @@ class _Restrictions extends State<Restrictions> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SvgPicture.asset('assets/icons/comedy.svg',
-                            color: Constants.black(context),
+                            color: Color(0xFF242424),
                             height: 33 /
                                 (MediaQuery.of(context).size.width < 380
                                     ? 1.3
@@ -1081,7 +1081,7 @@ class _Restrictions extends State<Restrictions> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SvgPicture.asset('assets/icons/slide.svg',
-                            color: Constants.black(context),
+                            color: Color(0xFF242424),
                             height: 33 /
                                 (MediaQuery.of(context).size.width < 380
                                     ? 1.3

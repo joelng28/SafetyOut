@@ -464,7 +464,7 @@ class _Discover extends State<Discover> {
                 children: [
                   Padding(
                     padding: EdgeInsets.only(
-                        top: Constants.v7(context) + Constants.v7(context)),
+                        top: Constants.h7(context) + Constants.h7(context)),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

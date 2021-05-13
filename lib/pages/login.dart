@@ -127,6 +127,10 @@ class _Login extends State<Login> {
         activeButton = true;
       });
     }
+    setState(() {
+      isLoading = false;
+      activeButton = true;
+    });
   }
 
   @override
