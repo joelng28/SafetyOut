@@ -15,18 +15,19 @@ import 'app.dart';
 
 class EditarAssistencia extends StatefulWidget {
   EditarAssistencia(
-      this.placeName, this.placeLocation, this.placeAddress, this.id,
+      this.placeName, this.placeId, this.date, this.endDate, this.onEdit,
       {Key key})
       : super(key: key);
 
   final String placeName;
-  final String placeLocation;
-  final String placeAddress;
-  final String id;
+  final String placeId;
+  final List<String> date;
+  final List<String> endDate;
+  Function onEdit;
 
   @override
   _EditarAssistencia createState() => _EditarAssistencia(
-      this.placeName, this.placeLocation, this.placeAddress, this.id);
+      this.placeName, this.placeId, this.date, this.endDate, this.onEdit);
 }
 
 class _EditarAssistencia extends State<EditarAssistencia> {
@@ -38,19 +39,62 @@ class _EditarAssistencia extends State<EditarAssistencia> {
   Function submitAssistencia = (BuildContext context) {};
 
   _EditarAssistencia(
-      this.placeName, this.placeLocation, this.placeAddress, this.id);
+      this.placeName, this.placeId, this.date, this.endDate, this.onEdit);
   final String placeName;
-  final String placeLocation;
-  final String placeAddress;
-  final String id;
+  final String placeId;
+  final List<String> date;
   int placeGauge;
+  String placeLocation;
+  String placeAddress;
+  final List<String> endDate;
+  Function onEdit;
+
+  Future<String> getDetails(Uri placeDetailsUrl) async {
+    var response = await http.get(placeDetailsUrl);
+    setState(() {
+      Map<String, dynamic> convertDataToJson = jsonDecode(response.body);
+      List<String> address =
+          convertDataToJson["result"]["formatted_address"].split(', ');
+      placeAddress = address[0];
+
+      var location = convertDataToJson["result"]["address_components"];
+
+      int max = location.length;
+      int index = 0;
+      while (index < max - 1) {
+        if (location[index]["types"].toString() == "[locality, political]") {
+          placeLocation = location[index]["long_name"];
+        }
+        if (location[index]["types"].toString() ==
+            "[administrative_area_level_2, political]") {
+          placeLocation += ", " + location[index]["long_name"];
+        }
+        ++index;
+      }
+    });
+    return "Success";
+  }
 
   @override
   void initState() {
     super.initState();
     _calendarController = CalendarController();
+    pickedDate = DateTime(int.parse(date[0]), int.parse(date[1]) + 1,
+        int.parse(date[2]), int.parse(date[3]), int.parse(date[4]));
+    endHour = DateTime(int.parse(date[0]), int.parse(date[1]) + 1,
+            int.parse(date[2]), int.parse(endDate[3]), int.parse(endDate[4]))
+        .hour;
+    endMinute = DateTime(int.parse(date[0]), int.parse(date[1]) + 1,
+            int.parse(date[2]), int.parse(endDate[3]), int.parse(endDate[4]))
+        .minute;
     consultaAforament();
-    /* submitAssistencia = (BuildContext context) async {
+    Uri placeDetailsUrl = Uri.parse(
+        'https://maps.googleapis.com/maps/api/place/details/json?place_id=' +
+            placeId +
+            '&key=' +
+            "AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA");
+    getDetails(placeDetailsUrl);
+    submitAssistencia = (BuildContext context) async {
       if (pickedDate.hour > endHour ||
           (pickedDate.hour == endHour && pickedDate.minute >= endMinute)) {
         await showDialog(
@@ -84,32 +128,37 @@ class _EditarAssistencia extends State<EditarAssistencia> {
           var url = Uri.parse('https://safetyout.herokuapp.com/assistance');
           var body = jsonEncode({
             'user_id': val,
-            'place': {
-              'longitude': cords.longitude.toString(),
-              'latitude': cords.latitude.toString()
-            },
+            'place_id': placeId,
             'dateInterval': {
               'startDate': {
-                'year': pickedDate.year.toString(),
-                'month': (pickedDate.month - 1).toString(),
-                'day': pickedDate.day.toString(),
-                'hour': pickedDate.hour.toString(),
-                'minute': pickedDate.minute.toString(),
+                'year': date[0],
+                'month': date[1],
+                'day': date[2],
+                'hour': date[3],
+                'minute': date[4],
               },
-              'endDate': {
-                'year': pickedDate.year.toString(),
-                'month': (pickedDate.month - 1).toString(),
-                'day': pickedDate.day.toString(),
-                'hour': endHour.toString(),
-                'minute': endMinute.toString(),
-              }
+            },
+            'newStartDate': {
+              'year': pickedDate.year.toString(),
+              'month': (pickedDate.month - 1).toString(),
+              'day': pickedDate.day.toString(),
+              'hour': pickedDate.hour.toString(),
+              'minute': pickedDate.minute.toString(),
+            },
+            'newEndDate': {
+              'year': pickedDate.year.toString(),
+              'month': (pickedDate.month - 1).toString(),
+              'day': pickedDate.day.toString(),
+              'hour': endHour.toString(),
+              'minute': endMinute.toString(),
             }
           });
           http
-              .post(url,
+              .patch(url,
                   headers: {"Content-Type": "application/json"}, body: body)
               .then((res) {
             if (res.statusCode == 201) {
+              onEdit();
               Navigator.of(context).pop();
             } //Correcte, guardar, notificació assitència ok i tornar a pantalla discover
             else if (res.statusCode == 409) {
@@ -174,7 +223,7 @@ class _EditarAssistencia extends State<EditarAssistencia> {
           });
         });
       }
-    }; */
+    };
   }
 
   @override
@@ -184,11 +233,9 @@ class _EditarAssistencia extends State<EditarAssistencia> {
   }
 
   void consultaAforament() async {
-    /* Uri url = Uri.parse(
-        'https://safetyout.herokuapp.com/place/occupation?longitude=' +
-            cords.longitude.toString() +
-            '&latitude=' +
-            cords.latitude.toString() +
+    Uri url = Uri.parse(
+        'https://safetyout.herokuapp.com/place/occupation?place_id=' +
+            placeId +
             '&year=' +
             pickedDate.year.toString() +
             '&month=' +
@@ -259,7 +306,7 @@ class _EditarAssistencia extends State<EditarAssistencia> {
               ],
             );
           });
-    }); */
+    });
   }
 
   @override
@@ -352,7 +399,7 @@ class _EditarAssistencia extends State<EditarAssistencia> {
                   SizedBox(
                     width: Constants.w12(context),
                     child: Text(
-                      placeLocation,
+                      placeLocation != null ? placeLocation : "",
                       style: TextStyle(
                           color: Constants.black(context),
                           fontWeight: Constants.bolder,
@@ -376,7 +423,7 @@ class _EditarAssistencia extends State<EditarAssistencia> {
                       child: SizedBox(
                         width: Constants.w12(context),
                         child: Text(
-                          placeAddress,
+                          placeAddress != null ? placeAddress : "",
                           style: TextStyle(
                               color: Constants.black(context),
                               fontSize: Constants.s(context)),

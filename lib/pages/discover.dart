@@ -46,7 +46,7 @@ class _Discover extends State<Discover> {
   String todaysHours;
   int placeGauge;
   Uri placeDetailsUrl;
-  LatLng placeCords;
+  String placeId;
   FocusNode searchNode = FocusNode();
 
   bool viewSug = false;
@@ -55,10 +55,8 @@ class _Discover extends State<Discover> {
   void getOcupation(LatLng cords) async {
     DateTime now = DateTime.now();
     Uri url = Uri.parse(
-        'https://safetyout.herokuapp.com/place/occupation?longitude=' +
-            cords.longitude.toString() +
-            '&latitude=' +
-            cords.latitude.toString() +
+        'https://safetyout.herokuapp.com/place/occupation?place_id=' +
+            placeId +
             '&year=' +
             now.year.toString() +
             '&month=' +
@@ -313,8 +311,7 @@ class _Discover extends State<Discover> {
                         '&key=' +
                         api_key);
 
-                placeCords =
-                    LatLng(place["location"]["lat"], place["location"]["lng"]);
+                placeId = place["place_id"];
 
                 getDetails(placeDetailsUrl);
 
@@ -1335,7 +1332,7 @@ class _Discover extends State<Discover> {
                                                       placeName,
                                                       placeLocation,
                                                       placeAddress,
-                                                      placeCords)),
+                                                      placeId)),
                                         );
                                       },
                                       text: 'Veure més')),
@@ -1353,7 +1350,7 @@ class _Discover extends State<Discover> {
                                                       placeName,
                                                       placeLocation,
                                                       placeAddress,
-                                                      placeCords)),
+                                                      placeId)),
                                         );
                                       },
                                       text: 'Vull anar-hi')),

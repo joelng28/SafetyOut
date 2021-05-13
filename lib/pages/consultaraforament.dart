@@ -4,7 +4,6 @@ import 'package:app/defaults/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_picker/Picker.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:http/http.dart' as http;
 import '../app_localizations.dart';
@@ -12,18 +11,18 @@ import 'app.dart';
 
 class ConsultarAforament extends StatefulWidget {
   ConsultarAforament(
-      this.placeName, this.placeLocation, this.placeAddress, this.cords,
+      this.placeName, this.placeLocation, this.placeAddress, this.placeId,
       {Key key})
       : super(key: key);
 
   final String placeName;
   final String placeLocation;
   final String placeAddress;
-  final LatLng cords;
+  final String placeId;
 
   @override
   _ConsultarAforament createState() => _ConsultarAforament(
-      this.placeName, this.placeLocation, this.placeAddress, this.cords);
+      this.placeName, this.placeLocation, this.placeAddress, this.placeId);
 }
 
 class _ConsultarAforament extends State<ConsultarAforament> {
@@ -32,11 +31,11 @@ class _ConsultarAforament extends State<ConsultarAforament> {
   DateTime yearDate = DateTime.now();
 
   _ConsultarAforament(
-      this.placeName, this.placeLocation, this.placeAddress, this.cords);
+      this.placeName, this.placeLocation, this.placeAddress, this.placeId);
   final String placeName;
   final String placeLocation;
   final String placeAddress;
-  final LatLng cords;
+  final String placeId;
   int placeGauge;
 
   @override
@@ -54,10 +53,8 @@ class _ConsultarAforament extends State<ConsultarAforament> {
 
   void consultaAforament() async {
     Uri url = Uri.parse(
-        'https://safetyout.herokuapp.com/place/occupation?longitude=' +
-            cords.longitude.toString() +
-            '&latitude=' +
-            cords.latitude.toString() +
+        'https://safetyout.herokuapp.com/place/occupation?place_id=' +
+            placeId +
             '&year=' +
             pickedDate.year.toString() +
             '&month=' +

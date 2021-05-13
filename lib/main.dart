@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:app/authentication.dart';
 import 'package:app/state/app_language.dart';
 import 'package:app/app_localizations.dart';
 import 'package:app/routes/router.dart';
@@ -11,6 +12,8 @@ import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Authentication.initializeFirebase();
 
   AppLanguage appLanguage = AppLanguage();
   await appLanguage.fetchLocale();

@@ -1,29 +1,52 @@
+import 'dart:convert';
+
 import 'package:app/defaults/constants.dart';
 import 'package:app/pages/editar_assistencia.dart';
+import 'package:app/storage/secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-
+import 'package:http/http.dart' as http;
 import '../app_localizations.dart';
 
+// ignore: must_be_immutable
 class Activity extends StatefulWidget {
-  Activity(this.placeName, this.time, this.placeGauge,
+  Activity(this.placeName, this.time, this.placeGauge, this.date, this.placeId,
+      this.endDate, this.onDelete, this.onEdit,
       {Key key /*, this.title*/})
       : super(key: key);
 
   final String placeName;
   final String time;
   final int placeGauge;
+  final List<String> date;
+  final String placeId;
+  final List<String> endDate;
+  Function onDelete;
+  Function onEdit;
 
   @override
-  _Activity createState() =>
-      _Activity(this.placeName, this.time, this.placeGauge);
+  _Activity createState() => _Activity(
+      this.placeName,
+      this.time,
+      this.placeGauge,
+      this.date,
+      this.placeId,
+      this.endDate,
+      this.onDelete,
+      this.onEdit);
 }
 
 class _Activity extends State<Activity> {
-  _Activity(this.placeName, this.time, this.placeGauge);
+  _Activity(this.placeName, this.time, this.placeGauge, this.date, this.placeId,
+      this.endDate, this.onDelete, this.onEdit);
   final String placeName;
   final String time;
   final int placeGauge;
+  final List<String> date;
+  final List<String> endDate;
+  final String placeId;
+  Function onDelete;
+  Function onEdit;
   bool more = false;
 
   @override
@@ -121,9 +144,10 @@ class _Activity extends State<Activity> {
                                             pageBuilder: (_, __, ___) =>
                                                 EditarAssistencia(
                                                     placeName,
-                                                    "location",
-                                                    "address",
-                                                    "id")),
+                                                    placeId,
+                                                    date,
+                                                    endDate,
+                                                    onEdit)),
                                       );
                                     },
                                     child: Column(
@@ -238,8 +262,37 @@ class _Activity extends State<Activity> {
                                                       style: TextStyle(
                                                           color: Constants.red(
                                                               context))),
-                                                  onPressed: () {
-                                                    //Aquí es farà la call
+                                                  onPressed: () async {
+                                                    String userId =
+                                                        await SecureStorage
+                                                            .readSecureStorage(
+                                                                'SafetyOUT_UserId');
+                                                    print(userId);
+                                                    Uri url = Uri.parse(
+                                                        'https://safetyout.herokuapp.com/assistance');
+                                                    var body = jsonEncode({
+                                                      "user_id": userId,
+                                                      "place_id": placeId,
+                                                      "dateInterval": {
+                                                        "startDate": {
+                                                          "year": date[0],
+                                                          "month": date[1],
+                                                          "day": date[2],
+                                                          "hour": date[3],
+                                                          "minute": date[4]
+                                                        }
+                                                      }
+                                                    });
+                                                    var res = await http.delete(
+                                                        url,
+                                                        headers: {
+                                                          "Content-Type":
+                                                              "application/json"
+                                                        },
+                                                        body: body);
+                                                    if (res.statusCode == 200) {
+                                                      onDelete(placeId);
+                                                    }
                                                     Navigator.of(context).pop();
                                                   },
                                                 ),
@@ -295,20 +348,6 @@ class _Activity extends State<Activity> {
               ],
             ),
           ),
-/*           Expanded(
-            child: Column(
-              children: [
-                Container(
-                  color: Colors.orange,
-                  height: Constants.a7(context),
-                ),
-                Container(
-                  color: Colors.red,
-                  height: Constants.a7(context),
-                ),
-              ],
-            ),
-          ) */
         ],
       ),
     );

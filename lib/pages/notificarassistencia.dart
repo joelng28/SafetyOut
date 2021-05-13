@@ -5,7 +5,6 @@ import 'package:app/storage/secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_picker/Picker.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:http/http.dart' as http;
 import '../app_localizations.dart';
@@ -13,18 +12,18 @@ import 'app.dart';
 
 class NotificarAssistencia extends StatefulWidget {
   NotificarAssistencia(
-      this.placeName, this.placeLocation, this.placeAddress, this.cords,
+      this.placeName, this.placeLocation, this.placeAddress, this.placeId,
       {Key key})
       : super(key: key);
 
   final String placeName;
   final String placeLocation;
   final String placeAddress;
-  final LatLng cords;
+  final String placeId;
 
   @override
   _NotificarAssistencia createState() => _NotificarAssistencia(
-      this.placeName, this.placeLocation, this.placeAddress, this.cords);
+      this.placeName, this.placeLocation, this.placeAddress, this.placeId);
 }
 
 class _NotificarAssistencia extends State<NotificarAssistencia> {
@@ -36,11 +35,11 @@ class _NotificarAssistencia extends State<NotificarAssistencia> {
   Function submitAssistencia = (BuildContext context) {};
 
   _NotificarAssistencia(
-      this.placeName, this.placeLocation, this.placeAddress, this.cords);
+      this.placeName, this.placeLocation, this.placeAddress, this.placeId);
   final String placeName;
   final String placeLocation;
   final String placeAddress;
-  final LatLng cords;
+  final String placeId;
   int placeGauge;
 
   @override
@@ -82,10 +81,7 @@ class _NotificarAssistencia extends State<NotificarAssistencia> {
           var url = Uri.parse('https://safetyout.herokuapp.com/assistance');
           var body = jsonEncode({
             'user_id': val,
-            'place': {
-              'longitude': cords.longitude.toString(),
-              'latitude': cords.latitude.toString()
-            },
+            'place_id': placeId,
             'dateInterval': {
               'startDate': {
                 'year': pickedDate.year.toString(),
@@ -183,10 +179,8 @@ class _NotificarAssistencia extends State<NotificarAssistencia> {
 
   void consultaAforament() async {
     Uri url = Uri.parse(
-        'https://safetyout.herokuapp.com/place/occupation?longitude=' +
-            cords.longitude.toString() +
-            '&latitude=' +
-            cords.latitude.toString() +
+        'https://safetyout.herokuapp.com/place/occupation?place_id=' +
+            placeId +
             '&year=' +
             pickedDate.year.toString() +
             '&month=' +

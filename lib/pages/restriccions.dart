@@ -29,7 +29,7 @@ class _Restrictions extends State<Restrictions> {
   bool viewPlaygrounds = false;
 
   void getRestrictions() async {
-    String langCode = 'en';
+    String langCode = Localizations.localeOf(context).languageCode;
     var prefs = await SharedPreferences.getInstance();
 
     if (prefs.getString('language_code') != null) {

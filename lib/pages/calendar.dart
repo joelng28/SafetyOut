@@ -26,6 +26,17 @@ class _Calendar extends State<Calendar> {
 
   DateTime pickedDate = DateTime.now();
 
+  void onDelete(String id) {
+    setState(() {
+      activitats.removeWhere((element) => element.placeId == id);
+    });
+  }
+
+  void onEdit() {
+    activitats.clear();
+    getAssistencies();
+  }
+
   String getHour(String t) {
     List<String> l = t.split("-");
     Characters cs = l[2].characters;
@@ -34,6 +45,18 @@ class _Calendar extends State<Calendar> {
         cs.characterAt(5).toString() +
         cs.characterAt(6).toString() +
         cs.characterAt(7).toString();
+  }
+
+  List<String> getDate(String t) {
+    List<String> l = t.split("-");
+    List<String> d = [];
+    d.add(l[0]);
+    d.add((int.parse(l[1]) - 1).toString());
+    Characters cs = l[2].characters;
+    d.add(cs.characterAt(0).toString() + cs.characterAt(1).toString());
+    d.add(cs.characterAt(3).toString() + cs.characterAt(4).toString());
+    d.add(cs.characterAt(6).toString() + cs.characterAt(7).toString());
+    return d;
   }
 
   void getAssistencies() async {
@@ -55,23 +78,53 @@ class _Calendar extends State<Calendar> {
           setState(() {
             Map<String, dynamic> body = jsonDecode(res.body);
             List<dynamic> assistances = body['message'];
-            print(body);
             assistances.forEach((a) {
               setState(() {
-                activitats.add(Activity(
-                    'Lloc', getHour(a["dateInterval"]["startDate"]), 0));
+                Uri urlPlaces = Uri.parse(
+                    'https://maps.googleapis.com/maps/api/place/details/json?place_id=' +
+                        a["place_id"] +
+                        '&key=' +
+                        "AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA");
+                List<String> date = getDate(a["dateInterval"]["startDate"]);
+                Uri urlApi = Uri.parse(
+                    'https://safetyout.herokuapp.com/place/occupation?place_id=' +
+                        a["place_id"] +
+                        '&year=' +
+                        date[0] +
+                        '&month=' +
+                        date[1] +
+                        '&day=' +
+                        date[2] +
+                        '&hour=' +
+                        date[3] +
+                        '&minute=' +
+                        date[4]);
+
+                Future.wait([
+                  http.get(urlPlaces),
+                  http.get(urlApi),
+                ]).then((List responses) {
+                  Map<String, dynamic> bodyPlaces =
+                      jsonDecode(responses[0].body);
+                  String placeName = bodyPlaces["result"]["name"];
+                  Map<String, dynamic> bodyApi = jsonDecode(responses[1].body);
+                  int placeGauge = bodyApi["occupation"];
+                  setState(() {
+                    activitats.add(Activity(
+                        placeName,
+                        getHour(a["dateInterval"]["startDate"]) +
+                            " - " +
+                            getHour(a["dateInterval"]["endDate"]),
+                        placeGauge,
+                        date,
+                        a["place_id"],
+                        getDate(a["dateInterval"]["endDate"]),
+                        onDelete,
+                        onEdit));
+                  });
+                }).catchError((error) => {});
               });
             });
-            /* assistances.forEach((a) async {
-              var urlRes = Uri.parse(
-                  'https://maps.googleapis.com/maps/api/place/nearbysearch/json?place_id=' +
-                      a['placeId'] +
-                      '&fields=name&key=AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA');
-              await http.get(urlRes).then((p) {
-                Map<String, dynamic> body = jsonDecode(p.body);
-                List<dynamic> results = body["results"];
-              });
-            }); */
           });
         } else {
           showDialog(
