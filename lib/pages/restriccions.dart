@@ -40,10 +40,10 @@ class _Restrictions extends State<Restrictions> {
         Uri.parse('https://restrictions-esp.herokuapp.com/cat/' + langCode);
     var response =
         await http.get(url, headers: {HttpHeaders.contentTypeHeader: "utf8"});
+    print(response.statusCode);
 
     if (response.statusCode == 200) {
       Map<String, dynamic> body = jsonDecode(response.body);
-
       if (mounted) {
         setState(() {
           List<Widget> m = [];
@@ -182,8 +182,13 @@ class _Restrictions extends State<Restrictions> {
 
   @override
   void initState() {
-    getRestrictions();
     super.initState();
+  }
+
+  @override
+  Future<void> didChangeDependencies() async {
+    super.didChangeDependencies();
+    getRestrictions();
   }
 
   @override

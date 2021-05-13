@@ -30,7 +30,8 @@ class _Login extends State<Login> {
   Function submitLogin = (BuildContext context) {};
 
   Future<void> googleLogin(BuildContext context) async {
-    User user = await Authentication.signInWithGoogle(context: context);
+    User user = await Authentication.signInWithGoogle(context: context)
+        .catchError((e) {});
     setState(() {
       isLoading = true;
       activeButton = false;
