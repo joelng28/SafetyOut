@@ -38,6 +38,15 @@ class _Chats extends State<Chats> {
     if (chats.isNotEmpty) {
       return Expanded(
           child: Scaffold(
+        floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                PageRouteBuilder(pageBuilder: (_, __, ___) => NewChat()),
+              );
+            },
+            child: const Icon(Icons.chat_outlined, color: Colors.black),
+            backgroundColor: Constants.green(context)),
         body: Stack(
           children: [
             ListView.separated(
