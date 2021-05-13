@@ -1,4 +1,5 @@
 import 'package:app/defaults/constants.dart';
+import 'package:app/storage/secure_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_socket_io/flutter_socket_io.dart';
@@ -19,32 +20,42 @@ class _Conversa extends State<Conversa> {
   final textController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   List<Message> messages = [
-    Message(messageContent: "Hello", messageType: "receiver"),
+    Message(messageContent: "Hello", owner: false),
   ];
   IO.Socket socket;
-  dynamic id;
+  dynamic chatRoomId;
   bool isConected = false;
+  String currentUserId;
 
   void sendMessage() {
-    /*socket.emit('message', {
-      'chatRoom': id.toString(),
-      'author': '6081a40d875b4b3864bd1f21',
+    socket.emit('message', {
+      'chatRoom': chatRoomId.toString(),
+      'author': currentUserId,
       'message': textController.text.toString()
-    });*/
-    messages.add(Message(
-        messageContent: textController.text.toString(), messageType: "sender"));
-    _scrollController.animateTo(
-      messages.length.toDouble() * 70.0,
-      curve: Curves.easeOut,
-      duration: const Duration(milliseconds: 300),
-    );
-    textController.clear();
+    });
+  }
+
+  void handleMessage(dynamic data) {
+    setState(() {
+      messages.add(Message(
+          messageContent: textController.text.toString(),
+          owner: data[1].toString() == currentUserId ? true : false));
+      if (messages.length > 4) {
+        _scrollController.animateTo(
+          messages.length.toDouble() * 70.0,
+          curve: Curves.easeOut,
+          duration: const Duration(milliseconds: 700),
+        );
+      }
+      textController.clear();
+    });
+    print(data[2].toString());
   }
 
   void handleJoin(dynamic data) {
-    id = data;
+    chatRoomId = data;
     isConected = true;
-    print(id);
+    print(chatRoomId);
   }
 
   @override
@@ -56,17 +67,23 @@ class _Conversa extends State<Conversa> {
   @override
   void initState() {
     super.initState();
-
-    IO.Socket socket = IO.io('https://safetyout.herokuapp.com/',
-        OptionBuilder().setTransports(['websocket']).build());
-    socket.onConnect((_) {
-      print('connect');
-      socket.emit('join', {
-        'user1_id': '6081a40d875b4b3864bd1f21',
-        'user2_id': '609116e842fa750022ab15b7'
+    currentUserId =
+        SecureStorage.readSecureStorage('SafetyOUT_UserId').toString();
+    try {
+      socket = IO.io('https://safetyout.herokuapp.com/',
+          OptionBuilder().setTransports(['websocket']).build());
+      socket.onConnect((_) {
+        print('connect');
+        socket.emit('join', {
+          'user1_id': currentUserId,
+          'user2_id': '609116e842fa750022ab15b7'
+        });
       });
-    });
-    socket.on('joined', (data) => handleJoin(data));
+      socket.on('joined', (data) => handleJoin(data));
+      socket.on('message', (data) => handleMessage(data));
+    } catch (e) {
+      print(e.toString());
+    }
 
     /*socket.emit('join', {
       'user1_id': '6081a40d875b4b3864bd1f21',
@@ -105,17 +122,16 @@ class _Conversa extends State<Conversa> {
                     padding:
                         EdgeInsets.only(left: 16, right: 16, top: 5, bottom: 5),
                     child: Align(
-                        alignment: (messages[index].messageType == "receiver"
+                        alignment: (messages[index].owner == false
                             ? Alignment.topLeft
                             : Alignment.topRight),
                         child: Container(
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
                                 //border: Border.all(color: Colors.black),
-                                color:
-                                    (messages[index].messageType == "receiver"
-                                        ? Constants.white(context)
-                                        : Constants.green(context))),
+                                color: (messages[index].owner == false
+                                    ? Constants.white(context)
+                                    : Constants.green(context))),
                             padding: EdgeInsets.all(10),
                             child: Text(messages[index].messageContent,
                                 style: TextStyle(
@@ -124,52 +140,59 @@ class _Conversa extends State<Conversa> {
             ),
             Align(
                 alignment: Alignment.bottomCenter,
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Padding(
-                          padding: EdgeInsets.only(
-                              left: 15.0, bottom: 15.0, right: 10.0),
-                          child: SizedBox(
-                            width: 50,
-                            height: 50,
-                            child: TextField(
-                              controller: textController,
-                              decoration: InputDecoration(
-                                  hintText: AppLocalizations.of(context)
-                                      .translate("Escriu_un_missatge"),
-                                  contentPadding:
-                                      const EdgeInsets.only(left: 20.0),
-                                  hintStyle: TextStyle(color: Colors.black54),
-                                  border: OutlineInputBorder(
-                                      borderSide: BorderSide.none,
-                                      borderRadius: BorderRadius.circular(30)),
-                                  filled: true,
-                                  fillColor: Constants.lightGrey(context),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide.none,
-                                      borderRadius: BorderRadius.circular(30))),
-                            ),
-                          )),
-                    ),
-                    Padding(
-                        padding: EdgeInsets.only(right: 15.0, bottom: 15.0),
-                        child: SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: FloatingActionButton(
-                            onPressed: () => setState(() => sendMessage()),
-                            child: Icon(
-                              Icons.send,
-                              color: Constants.grey(context),
-                              size: 25,
-                            ),
-                            backgroundColor: Constants.lightGrey(context),
-                            elevation: 0,
-                          ),
-                        )),
-                  ],
-                ))
+                child: Container(
+                    color: Constants.trueWhite(context),
+                    width: 500,
+                    height: 50,
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Padding(
+                              padding: EdgeInsets.only(
+                                  left: 15.0, bottom: 15.0, right: 10.0),
+                              child: SizedBox(
+                                width: 50,
+                                height: 50,
+                                child: TextField(
+                                  controller: textController,
+                                  decoration: InputDecoration(
+                                      hintText: AppLocalizations.of(context)
+                                          .translate("Escriu_un_missatge"),
+                                      contentPadding:
+                                          const EdgeInsets.only(left: 20.0),
+                                      hintStyle:
+                                          TextStyle(color: Colors.black54),
+                                      border: OutlineInputBorder(
+                                          borderSide: BorderSide.none,
+                                          borderRadius:
+                                              BorderRadius.circular(30)),
+                                      filled: true,
+                                      fillColor: Constants.lightGrey(context),
+                                      focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide.none,
+                                          borderRadius:
+                                              BorderRadius.circular(30))),
+                                ),
+                              )),
+                        ),
+                        Padding(
+                            padding: EdgeInsets.only(right: 15.0, bottom: 15.0),
+                            child: SizedBox(
+                              width: 50,
+                              height: 50,
+                              child: FloatingActionButton(
+                                onPressed: () => setState(() => sendMessage()),
+                                child: Icon(
+                                  Icons.send,
+                                  color: Constants.grey(context),
+                                  size: 25,
+                                ),
+                                backgroundColor: Constants.lightGrey(context),
+                                elevation: 0,
+                              ),
+                            )),
+                      ],
+                    )))
           ],
         ));
   }
