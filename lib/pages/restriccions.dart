@@ -40,7 +40,6 @@ class _Restrictions extends State<Restrictions> {
         Uri.parse('https://restrictions-esp.herokuapp.com/cat/' + langCode);
     var response =
         await http.get(url, headers: {HttpHeaders.contentTypeHeader: "utf8"});
-    print(response.statusCode);
 
     if (response.statusCode == 200) {
       Map<String, dynamic> body = jsonDecode(response.body);
@@ -48,7 +47,11 @@ class _Restrictions extends State<Restrictions> {
         setState(() {
           List<Widget> m = [];
           body["movility"].forEach((val) {
-            m.add(Text(val,
+            m.add(Text(
+                val != ""
+                    ? val
+                    : AppLocalizations.of(context)
+                        .translate("No_hi_ha_restriccions_daquest_aspecte"),
                 style: TextStyle(
                     fontSize: Constants.xs(context),
                     color: Constants.black(context))));
@@ -57,7 +60,11 @@ class _Restrictions extends State<Restrictions> {
 
           List<Widget> c = [];
           body["curfew"].forEach((val) {
-            c.add(Text(val,
+            c.add(Text(
+                val != ""
+                    ? val
+                    : AppLocalizations.of(context)
+                        .translate("No_hi_ha_restriccions_daquest_aspecte"),
                 style: TextStyle(
                     fontSize: Constants.xs(context),
                     color: Constants.black(context))));
@@ -67,7 +74,11 @@ class _Restrictions extends State<Restrictions> {
 
           List<Widget> g = [];
           body["groups"].forEach((val) {
-            g.add(Text(val,
+            g.add(Text(
+                val != ""
+                    ? val
+                    : AppLocalizations.of(context)
+                        .translate("No_hi_ha_restriccions_daquest_aspecte"),
                 style: TextStyle(
                     fontSize: Constants.xs(context),
                     color: Constants.black(context))));
@@ -83,7 +94,11 @@ class _Restrictions extends State<Restrictions> {
                     color: Constants.black(context),
                     fontWeight: Constants.bold)));
             val.forEach((val) {
-              r.add(Text(val,
+              r.add(Text(
+                  val != ""
+                      ? val
+                      : AppLocalizations.of(context)
+                          .translate("No_hi_ha_restriccions_daquest_aspecte"),
                   style: TextStyle(
                       fontSize: Constants.xs(context),
                       color: Constants.black(context))));
@@ -110,7 +125,11 @@ class _Restrictions extends State<Restrictions> {
                         color: Constants.black(context),
                         fontWeight: Constants.bold)));
                 val.forEach((val) {
-                  e.add(Text(val,
+                  e.add(Text(
+                      val != ""
+                          ? val
+                          : AppLocalizations.of(context).translate(
+                              "No_hi_ha_restriccions_daquest_aspecte"),
                       style: TextStyle(
                           fontSize: Constants.xs(context),
                           color: Constants.black(context))));
@@ -118,7 +137,11 @@ class _Restrictions extends State<Restrictions> {
               });
             } else if (val.runtimeType.toString() == 'List<dynamic>') {
               val.forEach((val) {
-                e.add(Text(val,
+                e.add(Text(
+                    val != ""
+                        ? val
+                        : AppLocalizations.of(context)
+                            .translate("No_hi_ha_restriccions_daquest_aspecte"),
                     style: TextStyle(
                         fontSize: Constants.xs(context),
                         color: Constants.black(context))));
@@ -128,7 +151,11 @@ class _Restrictions extends State<Restrictions> {
           restrictions["commerce"] = e;
           List<Widget> p = [];
           body["public transport"].forEach((val) {
-            p.add(Text(val,
+            p.add(Text(
+                val != ""
+                    ? val
+                    : AppLocalizations.of(context)
+                        .translate("No_hi_ha_restriccions_daquest_aspecte"),
                 style: TextStyle(
                     fontSize: Constants.xs(context),
                     color: Constants.black(context))));
@@ -143,7 +170,11 @@ class _Restrictions extends State<Restrictions> {
                     color: Constants.black(context),
                     fontWeight: Constants.bold)));
             val.forEach((val) {
-              t.add(Text(val,
+              t.add(Text(
+                  val != ""
+                      ? val
+                      : AppLocalizations.of(context)
+                          .translate("No_hi_ha_restriccions_daquest_aspecte"),
                   style: TextStyle(
                       fontSize: Constants.xs(context),
                       color: Constants.black(context))));
@@ -301,7 +332,8 @@ class _Restrictions extends State<Restrictions> {
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: restrictions["movility"] != null
+                      children: restrictions["movility"] != null &&
+                              restrictions["movility"].isNotEmpty
                           ? restrictions["movility"]
                           : [
                               Text(
@@ -423,7 +455,8 @@ class _Restrictions extends State<Restrictions> {
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: restrictions["curfew"] != null
+                      children: restrictions["curfew"] != null &&
+                              restrictions["curfew"].isNotEmpty
                           ? restrictions["curfew"]
                           : [
                               Text(
@@ -545,7 +578,8 @@ class _Restrictions extends State<Restrictions> {
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: restrictions["groups"] != null
+                      children: restrictions["groups"] != null &&
+                              restrictions["groups"].isNotEmpty
                           ? restrictions["groups"]
                           : [
                               Text(
@@ -668,7 +702,8 @@ class _Restrictions extends State<Restrictions> {
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: restrictions["restaurants"] != null
+                      children: restrictions["restaurants"] != null &&
+                              restrictions["restaurants"].isNotEmpty
                           ? restrictions["restaurants"]
                           : [
                               Text(
@@ -790,7 +825,8 @@ class _Restrictions extends State<Restrictions> {
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: restrictions["commerce"] != null
+                      children: restrictions["commerce"] != null &&
+                              restrictions["commerce"].isNotEmpty
                           ? restrictions["commerce"]
                           : [
                               Text(
@@ -912,7 +948,8 @@ class _Restrictions extends State<Restrictions> {
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: restrictions["public transport"] != null
+                      children: restrictions["public transport"] != null &&
+                              restrictions["public transport"].isNotEmpty
                           ? restrictions["public transport"]
                           : [
                               Text(
@@ -1035,7 +1072,8 @@ class _Restrictions extends State<Restrictions> {
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: restrictions["culture"] != null
+                      children: restrictions["culture"] != null &&
+                              restrictions["culture"].isNotEmpty
                           ? restrictions["culture"]
                           : [
                               Text(
@@ -1158,7 +1196,8 @@ class _Restrictions extends State<Restrictions> {
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: restrictions["playgrounds"] != null
+                      children: restrictions["playgrounds"] != null &&
+                              restrictions["playgrounds"].isNotEmpty
                           ? restrictions["playgrounds"]
                           : [
                               Text(
