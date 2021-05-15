@@ -1,11 +1,16 @@
+import 'dart:convert';
+//import 'dart:html';
+
 import 'package:app/defaults/constants.dart';
 import 'package:app/storage/secure_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_socket_io/flutter_socket_io.dart';
+import 'package:provider/provider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:app/models/chatModel.dart';
 import 'package:socket_io_client/socket_io_client.dart';
+import 'package:app/state/regChat.dart';
+import 'package:http/http.dart' as http;
 
 import '../app_localizations.dart';
 
@@ -25,37 +30,187 @@ class _Conversa extends State<Conversa> {
   IO.Socket socket;
   dynamic chatRoomId;
   bool isConected = false;
-  String currentUserId;
+  String name;
+  String destUserId;
 
   void sendMessage() {
-    socket.emit('message', {
-      'chatRoom': chatRoomId.toString(),
-      'author': currentUserId,
-      'message': textController.text.toString()
+    SecureStorage.readSecureStorage('SafetyOUT_UserId').then((id) {
+      socket.emit('message', {
+        'chatRoom': chatRoomId.toString(),
+        'author': id,
+        'message': textController.text.toString()
+      });
     });
   }
 
   void handleMessage(dynamic data) {
-    setState(() {
-      messages.add(Message(
-          messageContent: textController.text.toString(),
-          owner: data[1].toString() == currentUserId ? true : false));
-      if (messages.length > 4) {
-        _scrollController.animateTo(
-          messages.length.toDouble() * 70.0,
-          curve: Curves.easeOut,
-          duration: const Duration(milliseconds: 700),
-        );
-      }
-      textController.clear();
+    SecureStorage.readSecureStorage('SafetyOUT_UserId').then((id) {
+      setState(() {
+        messages.add(Message(
+            messageContent: textController.text.toString(),
+            owner: data[1].toString() == id ? true : false));
+        if (messages.length > 4) {
+          _scrollController.animateTo(
+            messages.length.toDouble() * 70.0,
+            curve: Curves.easeOut,
+            duration: const Duration(milliseconds: 700),
+          );
+        }
+        textController.clear();
+      });
+      print(data[2].toString());
     });
-    print(data[2].toString());
   }
 
   void handleJoin(dynamic data) {
     chatRoomId = data;
     isConected = true;
     print(chatRoomId);
+  }
+
+  void initializeChatList() {
+    String chatId = "60a00ce0bbe2b900223d2b0b";
+    SecureStorage.readSecureStorage('SafetyOUT_UserId').then((id) {
+      var url = Uri.parse(
+          'https://safetyout.herokuapp.com/chat/' + chatId + "/messages");
+      http.get(url).then((res) {
+        if (res.statusCode == 200) {
+          Map<String, dynamic> body = jsonDecode(res.body);
+          List<dynamic> messagesaux = body["messages"];
+          messagesaux.forEach((element) {
+            Map<String, dynamic> message = element;
+            setState(() {
+              Message m = Message(
+                  messageContent: message["message"],
+                  owner: message["user_id"].toString() == id ? true : false);
+              messages.add(m);
+            });
+          });
+        } else {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                  content: SingleChildScrollView(
+                      child: ListBody(
+                    children: <Widget>[
+                      Text(
+                          AppLocalizations.of(context)
+                              .translate("Error_de_xarxa"),
+                          style: TextStyle(fontSize: Constants.m(context))),
+                    ],
+                  )),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text(
+                          AppLocalizations.of(context).translate("Acceptar"),
+                          style: TextStyle(color: Constants.black(context))),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              });
+        }
+      }).catchError((err) {
+        //Sale error por pantalla
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                content: SingleChildScrollView(
+                    child: ListBody(
+                  children: <Widget>[
+                    Text(
+                        AppLocalizations.of(context)
+                            .translate("Error_de_xarxa"),
+                        style: TextStyle(fontSize: Constants.m(context))),
+                  ],
+                )),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text(
+                        AppLocalizations.of(context).translate("Acceptar"),
+                        style: TextStyle(color: Constants.black(context))),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            });
+      });
+    });
+  }
+
+  void getName() {
+    var url = Uri.parse('https://safetyout.herokuapp.com/user/' + destUserId);
+    http.get(url).then((res) {
+      if (res.statusCode == 200) {
+        Map<String, dynamic> body = jsonDecode(res.body);
+        Map<String, dynamic> user = body["user"];
+        setState(() {
+          name = user["name"] + " " + user["surnames"];
+        });
+      } else {
+        //print(res.statusCode);
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                content: SingleChildScrollView(
+                    child: ListBody(
+                  children: <Widget>[
+                    Text(
+                        AppLocalizations.of(context)
+                            .translate("Error_de_xarxa"),
+                        style: TextStyle(fontSize: Constants.m(context))),
+                  ],
+                )),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text(
+                        AppLocalizations.of(context).translate("Acceptar"),
+                        style: TextStyle(color: Constants.black(context))),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            });
+      }
+    }).catchError((err) {
+      //Sale error por pantalla
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+              content: SingleChildScrollView(
+                  child: ListBody(
+                children: <Widget>[
+                  Text(AppLocalizations.of(context).translate("Error_de_xarxa"),
+                      style: TextStyle(fontSize: Constants.m(context))),
+                ],
+              )),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                      AppLocalizations.of(context).translate("Acceptar"),
+                      style: TextStyle(color: Constants.black(context))),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          });
+    });
   }
 
   @override
@@ -67,23 +222,31 @@ class _Conversa extends State<Conversa> {
   @override
   void initState() {
     super.initState();
-    currentUserId =
-        SecureStorage.readSecureStorage('SafetyOUT_UserId').toString();
-    try {
-      socket = IO.io('https://safetyout.herokuapp.com/',
-          OptionBuilder().setTransports(['websocket']).build());
-      socket.onConnect((_) {
-        print('connect');
-        socket.emit('join', {
-          'user1_id': currentUserId,
-          'user2_id': '609116e842fa750022ab15b7'
+
+    destUserId = '609116e842fa750022ab15b7';
+
+    getName();
+
+    initializeChatList();
+
+    // destUserId = Provider.of<RegChat>(context, listen: false).getId;
+    SecureStorage.readSecureStorage('SafetyOUT_UserId').then((id) {
+      try {
+        socket = IO.io('https://safetyout.herokuapp.com/',
+            OptionBuilder().setTransports(['websocket']).build());
+        socket.onConnect((_) {
+          print('connect');
+          socket.emit('join', {
+            'user1_id': id,
+            'user2_id': destUserId //destUserId
+          });
         });
-      });
-      socket.on('joined', (data) => handleJoin(data));
-      socket.on('message', (data) => handleMessage(data));
-    } catch (e) {
-      print(e.toString());
-    }
+        socket.on('joined', (data) => handleJoin(data));
+        socket.on('message', (data) => handleMessage(data));
+      } catch (e) {
+        print(e.toString());
+      }
+    });
   }
 
   @override
@@ -98,7 +261,7 @@ class _Conversa extends State<Conversa> {
               Navigator.of(context).pop();
             },
           ),
-          title: Text("Nom d'usuari"),
+          title: Text(name),
           actions: [IconButton(icon: Icon(Icons.more_horiz), onPressed: () {})],
         ),
         body: Stack(
@@ -129,6 +292,9 @@ class _Conversa extends State<Conversa> {
                             padding: EdgeInsets.all(10),
                             child: Text(messages[index].messageContent,
                                 style: TextStyle(
+                                    color: (messages[index].owner == false
+                                        ? Constants.black(context)
+                                        : Colors.black),
                                     fontSize: Constants.s(context))))));
               },
             ),

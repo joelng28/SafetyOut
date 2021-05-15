@@ -1,9 +1,15 @@
+import 'dart:convert';
+
 import 'package:app/defaults/constants.dart';
 import 'package:app/pages/newchat.dart';
+import 'package:app/state/regChat.dart';
+import 'package:app/storage/secure_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:app/models/contactChat.dart';
+import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 import '../app_localizations.dart';
 import 'conversa.dart';
@@ -19,19 +25,164 @@ class _Chats extends State<Chats> {
   final textController = TextEditingController();
 
   List<Contact> chats = [
-    Contact(name: 'Joel', lastMessage: "Hola que tal"),
-    Contact(name: 'Joel2', lastMessage: "Hola que tal2")
+    //Contact(name: 'Joel', lastMessage: "Hola que tal"),
+    //Contact(name: 'Joel2', lastMessage: "Hola que tal2")
   ];
 
   /*@override
   void dispose() {
     super.dispose();
-  }
+  }*/
 
   @override
   void initState() {
     super.initState();
-  }*/
+    SecureStorage.readSecureStorage('SafetyOUT_UserId').then((id) {
+      var url =
+          Uri.parse('https://safetyout.herokuapp.com/user/' + id + '/chats');
+      http.get(url).then((res) {
+        if (res.statusCode == 200) {
+          Map<String, dynamic> body = jsonDecode(res.body);
+          dynamic chatList = body["chats"];
+          chatList.forEach((element) {
+            Map<String, dynamic> chat = element;
+            String userid = chat["user2_id"].toString();
+            var url2 =
+                Uri.parse('https://safetyout.herokuapp.com/user/' + userid);
+            http.get(url2).then((res) {
+              if (res.statusCode == 200) {
+                Map<String, dynamic> body2 = jsonDecode(res.body);
+                Map<String, dynamic> user2 = body2["user"];
+                setState(() {
+                  print(userid);
+                  Contact c = Contact(
+                      name: user2["name"].toString() + " " + user2["surnames"],
+                      lastMessage: "últim Missatge");
+                  chats.add(c);
+                });
+              } else {
+                //print(res.statusCode);
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                        content: SingleChildScrollView(
+                            child: ListBody(
+                          children: <Widget>[
+                            Text(
+                                AppLocalizations.of(context)
+                                    .translate("Error_de_xarxa"),
+                                style:
+                                    TextStyle(fontSize: Constants.m(context))),
+                          ],
+                        )),
+                        actions: <Widget>[
+                          TextButton(
+                            child: Text(
+                                AppLocalizations.of(context)
+                                    .translate("Acceptar"),
+                                style:
+                                    TextStyle(color: Constants.black(context))),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    });
+              }
+            }).catchError((err) {
+              //Sale error por pantalla
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                      content: SingleChildScrollView(
+                          child: ListBody(
+                        children: <Widget>[
+                          Text(
+                              AppLocalizations.of(context)
+                                  .translate("Error_de_xarxa"),
+                              style: TextStyle(fontSize: Constants.m(context))),
+                        ],
+                      )),
+                      actions: <Widget>[
+                        TextButton(
+                          child: Text(
+                              AppLocalizations.of(context)
+                                  .translate("Acceptar"),
+                              style:
+                                  TextStyle(color: Constants.black(context))),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    );
+                  });
+            });
+          });
+        } else {
+          (print(res.statusCode));
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                  content: SingleChildScrollView(
+                      child: ListBody(
+                    children: <Widget>[
+                      Text(
+                          AppLocalizations.of(context)
+                              .translate("Error_de_xarxa"),
+                          style: TextStyle(fontSize: Constants.m(context))),
+                    ],
+                  )),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text(
+                          AppLocalizations.of(context).translate("Acceptar"),
+                          style: TextStyle(color: Constants.black(context))),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              });
+        }
+      }).catchError((err) {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                content: SingleChildScrollView(
+                    child: ListBody(
+                  children: <Widget>[
+                    Text(
+                        AppLocalizations.of(context)
+                            .translate("Error_de_xarxa"),
+                        style: TextStyle(fontSize: Constants.m(context))),
+                  ],
+                )),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text(
+                        AppLocalizations.of(context).translate("Acceptar"),
+                        style: TextStyle(color: Constants.black(context))),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            });
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,14 +223,18 @@ class _Chats extends State<Chats> {
                     title: Text(
                       chats[index].name,
                       style: TextStyle(
+                          color: Constants.black(context),
                           fontWeight: Constants.bolder,
                           fontSize: Constants.l(context)),
                     ),
                     subtitle: Text(
                       chats[index].lastMessage,
-                      style: TextStyle(fontSize: Constants.s(context)),
+                      style: TextStyle(
+                          color: Constants.grey(context),
+                          fontSize: Constants.s(context)),
                     ),
                     onTap: () {
+                      //Provider.of<RegChat>(context, listen: false).setId('name');
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => Conversa()));
                     },

@@ -29,8 +29,7 @@ class _Profile extends State<Profile> {
   void initState() {
     super.initState();
     SecureStorage.readSecureStorage('SafetyOUT_UserId').then((id) {
-      var url =
-          Uri.parse('https://safetyout.herokuapp.com/user/getUserInfo/' + id);
+      var url = Uri.parse('https://safetyout.herokuapp.com/user/' + id);
       http.get(url).then((res) {
         if (res.statusCode == 200) {
           Map<String, dynamic> body = jsonDecode(res.body);
