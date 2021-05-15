@@ -2,14 +2,15 @@ import 'dart:convert';
 //import 'dart:html';
 
 import 'package:app/defaults/constants.dart';
+import 'package:app/state/reg.dart';
 import 'package:app/storage/secure_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+// ignore: library_prefixes
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:app/models/chatModel.dart';
 import 'package:socket_io_client/socket_io_client.dart';
-import 'package:app/state/regChat.dart';
 import 'package:http/http.dart' as http;
 
 import '../app_localizations.dart';
@@ -69,7 +70,7 @@ class _Conversa extends State<Conversa> {
   }
 
   void initializeChatList() {
-    String chatId = "60a00ce0bbe2b900223d2b0b";
+    String chatId = Provider.of<RegState>(context, listen: false).getId;
     SecureStorage.readSecureStorage('SafetyOUT_UserId').then((id) {
       var url = Uri.parse(
           'https://safetyout.herokuapp.com/chat/' + chatId + "/messages");

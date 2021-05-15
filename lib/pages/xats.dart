@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:app/defaults/constants.dart';
 import 'package:app/pages/newchat.dart';
-import 'package:app/state/regChat.dart';
+import 'package:app/state/reg.dart';
 import 'package:app/storage/secure_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -234,7 +234,8 @@ class _Chats extends State<Chats> {
                           fontSize: Constants.s(context)),
                     ),
                     onTap: () {
-                      //Provider.of<RegChat>(context, listen: false).setId('name');
+                      Provider.of<RegState>(context, listen: false)
+                          .setId("60a00ce0bbe2b900223d2b0b");
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => Conversa()));
                     },
