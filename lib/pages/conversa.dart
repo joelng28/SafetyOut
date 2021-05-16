@@ -224,8 +224,8 @@ class _Conversa extends State<Conversa> {
   void initState() {
     super.initState();
 
-    //destUserId = "609116e842fa750022ab15b7";
-    destUserId = Provider.of<RegState>(context, listen: false).getId;
+    destUserId = "609116e842fa750022ab15b7";
+    //destUserId = Provider.of<RegState>(context, listen: false).getId;
 
     getName();
 
