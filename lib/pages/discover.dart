@@ -6,6 +6,7 @@ import 'package:app/pages/consultaraforament.dart';
 import 'package:app/widgets/border_button.dart';
 import 'package:app/widgets/search_input.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -45,7 +46,7 @@ class _Discover extends State<Discover> {
   String todaysHours;
   int placeGauge;
   Uri placeDetailsUrl;
-  LatLng placeCords;
+  String placeId;
   FocusNode searchNode = FocusNode();
 
   bool viewSug = false;
@@ -54,10 +55,8 @@ class _Discover extends State<Discover> {
   void getOcupation(LatLng cords) async {
     DateTime now = DateTime.now();
     Uri url = Uri.parse(
-        'https://safetyout.herokuapp.com/place/occupation?longitude=' +
-            cords.longitude.toString() +
-            '&latitude=' +
-            cords.latitude.toString() +
+        'https://safetyout.herokuapp.com/place/occupation?place_id=' +
+            placeId +
             '&year=' +
             now.year.toString() +
             '&month=' +
@@ -292,46 +291,48 @@ class _Discover extends State<Discover> {
     final ids = places.toList().map((e) => e["place_id"]).toList().toSet();
     places.toList().retainWhere((x) => ids.remove(x["place_id"]));
 
-    setState(() {
-      markers.clear();
-      places.forEach((place) {
-        final marker = Marker(
-            markerId: MarkerId(place["place_id"]),
-            icon: BitmapDescriptor.defaultMarker,
-            position:
-                LatLng(place["location"]["lat"], place["location"]["lng"]),
-            onTap: () {
-              handlePinTap(place["place_id"],
-                  LatLng(place["location"]["lat"], place["location"]["lng"]));
-              String api_key = "AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA";
-              String place_id = place["place_id"];
-              placeDetailsUrl = Uri.parse(
-                  'https://maps.googleapis.com/maps/api/place/details/json?place_id=' +
-                      place_id +
-                      '&key=' +
-                      api_key);
+    if (mounted) {
+      setState(() {
+        markers.clear();
+        places.forEach((place) {
+          final marker = Marker(
+              markerId: MarkerId(place["place_id"]),
+              icon: BitmapDescriptor.defaultMarker,
+              position:
+                  LatLng(place["location"]["lat"], place["location"]["lng"]),
+              onTap: () {
+                handlePinTap(place["place_id"],
+                    LatLng(place["location"]["lat"], place["location"]["lng"]));
+                String api_key = "AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA";
+                String place_id = place["place_id"];
+                placeDetailsUrl = Uri.parse(
+                    'https://maps.googleapis.com/maps/api/place/details/json?place_id=' +
+                        place_id +
+                        '&key=' +
+                        api_key);
 
-              placeCords =
-                  LatLng(place["location"]["lat"], place["location"]["lng"]);
+                placeId = place["place_id"];
 
-              getDetails(placeDetailsUrl);
+                getDetails(placeDetailsUrl);
 
-              getOcupation(
-                  LatLng(place["location"]["lat"], place["location"]["lng"]));
+                getOcupation(
+                    LatLng(place["location"]["lat"], place["location"]["lng"]));
 
-              setState(() {
-                viewPlace = true;
+                setState(() {
+                  viewPlace = true;
+                });
+                controller
+                    .animateCamera(CameraUpdate.newCameraPosition(
+                        CameraPosition(
+                            target: LatLng(place["location"]["lat"],
+                                place["location"]["lng"]),
+                            zoom: 18)))
+                    .catchError((error) {});
               });
-              controller
-                  .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-                      target: LatLng(
-                          place["location"]["lat"], place["location"]["lng"]),
-                      zoom: 18)))
-                  .catchError((error) {});
-            });
-        markers[place["place_id"]] = marker;
+          markers[place["place_id"]] = marker;
+        });
       });
-    });
+    }
   }
 
   void getFirstLocation() {
@@ -463,7 +464,7 @@ class _Discover extends State<Discover> {
                 children: [
                   Padding(
                     padding: EdgeInsets.only(
-                        top: Constants.v7(context) + Constants.v7(context)),
+                        top: Constants.h7(context) + Constants.h7(context)),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -561,9 +562,6 @@ class _Discover extends State<Discover> {
                                           child: Row(
                                             children: [
                                               Container(
-                                                  constraints: BoxConstraints(
-                                                      maxWidth: Constants.w14(
-                                                          context)),
                                                   height: Constants.a7(context),
                                                   decoration: BoxDecoration(
                                                     borderRadius:
@@ -605,24 +603,40 @@ class _Discover extends State<Discover> {
                                                               maxWidth:
                                                                   Constants.w12(
                                                                       context)),
-                                                      child: Text(
-                                                        places
-                                                                .toList()
-                                                                .isNotEmpty
-                                                            ? places.toList()[
-                                                                index]["name"]
-                                                            : '',
-                                                        style: TextStyle(
-                                                            color:
-                                                                Constants.black(
-                                                                    context),
-                                                            fontWeight:
-                                                                Constants.bold,
-                                                            fontSize:
-                                                                Constants.m(
-                                                                    context)),
-                                                        overflow:
-                                                            TextOverflow.clip,
+                                                      child:
+                                                          SingleChildScrollView(
+                                                        scrollDirection:
+                                                            Axis.horizontal,
+                                                        physics:
+                                                            NeverScrollableScrollPhysics(),
+                                                        child: Row(
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          children: [
+                                                            Text(
+                                                              places
+                                                                      .toList()
+                                                                      .isNotEmpty
+                                                                  ? places.toList()[
+                                                                          index]
+                                                                      ["name"]
+                                                                  : '',
+                                                              style: TextStyle(
+                                                                  color: Constants
+                                                                      .black(
+                                                                          context),
+                                                                  fontWeight:
+                                                                      Constants
+                                                                          .bold,
+                                                                  fontSize:
+                                                                      Constants.m(
+                                                                          context)),
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ),
                                                     ),
                                                     style: ButtonStyle(
@@ -1318,7 +1332,7 @@ class _Discover extends State<Discover> {
                                                       placeName,
                                                       placeLocation,
                                                       placeAddress,
-                                                      placeCords)),
+                                                      placeId)),
                                         );
                                       },
                                       text: 'Veure més')),
@@ -1336,7 +1350,7 @@ class _Discover extends State<Discover> {
                                                       placeName,
                                                       placeLocation,
                                                       placeAddress,
-                                                      placeCords)),
+                                                      placeId)),
                                         );
                                       },
                                       text: 'Vull anar-hi')),

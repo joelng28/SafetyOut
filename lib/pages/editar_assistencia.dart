@@ -5,28 +5,32 @@ import 'package:app/storage/secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_picker/Picker.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:http/http.dart' as http;
 import '../app_localizations.dart';
 import 'app.dart';
 
-class NotificarAssistencia extends StatefulWidget {
-  NotificarAssistencia(
-      this.placeName, this.placeLocation, this.placeAddress, this.placeId,
+//Deberia recibir nombre, location, address, id, hora de inicio y hora de final
+
+class EditarAssistencia extends StatefulWidget {
+  EditarAssistencia(
+      this.placeName, this.placeId, this.date, this.endDate, this.onEdit,
       {Key key})
       : super(key: key);
 
   final String placeName;
-  final String placeLocation;
-  final String placeAddress;
   final String placeId;
+  final List<String> date;
+  final List<String> endDate;
+  Function onEdit;
 
   @override
-  _NotificarAssistencia createState() => _NotificarAssistencia(
-      this.placeName, this.placeLocation, this.placeAddress, this.placeId);
+  _EditarAssistencia createState() => _EditarAssistencia(
+      this.placeName, this.placeId, this.date, this.endDate, this.onEdit);
 }
 
-class _NotificarAssistencia extends State<NotificarAssistencia> {
+class _EditarAssistencia extends State<EditarAssistencia> {
   CalendarController _calendarController;
   DateTime pickedDate = DateTime.now();
   DateTime yearDate = DateTime.now();
@@ -34,19 +38,62 @@ class _NotificarAssistencia extends State<NotificarAssistencia> {
   int endMinute = DateTime.now().minute;
   Function submitAssistencia = (BuildContext context) {};
 
-  _NotificarAssistencia(
-      this.placeName, this.placeLocation, this.placeAddress, this.placeId);
+  _EditarAssistencia(
+      this.placeName, this.placeId, this.date, this.endDate, this.onEdit);
   final String placeName;
-  final String placeLocation;
-  final String placeAddress;
   final String placeId;
+  final List<String> date;
   int placeGauge;
+  String placeLocation;
+  String placeAddress;
+  final List<String> endDate;
+  Function onEdit;
+
+  Future<String> getDetails(Uri placeDetailsUrl) async {
+    var response = await http.get(placeDetailsUrl);
+    setState(() {
+      Map<String, dynamic> convertDataToJson = jsonDecode(response.body);
+      List<String> address =
+          convertDataToJson["result"]["formatted_address"].split(', ');
+      placeAddress = address[0];
+
+      var location = convertDataToJson["result"]["address_components"];
+
+      int max = location.length;
+      int index = 0;
+      while (index < max - 1) {
+        if (location[index]["types"].toString() == "[locality, political]") {
+          placeLocation = location[index]["long_name"];
+        }
+        if (location[index]["types"].toString() ==
+            "[administrative_area_level_2, political]") {
+          placeLocation += ", " + location[index]["long_name"];
+        }
+        ++index;
+      }
+    });
+    return "Success";
+  }
 
   @override
   void initState() {
     super.initState();
     _calendarController = CalendarController();
+    pickedDate = DateTime(int.parse(date[0]), int.parse(date[1]) + 1,
+        int.parse(date[2]), int.parse(date[3]), int.parse(date[4]));
+    endHour = DateTime(int.parse(date[0]), int.parse(date[1]) + 1,
+            int.parse(date[2]), int.parse(endDate[3]), int.parse(endDate[4]))
+        .hour;
+    endMinute = DateTime(int.parse(date[0]), int.parse(date[1]) + 1,
+            int.parse(date[2]), int.parse(endDate[3]), int.parse(endDate[4]))
+        .minute;
     consultaAforament();
+    Uri placeDetailsUrl = Uri.parse(
+        'https://maps.googleapis.com/maps/api/place/details/json?place_id=' +
+            placeId +
+            '&key=' +
+            "AIzaSyALjO4lu3TWJzLwmCWBgNysf7O1pgje1oA");
+    getDetails(placeDetailsUrl);
     submitAssistencia = (BuildContext context) async {
       if (pickedDate.hour > endHour ||
           (pickedDate.hour == endHour && pickedDate.minute >= endMinute)) {
@@ -84,26 +131,34 @@ class _NotificarAssistencia extends State<NotificarAssistencia> {
             'place_id': placeId,
             'dateInterval': {
               'startDate': {
-                'year': pickedDate.year.toString(),
-                'month': (pickedDate.month - 1).toString(),
-                'day': pickedDate.day.toString(),
-                'hour': pickedDate.hour.toString(),
-                'minute': pickedDate.minute.toString(),
+                'year': date[0],
+                'month': date[1],
+                'day': date[2],
+                'hour': date[3],
+                'minute': date[4],
               },
-              'endDate': {
-                'year': pickedDate.year.toString(),
-                'month': (pickedDate.month - 1).toString(),
-                'day': pickedDate.day.toString(),
-                'hour': endHour.toString(),
-                'minute': endMinute.toString(),
-              }
+            },
+            'newStartDate': {
+              'year': pickedDate.year.toString(),
+              'month': (pickedDate.month - 1).toString(),
+              'day': pickedDate.day.toString(),
+              'hour': pickedDate.hour.toString(),
+              'minute': pickedDate.minute.toString(),
+            },
+            'newEndDate': {
+              'year': pickedDate.year.toString(),
+              'month': (pickedDate.month - 1).toString(),
+              'day': pickedDate.day.toString(),
+              'hour': endHour.toString(),
+              'minute': endMinute.toString(),
             }
           });
           http
-              .post(url,
+              .patch(url,
                   headers: {"Content-Type": "application/json"}, body: body)
               .then((res) {
             if (res.statusCode == 201) {
+              onEdit();
               Navigator.of(context).pop();
             } //Correcte, guardar, notificació assitència ok i tornar a pantalla discover
             else if (res.statusCode == 409) {
@@ -288,7 +343,7 @@ class _NotificarAssistencia extends State<NotificarAssistencia> {
                   visible: MediaQuery.of(context).viewInsets.bottom == 0,
                   child: Text(
                       AppLocalizations.of(context)
-                          .translate("Notificar_assistencia"),
+                          .translate("Editar_assistencia"),
                       style: TextStyle(
                           color: Constants.darkGrey(context),
                           fontSize: Constants.xl(context),
@@ -344,7 +399,7 @@ class _NotificarAssistencia extends State<NotificarAssistencia> {
                   SizedBox(
                     width: Constants.w12(context),
                     child: Text(
-                      placeLocation,
+                      placeLocation != null ? placeLocation : "",
                       style: TextStyle(
                           color: Constants.black(context),
                           fontWeight: Constants.bolder,
@@ -368,7 +423,7 @@ class _NotificarAssistencia extends State<NotificarAssistencia> {
                       child: SizedBox(
                         width: Constants.w12(context),
                         child: Text(
-                          placeAddress,
+                          placeAddress != null ? placeAddress : "",
                           style: TextStyle(
                               color: Constants.black(context),
                               fontSize: Constants.s(context)),

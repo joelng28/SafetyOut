@@ -39,7 +39,7 @@ class _Profile extends State<Profile> {
             surnames = user["surnames"];
           });
         } else {
-          //print(res.statusCode);
+          print(res.statusCode);
           showDialog(
               context: context,
               builder: (BuildContext context) {
@@ -272,7 +272,7 @@ class _Profile extends State<Profile> {
                                           color: tab == ProfileTab.CONTACTS
                                               ? Constants.black(context)
                                               : Constants.grey(context),
-                                          fontSize: Constants.m(context),
+                                          fontSize: Constants.s(context),
                                           fontWeight: Constants.bold),
                                       textAlign: TextAlign.center,
                                     ),
@@ -307,7 +307,7 @@ class _Profile extends State<Profile> {
                                           color: tab == ProfileTab.BUBBLES
                                               ? Constants.black(context)
                                               : Constants.grey(context),
-                                          fontSize: Constants.m(context),
+                                          fontSize: Constants.s(context),
                                           fontWeight: Constants.bold),
                                       textAlign: TextAlign.center,
                                     ),
@@ -342,7 +342,7 @@ class _Profile extends State<Profile> {
                                           color: tab == ProfileTab.CHATS
                                               ? Constants.black(context)
                                               : Constants.grey(context),
-                                          fontSize: Constants.m(context),
+                                          fontSize: Constants.s(context),
                                           fontWeight: Constants.bold),
                                       textAlign: TextAlign.center,
                                     ),
