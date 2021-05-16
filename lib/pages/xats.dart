@@ -56,6 +56,7 @@ class _Chats extends State<Chats> {
                 setState(() {
                   print(userid);
                   Contact c = Contact(
+                      destUserId: userid,
                       name: user2["name"].toString() + " " + user2["surnames"],
                       lastMessage: "últim Missatge");
                   chats.add(c);
@@ -234,8 +235,9 @@ class _Chats extends State<Chats> {
                           fontSize: Constants.s(context)),
                     ),
                     onTap: () {
-                      Provider.of<RegState>(context, listen: false)
-                          .setId("60a00ce0bbe2b900223d2b0b");
+                      print(chats[index].destUserId);
+                      /*Provider.of<RegState>(context, listen: false)
+                          .setId(chats[index].destUserId.toString());*/
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => Conversa()));
                     },

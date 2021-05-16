@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 
 class Contact {
-  String id;
+  String destUserId;
   String name;
   String lastMessage;
-  Contact({@required this.name, this.lastMessage});
+  Contact({this.destUserId, @required this.name, this.lastMessage});
 }

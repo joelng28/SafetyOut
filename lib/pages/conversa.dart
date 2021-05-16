@@ -224,13 +224,13 @@ class _Conversa extends State<Conversa> {
   void initState() {
     super.initState();
 
-    destUserId = '609116e842fa750022ab15b7';
+    //destUserId = "609116e842fa750022ab15b7";
+    destUserId = Provider.of<RegState>(context, listen: false).getId;
 
     getName();
 
     initializeChatList();
 
-    // destUserId = Provider.of<RegChat>(context, listen: false).getId;
     SecureStorage.readSecureStorage('SafetyOUT_UserId').then((id) {
       try {
         socket = IO.io('https://safetyout.herokuapp.com/',
