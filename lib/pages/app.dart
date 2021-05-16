@@ -38,7 +38,7 @@ class _App extends State<App> {
     Home(mapPressed: mapPressed),
     Discover(),
     Calendar(),
-    Profile(),
+    Profile()
   ];
 
   void onItemTapped(int newIndex) {
