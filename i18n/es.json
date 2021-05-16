@@ -59,7 +59,7 @@
     "Un_número": "Un número",
     "Una_minúscula": "Una minúscula",
     "Una_majúscula": "Una mayúscula",
-    "Error_de_xarxa": "Error de xarxa",
+    "Error_de_xarxa": "Error de red",
     "El_correu_no_és_correcte": "El correo no és correcto",
     "El_correu_ja_existeix": "El correu ja existeix",
     "Editar_perfil": "Editar perfil",
@@ -105,6 +105,12 @@
     "Activitats_culturals": "Activitades culturales",
     "Zones_de_joc_infantils": "Zonas de juego infantiles",
     "No_hi_ha_restriccions_daquest_aspecte": "No hay restricciones de este aspecto",
-    "Nova_Bombolla": "Nueva Burbuja"
+    "Nova_Bombolla": "Nueva Burbuja",
+    "Sol·licitud_pendent": "Solicitud pendiente",
+    "Enviar": "Enviar",
+    "Afegeix_contacte": "Añadir contacto",
+    "Usuari_no_existeix": "El usuario no existe",
+    "Sol·licitud_acceptada": "Solicitud aceptada",
+    "Sol·licitud_rebutjada": "Solicitud rechazada"
 }
     
