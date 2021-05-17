@@ -267,12 +267,12 @@ class _Discover extends State<Discover> {
     places = [];
     await Future.wait([
       http.get(urlPark),
-/*       http.get(urlNature),
+      http.get(urlNature),
       http.get(urlSight),
       http.get(urlTerrace),
       http.get(urlMountain),
       http.get(urlCastle),
-      http.get(urlRes) */
+      http.get(urlRes)
     ]).then((List responses) {
       responses.forEach((r) {
         Map<String, dynamic> body = jsonDecode(r.body);
