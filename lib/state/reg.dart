@@ -11,7 +11,6 @@ class RegState extends ChangeNotifier {
   String get getEmail => email;
   String get getGender => gender;
   DateTime get getBirthdate => birthdate;
-  String get getId => id;
 
   void setName(String name) {
     this.name = name;
@@ -27,9 +26,5 @@ class RegState extends ChangeNotifier {
 
   void setBirthdate(DateTime birthdate) {
     this.birthdate = birthdate;
-  }
-
-  void setId(String id) {
-    this.id = id;
   }
 }

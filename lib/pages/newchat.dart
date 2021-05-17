@@ -47,6 +47,7 @@ class _NewChat extends State<NewChat> {
                 setState(() {
                   print(userid);
                   Contact c = Contact(
+                      destUserId: userid,
                       name: user2["name"].toString() + " " + user2["surnames"]);
                   contacts.add(c);
                 });
@@ -250,8 +251,11 @@ class _NewChat extends State<NewChat> {
                           fontSize: Constants.l(context)),
                     ),
                     onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Conversa()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Conversa(
+                                  destUserId: contacts[index].destUserId)));
                     },
                   ));
                 },

@@ -229,8 +229,8 @@ class _Chats extends State<Chats> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  Conversa(destId: chats[index].destUserId)));
+                              builder: (context) => Conversa(
+                                  destUserId: chats[index].destUserId)));
                     },
                   ));
                 })
