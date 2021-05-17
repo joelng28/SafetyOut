@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:app/defaults/constants.dart';
 import 'package:app/storage/secure_storage.dart';
@@ -19,8 +18,8 @@ class Contacts extends StatefulWidget {
 }
 
 class _Contacts extends State<Contacts> {
-  List<String> Contactos = ['Contacto1', 'Contacto2'];
-  List<String> ContactoSolicitudName = ['prova9'];
+  List<String> Contactos = [];
+  List<String> ContactoSolicitudName = [];
   List<String> ContactoSolicitudID = [];
   String email;
   FocusNode pwdFocusNode = FocusNode();
@@ -28,17 +27,64 @@ class _Contacts extends State<Contacts> {
   @override
   void initState() {
     super.initState();
+    getSolicituds();
+    getContactes();
+  }
+
+  void getSolicituds() {
+    ContactoSolicitudName.clear();
+    ContactoSolicitudID.clear();
     SecureStorage.readSecureStorage('SafetyOUT_UserId').then((id) {
       var url2 = Uri.parse(
           'https://safetyout.herokuapp.com/user/' + id + '/friendRequests');
       http.get(url2).then((res) {
         if (res.statusCode == 200) {
           Map<String, dynamic> body = jsonDecode(res.body);
-          print(body);
-          ContactoSolicitudName.add(
-              body['friendRequests'][0]['user_id_request']);
-          ContactoSolicitudID.add(body['friendRequests'][0]['_id']);
-          print(ContactoSolicitudID);
+          setState(() {
+            body["friendRequests"].forEach((f) {
+              var urlName = Uri.parse('https://safetyout.herokuapp.com/user/' +
+                  f['user_id_request']);
+              http.get(urlName).then((resName) {
+                if (resName.statusCode == 200) {
+                  Map<String, dynamic> bodyName = jsonDecode(resName.body);
+                  Map<String, dynamic> user = bodyName["user"];
+                  setState(() {
+                    ContactoSolicitudName.add(
+                        user['name'] + " " + user["surnames"]);
+                    ContactoSolicitudID.add(f['_id']);
+                  });
+                }
+              });
+            });
+          });
+        }
+      });
+    });
+  }
+
+  void getContactes() {
+    Contactos.clear();
+    SecureStorage.readSecureStorage('SafetyOUT_UserId').then((id) {
+      var url2 =
+          Uri.parse('https://safetyout.herokuapp.com/user/' + id + '/friends');
+      http.get(url2).then((res) {
+        if (res.statusCode == 200) {
+          Map<String, dynamic> body = jsonDecode(res.body);
+          setState(() {
+            body["friends"].forEach((f) {
+              var urlName = Uri.parse(
+                  'https://safetyout.herokuapp.com/user/' + f["userId"]);
+              http.get(urlName).then((resName) {
+                if (resName.statusCode == 200) {
+                  Map<String, dynamic> bodyName = jsonDecode(resName.body);
+                  Map<String, dynamic> user = bodyName["user"];
+                  setState(() {
+                    Contactos.add(user['name'] + " " + user["surnames"]);
+                  });
+                }
+              });
+            });
+          });
         }
       });
     });
@@ -50,6 +96,8 @@ class _Contacts extends State<Contacts> {
         '/accept');
     http.post(url).then((res) {
       if (res.statusCode == 200) {
+        getSolicituds();
+        getContactes();
         showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -197,119 +245,180 @@ class _Contacts extends State<Contacts> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-        child:
-            Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <
-                Widget>[
-      Expanded(
-        //Solicitus de contacte
-        child: ListView.separated(
-          itemBuilder: (_, index) =>
-              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-            Container(
-              width: 50.0, //Constants.w9(context),
-              height: 50.0, //Constants.w9(context),
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(fit: BoxFit.fill, image: NetworkImage(
-                      //Imagen de prueba, se colocará la imagen del usuario
-                      "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"))),
+        child: SingleChildScrollView(
+      child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+        Flexible(
+          //Solicitus de contacte
+          child: Padding(
+            padding: EdgeInsets.only(
+                top: Constants.v2(context),
+                left: Constants.h7(context),
+                right: Constants.h7(context)),
+            child: ListView.separated(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemBuilder: (_, index) => Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Container(
+                      width: Constants.w8(context), //Constants.w9(context),
+                      height: Constants.w8(context), //Constants.w9(context),
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(fit: BoxFit.fill, image: NetworkImage(
+                              //Imagen de prueba, se colocará la imagen del usuario
+                              "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"))),
+                    ),
+                    Expanded(
+                      flex: 4,
+                      child: Padding(
+                          padding: EdgeInsets.only(left: Constants.h2(context)),
+                          child: Text(
+                            ContactoSolicitudName[index],
+                            maxLines: 1,
+                            overflow: TextOverflow.clip,
+                          )),
+                    ),
+                    Expanded(
+                        flex: 1,
+                        //Acceptar contacte
+                        child: IconButton(
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            icon: Icon(Icons.check, color: Colors.green),
+                            iconSize: Constants.w6(context),
+                            onPressed: () {
+                              acceptarSolicitud(context, index);
+                            })),
+                    IconButton(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        icon: Icon(Icons.close, color: Colors.red),
+                        iconSize: Constants.w6(context),
+                        onPressed: () {
+                          rebutjarSolicitud(context, index);
+                        })
+                  ]),
+              separatorBuilder: (_, __) => Divider(
+                height: 20,
+                thickness: 2,
+              ),
+              itemCount: ContactoSolicitudName.length,
             ),
-            Flexible(child: Text(ContactoSolicitudName[index])),
-            Flexible(
-                //Acceptar contacte
-                child: IconButton(
-                    icon: Icon(Icons.check, color: Colors.green),
-                    iconSize: 30.0,
-                    onPressed: () {
-                      acceptarSolicitud(context, index);
-                    })),
-            Container(
-                //Cancelar contacte
-                child: IconButton(
-                    icon: Icon(Icons.cancel, color: Colors.red),
-                    iconSize: 30.0,
-                    onPressed: () {
-                      rebutjarSolicitud(context, index);
-                    }))
-          ]),
-          separatorBuilder: (_, __) => Divider(),
-          itemCount: ContactoSolicitudName.length,
+          ),
         ),
-      ),
-      Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-        //Boto afegir contacte
-        TextButton(
-            onPressed: () {
-              showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (context) => AlertDialog(
-                          title: Text('Envia una sol·licitud de contacte'),
-                          content: EmailInput(
-                            labelText: AppLocalizations.of(context)
-                                .translate("Correu_electronic"),
-                            prefixIcon: FontAwesomeIcons.solidUser,
-                            onChanged: (val) => setState(() {
-                              email = val;
-                            }),
-                            onSubmitted: (val) => pwdFocusNode.requestFocus(),
+        Container(
+          child: Padding(
+            padding: EdgeInsets.only(
+                top: Constants.v2(context),
+                left: Constants.h7(context),
+                right: Constants.v7(context)),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                //Boton editar perfil
+                Expanded(
+                  child: Container(
+                    child: TextButton(
+                      child: Text(
+                        AppLocalizations.of(context)
+                            .translate('Afegeix_contacte'),
+                        style: TextStyle(
+                            fontSize: Constants.xs(context),
+                            fontWeight: Constants.bolder,
+                            color: Constants.black(context)),
+                      ),
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (context) => AlertDialog(
+                                    title: Text(
+                                        'Envia una sol·licitud de contacte'),
+                                    content: EmailInput(
+                                      labelText: AppLocalizations.of(context)
+                                          .translate("Correu_electronic"),
+                                      prefixIcon: FontAwesomeIcons.solidUser,
+                                      onChanged: (val) => setState(() {
+                                        email = val;
+                                      }),
+                                      onSubmitted: (val) =>
+                                          pwdFocusNode.requestFocus(),
+                                    ),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: Text(
+                                            AppLocalizations.of(context)
+                                                .translate('Cancel·lar'),
+                                            style:
+                                                TextStyle(color: Colors.red)),
+                                        onPressed: () {
+                                          Navigator.of(context)
+                                              .pop('Cancel·lar');
+                                        },
+                                      ),
+                                      TextButton(
+                                          child: Text(
+                                            AppLocalizations.of(context)
+                                                .translate('Enviar'),
+                                            style:
+                                                TextStyle(color: Colors.green),
+                                          ),
+                                          onPressed: () => setState(() {
+                                                submitEnviar(context);
+                                              }))
+                                    ]));
+                      },
+                      style: ElevatedButton.styleFrom(
+                          primary: Constants.trueWhite(context),
+                          textStyle: TextStyle(
+                            color: Constants.black(context),
                           ),
-                          actions: <Widget>[
-                            TextButton(
-                              child: Text(
-                                  AppLocalizations.of(context)
-                                      .translate('Cancel·lar'),
-                                  style: TextStyle(color: Colors.red)),
-                              onPressed: () {
-                                Navigator.of(context).pop('Cancel·lar');
-                              },
-                            ),
-                            TextButton(
-                                child: Text(
-                                  AppLocalizations.of(context)
-                                      .translate('Enviar'),
-                                  style: TextStyle(color: Colors.green),
-                                ),
-                                onPressed: () => setState(() {
-                                      submitEnviar(context);
-                                    }))
-                          ]));
-            },
-            style: ButtonStyle(
-                /*padding: MaterialStateProperty.all(EdgeInsets.symmetric(
-                        vertical: Constants.v1(context),
-                        horizontal: Constants.h1(context))),*/
-                shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(70.0),
-                )),
-                backgroundColor:
-                    MaterialStateProperty.all(Constants.trueWhite(context))),
-            child: Text(
-                AppLocalizations.of(context).translate('Afegeix_contacte'),
-                style: TextStyle(
-                    fontSize: Constants.m(context),
-                    fontWeight: Constants.bold,
-                    color: Constants.black(context))))
-      ]),
-      Flexible(
-        child: ListView.separated(
-          itemBuilder: (_, index) =>
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Container(
-              width: Constants.w9(context),
-              height: Constants.w9(context),
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(fit: BoxFit.fill, image: NetworkImage(
-                      //Imagen de prueba, se colocará la imagen del usuario
-                      "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"))),
+                          side: BorderSide(color: Constants.black(context)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0))),
+                    ),
+                  ),
+                ),
+              ],
             ),
-            Flexible(child: Text(Contactos[index]))
-          ]),
-          separatorBuilder: (_, __) => Divider(),
-          itemCount: Contactos.length,
+          ),
         ),
-      )
-    ]));
+        Flexible(
+          child: Padding(
+            padding: EdgeInsets.only(
+                top: Constants.v2(context),
+                left: Constants.h7(context),
+                right: Constants.h7(context)),
+            child: ListView.separated(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemBuilder: (_, index) =>
+                  Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                Container(
+                  width: Constants.w8(context),
+                  height: Constants.w8(context),
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(fit: BoxFit.fill, image: NetworkImage(
+                          //Imagen de prueba, se colocará la imagen del usuario
+                          "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"))),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: Constants.h2(context)),
+                  child: Flexible(child: Text(Contactos[index])),
+                )
+              ]),
+              separatorBuilder: (_, __) => Divider(
+                height: 20,
+                thickness: 2,
+              ),
+              itemCount: Contactos.length,
+            ),
+          ),
+        )
+      ]),
+    ));
   }
 }

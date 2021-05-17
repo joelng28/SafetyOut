@@ -32,7 +32,6 @@ class _Profile extends State<Profile> {
       var url = Uri.parse('https://safetyout.herokuapp.com/user/' + id);
       http.get(url).then((res) {
         if (res.statusCode == 200) {
-          print(id);
           Map<String, dynamic> body = jsonDecode(res.body);
           Map<String, dynamic> user = body["user"];
           setState(() {
@@ -268,7 +267,8 @@ class _Profile extends State<Profile> {
                                                     width: 2)))
                                         : null,
                                     child: Text(
-                                      'Contactes',
+                                      AppLocalizations.of(context)
+                                          .translate('Contactes'),
                                       style: TextStyle(
                                           color: tab == ProfileTab.CONTACTS
                                               ? Constants.black(context)
@@ -303,7 +303,8 @@ class _Profile extends State<Profile> {
                                                     width: 2)))
                                         : null,
                                     child: Text(
-                                      'Bombolles',
+                                      AppLocalizations.of(context)
+                                          .translate('Bombolles'),
                                       style: TextStyle(
                                           color: tab == ProfileTab.BUBBLES
                                               ? Constants.black(context)
@@ -338,7 +339,8 @@ class _Profile extends State<Profile> {
                                                     width: 2)))
                                         : null,
                                     child: Text(
-                                      'Xats',
+                                      AppLocalizations.of(context)
+                                          .translate('Xats'),
                                       style: TextStyle(
                                           color: tab == ProfileTab.CHATS
                                               ? Constants.black(context)

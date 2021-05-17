@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:app/defaults/constants.dart';
+import 'package:app/pages/app.dart';
 import 'package:app/storage/secure_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -176,52 +177,89 @@ class _NewChat extends State<NewChat> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Constants.white(context),
-          centerTitle: true,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
+        body: SafeArea(
+      child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.only(top: Constants.xs(context)),
+            child: Stack(
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: Constants.xxs(context)),
+                    child: InkWell(
+                      highlightColor: Colors.transparent,
+                      splashColor: Colors.transparent,
+                      onTap: () {
+                        Navigator.of(context).pushReplacement(PageRouteBuilder(
+                            pageBuilder: (_, __, ___) => App()));
+                      },
+                      child: Icon(Icons.arrow_back_ios_rounded,
+                          size: 32 /
+                              (MediaQuery.of(context).size.width < 380
+                                  ? 1.3
+                                  : 1),
+                          color: Constants.black(context)),
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.center,
+                  child: Visibility(
+                    visible: MediaQuery.of(context).viewInsets.bottom == 0,
+                    child: Text(
+                        AppLocalizations.of(context).translate("Iniciar_xat"),
+                        style: TextStyle(
+                            color: Constants.darkGrey(context),
+                            fontSize: Constants.xl(context),
+                            fontWeight: Constants.bolder)),
+                  ),
+                ),
+              ],
+            ),
           ),
-          title: Text(AppLocalizations.of(context).translate("Iniciar_xat")),
-        ),
-        body: Stack(children: [
-          ListView.separated(
-            padding: EdgeInsets.only(
-                top: Constants.a5(context), bottom: Constants.a5(context)),
-            separatorBuilder: (context, index) {
-              return Divider();
-            },
-            itemCount: contacts.length,
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              return Container(
-                  child: ListTile(
-                leading: Container(
-                  width: Constants.w7(context),
-                  height: Constants.w7(context),
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(fit: BoxFit.fill, image: NetworkImage(
-                          //Imagen de prueba, se colocará la imagen del usuario
-                          "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"))),
-                ),
-                title: Text(
-                  contacts[index].name,
-                  style: TextStyle(
-                      color: Constants.black(context),
-                      fontWeight: Constants.bolder,
-                      fontSize: Constants.l(context)),
-                ),
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Conversa()));
+          Expanded(
+            child: SingleChildScrollView(
+              child: ListView.separated(
+                physics: NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.only(
+                    top: Constants.a5(context), bottom: Constants.a5(context)),
+                separatorBuilder: (context, index) {
+                  return Divider();
                 },
-              ));
-            },
-          )
-        ]));
+                itemCount: contacts.length,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return Container(
+                      child: ListTile(
+                    leading: Container(
+                      width: Constants.w7(context),
+                      height: Constants.w7(context),
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(fit: BoxFit.fill, image: NetworkImage(
+                              //Imagen de prueba, se colocará la imagen del usuario
+                              "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"))),
+                    ),
+                    title: Text(
+                      contacts[index].name,
+                      style: TextStyle(
+                          color: Constants.black(context),
+                          fontWeight: Constants.bolder,
+                          fontSize: Constants.l(context)),
+                    ),
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Conversa()));
+                    },
+                  ));
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    ));
   }
 }

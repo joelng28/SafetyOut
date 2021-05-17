@@ -67,6 +67,8 @@ PODS:
   - Flutter (1.0.0)
   - flutter_secure_storage (3.3.1):
     - Flutter
+  - flutter_socket_io (0.0.1):
+    - Flutter
   - geocoder (0.0.1):
     - Flutter
   - google_maps_flutter (0.0.1):
@@ -128,6 +130,7 @@ DEPENDENCIES:
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - Flutter (from `Flutter`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
+  - flutter_socket_io (from `.symlinks/plugins/flutter_socket_io/ios`)
   - geocoder (from `.symlinks/plugins/geocoder/ios`)
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
   - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
@@ -165,6 +168,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_secure_storage:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
+  flutter_socket_io:
+    :path: ".symlinks/plugins/flutter_socket_io/ios"
   geocoder:
     :path: ".symlinks/plugins/geocoder/ios"
   google_maps_flutter:
@@ -189,6 +194,7 @@ SPEC CHECKSUMS:
   FirebaseCoreDiagnostics: 68ad972f99206cef818230f3f3179d52ccfb7f8c
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   flutter_secure_storage: 7953c38a04c3fdbb00571bcd87d8e3b5ceb9daec
+  flutter_socket_io: fce27977d95a82c181bd959180f33384f51a5973
   geocoder: 3cfab70531a0b367e917bafe82df4c30f6d4c45a
   google_maps_flutter: c7f9c73576de1fbe152a227bfd6e6c4ae8088619
   google_sign_in: 6bd214b9c154f881422f5fe27b66aaa7bbd580cc

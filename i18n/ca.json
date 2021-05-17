@@ -111,12 +111,12 @@
     "Afegeix_contacte": "Afegeix contacte",
     "Usuari_no_existeix": "L' usuari no existeix",
     "Sol·licitud acceptada": "Sol·licitud acceptada",
-    "Sol·licitud_rebutjada": "Sol·licitud rebutjada"
+    "Sol·licitud_rebutjada": "Sol·licitud rebutjada",
     "Escriu_un_missatge": "Escriu un missatge...",
     "Iniciar_xat": "Comença un xat",
     "Inicia_un_xat_amb_un_dels_teus": "Inicia un xat amb un dels teus",
     "contactes_polsant_el_botó_inferior": "contactes polsant el botó inferior",
-    "Aixó_està_molt_tranquil": "Aixó està molt tranquil"
+    "Aixó_està_molt_tranquil": "Aixó està molt tranquil",
     "de_gener": "de gener",
     "de_febrer": "de febrer",
     "de_març": "de març",
@@ -134,4 +134,7 @@
     "Editar": "Editar",
     "Segur_que_vols_eliminar_aquesta_assistencia": "Segur que vols eliminar aquesta assistència?",
     "Editar_assistencia": "Editar assistència",
+    "Contactes": "Contactes",
+    "Bombolles": "Bombolles",
+    "Xats": "Xats"
 }

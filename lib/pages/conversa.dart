@@ -1,5 +1,4 @@
 import 'dart:convert';
-//import 'dart:html';
 
 import 'package:app/defaults/constants.dart';
 import 'package:app/state/reg.dart';
@@ -15,14 +14,20 @@ import 'package:http/http.dart' as http;
 
 import '../app_localizations.dart';
 
+// ignore: must_be_immutable
 class Conversa extends StatefulWidget {
-  Conversa({Key key}) : super(key: key);
+  Conversa({this.destId, this.chatId, Key key}) : super(key: key);
+  final String destId;
+  final String chatId;
 
   @override
-  _Conversa createState() => _Conversa();
+  _Conversa createState() => _Conversa(this.destId, this.chatId);
 }
 
 class _Conversa extends State<Conversa> {
+  _Conversa(this.destId, this.chatId);
+  final String destId;
+  final String chatId;
   final textController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   List<Message> messages = [
@@ -32,14 +37,13 @@ class _Conversa extends State<Conversa> {
   dynamic chatRoomId;
   bool isConected = false;
   String name;
-  String destUserId;
 
   void sendMessage() {
     SecureStorage.readSecureStorage('SafetyOUT_UserId').then((id) {
       socket.emit('message', {
-        'chatRoom': chatRoomId.toString(),
+        'chatRoom': chatRoomId,
         'author': id,
-        'message': textController.text.toString()
+        'message': textController.text
       });
     });
   }
@@ -66,11 +70,9 @@ class _Conversa extends State<Conversa> {
   void handleJoin(dynamic data) {
     chatRoomId = data;
     isConected = true;
-    print(chatRoomId);
   }
 
   void initializeChatList() {
-    String chatId = Provider.of<RegState>(context, listen: false).getId;
     SecureStorage.readSecureStorage('SafetyOUT_UserId').then((id) {
       var url = Uri.parse(
           'https://safetyout.herokuapp.com/chat/' + chatId + "/messages");
@@ -78,6 +80,7 @@ class _Conversa extends State<Conversa> {
         if (res.statusCode == 200) {
           Map<String, dynamic> body = jsonDecode(res.body);
           List<dynamic> messagesaux = body["messages"];
+          print(body);
           messagesaux.forEach((element) {
             Map<String, dynamic> message = element;
             setState(() {
@@ -147,17 +150,17 @@ class _Conversa extends State<Conversa> {
     });
   }
 
-  void getName() {
-    var url = Uri.parse('https://safetyout.herokuapp.com/user/' + destUserId);
+  void getNom() {
+    var url = Uri.parse('https://safetyout.herokuapp.com/user/' + destId);
     http.get(url).then((res) {
       if (res.statusCode == 200) {
         Map<String, dynamic> body = jsonDecode(res.body);
         Map<String, dynamic> user = body["user"];
+        print(body);
         setState(() {
           name = user["name"] + " " + user["surnames"];
         });
       } else {
-        //print(res.statusCode);
         showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -224,30 +227,29 @@ class _Conversa extends State<Conversa> {
   void initState() {
     super.initState();
 
-    destUserId = "609116e842fa750022ab15b7";
-    //destUserId = Provider.of<RegState>(context, listen: false).getId;
+    if (mounted) {
+      getNom();
 
-    getName();
+      initializeChatList();
 
-    initializeChatList();
-
-    SecureStorage.readSecureStorage('SafetyOUT_UserId').then((id) {
-      try {
-        socket = IO.io('https://safetyout.herokuapp.com/',
-            OptionBuilder().setTransports(['websocket']).build());
-        socket.onConnect((_) {
-          print('connect');
-          socket.emit('join', {
-            'user1_id': id,
-            'user2_id': destUserId //destUserId
+      SecureStorage.readSecureStorage('SafetyOUT_UserId').then((id) {
+        try {
+          socket = IO.io('https://safetyout.herokuapp.com/',
+              OptionBuilder().setTransports(['websocket']).build());
+          socket.onConnect((_) {
+            print('connect');
+            socket.emit('join', {
+              'user1_id': id,
+              'user2_id': destId //destUserId
+            });
           });
-        });
-        socket.on('joined', (data) => handleJoin(data));
-        socket.on('message', (data) => handleMessage(data));
-      } catch (e) {
-        print(e.toString());
-      }
-    });
+          socket.on('joined', (data) => handleJoin(data));
+          socket.on('message', (data) => handleMessage(data));
+        } catch (e) {
+          print("h" + e.toString());
+        }
+      });
+    }
   }
 
   @override
