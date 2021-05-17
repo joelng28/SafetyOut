@@ -5,7 +5,6 @@ import 'package:app/storage/secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_picker/Picker.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:http/http.dart' as http;
 import '../app_localizations.dart';
@@ -13,6 +12,7 @@ import 'app.dart';
 
 //Deberia recibir nombre, location, address, id, hora de inicio y hora de final
 
+// ignore: must_be_immutable
 class EditarAssistencia extends StatefulWidget {
   EditarAssistencia(
       this.placeName, this.placeId, this.date, this.endDate, this.onEdit,
