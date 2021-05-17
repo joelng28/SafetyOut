@@ -29,7 +29,7 @@ class _Restrictions extends State<Restrictions> {
   bool viewPlaygrounds = false;
 
   void getRestrictions() async {
-    String langCode = 'en';
+    String langCode = Localizations.localeOf(context).languageCode;
     var prefs = await SharedPreferences.getInstance();
 
     if (prefs.getString('language_code') != null) {
@@ -43,113 +43,146 @@ class _Restrictions extends State<Restrictions> {
 
     if (response.statusCode == 200) {
       Map<String, dynamic> body = jsonDecode(response.body);
-
-      setState(() {
-        List<Widget> m = [];
-        body["movility"].forEach((val) {
-          m.add(Text(val,
-              style: TextStyle(
-                  fontSize: Constants.xs(context),
-                  color: Constants.black(context))));
-        });
-        restrictions["movility"] = m;
-
-        List<Widget> c = [];
-        body["curfew"].forEach((val) {
-          c.add(Text(val,
-              style: TextStyle(
-                  fontSize: Constants.xs(context),
-                  color: Constants.black(context))));
-        });
-        restrictions["curfew"] = c;
-        ;
-
-        List<Widget> g = [];
-        body["groups"].forEach((val) {
-          g.add(Text(val,
-              style: TextStyle(
-                  fontSize: Constants.xs(context),
-                  color: Constants.black(context))));
-        });
-        restrictions["groups"] = g;
-        ;
-
-        List<Widget> r = [];
-        body["restaurants"].forEach((key, val) {
-          r.add(Text(key,
-              style: TextStyle(
-                  fontSize: Constants.s(context),
-                  color: Constants.black(context),
-                  fontWeight: Constants.bold)));
-          val.forEach((val) {
-            r.add(Text(val,
+      if (mounted) {
+        setState(() {
+          List<Widget> m = [];
+          body["movility"].forEach((val) {
+            m.add(Text(
+                val != ""
+                    ? val
+                    : AppLocalizations.of(context)
+                        .translate("No_hi_ha_restriccions_daquest_aspecte"),
                 style: TextStyle(
                     fontSize: Constants.xs(context),
                     color: Constants.black(context))));
           });
-        });
-        restrictions["restaurants"] = r;
+          restrictions["movility"] = m;
 
-        List<Widget> e = [];
-        body["commerce"].forEach((key, val) {
-          e.add(Padding(
-            padding: EdgeInsets.only(top: Constants.v1(context)),
-            child: Text(key,
+          List<Widget> c = [];
+          body["curfew"].forEach((val) {
+            c.add(Text(
+                val != ""
+                    ? val
+                    : AppLocalizations.of(context)
+                        .translate("No_hi_ha_restriccions_daquest_aspecte"),
+                style: TextStyle(
+                    fontSize: Constants.xs(context),
+                    color: Constants.black(context))));
+          });
+          restrictions["curfew"] = c;
+          ;
+
+          List<Widget> g = [];
+          body["groups"].forEach((val) {
+            g.add(Text(
+                val != ""
+                    ? val
+                    : AppLocalizations.of(context)
+                        .translate("No_hi_ha_restriccions_daquest_aspecte"),
+                style: TextStyle(
+                    fontSize: Constants.xs(context),
+                    color: Constants.black(context))));
+          });
+          restrictions["groups"] = g;
+          ;
+
+          List<Widget> r = [];
+          body["restaurants"].forEach((key, val) {
+            r.add(Text(key,
                 style: TextStyle(
                     fontSize: Constants.s(context),
                     color: Constants.black(context),
-                    fontWeight: Constants.bold)),
-          ));
-          if (val.runtimeType.toString() ==
-              '_InternalLinkedHashMap<String, dynamic>') {
-            val.forEach((key, val) {
-              e.add(Text(key,
-                  style: TextStyle(
-                      fontSize: Constants.xs(context),
-                      color: Constants.black(context),
-                      fontWeight: Constants.bold)));
-              val.forEach((val) {
-                e.add(Text(val,
-                    style: TextStyle(
-                        fontSize: Constants.xs(context),
-                        color: Constants.black(context))));
-              });
-            });
-          } else if (val.runtimeType.toString() == 'List<dynamic>') {
+                    fontWeight: Constants.bold)));
             val.forEach((val) {
-              e.add(Text(val,
+              r.add(Text(
+                  val != ""
+                      ? val
+                      : AppLocalizations.of(context)
+                          .translate("No_hi_ha_restriccions_daquest_aspecte"),
                   style: TextStyle(
                       fontSize: Constants.xs(context),
                       color: Constants.black(context))));
             });
-          }
-        });
-        restrictions["commerce"] = e;
-        List<Widget> p = [];
-        body["public transport"].forEach((val) {
-          p.add(Text(val,
-              style: TextStyle(
-                  fontSize: Constants.xs(context),
-                  color: Constants.black(context))));
-        });
-        restrictions["public transport"] = p;
+          });
+          restrictions["restaurants"] = r;
 
-        List<Widget> t = [];
-        body["culture"].forEach((key, val) {
-          t.add(Text(key,
-              style: TextStyle(
-                  fontSize: Constants.s(context),
-                  color: Constants.black(context),
-                  fontWeight: Constants.bold)));
-          val.forEach((val) {
-            t.add(Text(val,
+          List<Widget> e = [];
+          body["commerce"].forEach((key, val) {
+            e.add(Padding(
+              padding: EdgeInsets.only(top: Constants.v1(context)),
+              child: Text(key,
+                  style: TextStyle(
+                      fontSize: Constants.s(context),
+                      color: Constants.black(context),
+                      fontWeight: Constants.bold)),
+            ));
+            if (val.runtimeType.toString() ==
+                '_InternalLinkedHashMap<String, dynamic>') {
+              val.forEach((key, val) {
+                e.add(Text(key,
+                    style: TextStyle(
+                        fontSize: Constants.xs(context),
+                        color: Constants.black(context),
+                        fontWeight: Constants.bold)));
+                val.forEach((val) {
+                  e.add(Text(
+                      val != ""
+                          ? val
+                          : AppLocalizations.of(context).translate(
+                              "No_hi_ha_restriccions_daquest_aspecte"),
+                      style: TextStyle(
+                          fontSize: Constants.xs(context),
+                          color: Constants.black(context))));
+                });
+              });
+            } else if (val.runtimeType.toString() == 'List<dynamic>') {
+              val.forEach((val) {
+                e.add(Text(
+                    val != ""
+                        ? val
+                        : AppLocalizations.of(context)
+                            .translate("No_hi_ha_restriccions_daquest_aspecte"),
+                    style: TextStyle(
+                        fontSize: Constants.xs(context),
+                        color: Constants.black(context))));
+              });
+            }
+          });
+          restrictions["commerce"] = e;
+          List<Widget> p = [];
+          body["public transport"].forEach((val) {
+            p.add(Text(
+                val != ""
+                    ? val
+                    : AppLocalizations.of(context)
+                        .translate("No_hi_ha_restriccions_daquest_aspecte"),
                 style: TextStyle(
                     fontSize: Constants.xs(context),
                     color: Constants.black(context))));
           });
+          restrictions["public transport"] = p;
+
+          List<Widget> t = [];
+          body["culture"].forEach((key, val) {
+            t.add(Text(key,
+                style: TextStyle(
+                    fontSize: Constants.s(context),
+                    color: Constants.black(context),
+                    fontWeight: Constants.bold)));
+            val.forEach((val) {
+              t.add(Text(
+                  val != ""
+                      ? val
+                      : AppLocalizations.of(context)
+                          .translate("No_hi_ha_restriccions_daquest_aspecte"),
+                  style: TextStyle(
+                      fontSize: Constants.xs(context),
+                      color: Constants.black(context))));
+            });
+          });
+          restrictions["culture"] = t;
         });
-        restrictions["culture"] = t;
-      });
+      }
     } else {
       await showDialog(
           context: context,
@@ -180,8 +213,13 @@ class _Restrictions extends State<Restrictions> {
 
   @override
   void initState() {
-    getRestrictions();
     super.initState();
+  }
+
+  @override
+  Future<void> didChangeDependencies() async {
+    super.didChangeDependencies();
+    getRestrictions();
   }
 
   @override
@@ -218,7 +256,7 @@ class _Restrictions extends State<Restrictions> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SvgPicture.asset('assets/icons/barrier.svg',
-                            color: Constants.black(context),
+                            color: Color(0xFF242424),
                             height: 28 /
                                 (MediaQuery.of(context).size.width < 380
                                     ? 1.3
@@ -276,7 +314,6 @@ class _Restrictions extends State<Restrictions> {
           AnimatedContainer(
             duration: Duration(milliseconds: 100),
             decoration: BoxDecoration(
-              color: Constants.trueWhite(context),
               borderRadius: BorderRadius.all(
                 Radius.circular(30),
               ),
@@ -295,7 +332,8 @@ class _Restrictions extends State<Restrictions> {
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: restrictions["movility"] != null
+                      children: restrictions["movility"] != null &&
+                              restrictions["movility"].isNotEmpty
                           ? restrictions["movility"]
                           : [
                               Text(
@@ -341,7 +379,7 @@ class _Restrictions extends State<Restrictions> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SvgPicture.asset('assets/icons/clock.svg',
-                            color: Constants.black(context),
+                            color: Color(0xFF242424),
                             height: 35 /
                                 (MediaQuery.of(context).size.width < 380
                                     ? 1.3
@@ -399,7 +437,6 @@ class _Restrictions extends State<Restrictions> {
           AnimatedContainer(
             duration: Duration(milliseconds: 100),
             decoration: BoxDecoration(
-              color: Constants.trueWhite(context),
               borderRadius: BorderRadius.all(
                 Radius.circular(30),
               ),
@@ -418,7 +455,8 @@ class _Restrictions extends State<Restrictions> {
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: restrictions["curfew"] != null
+                      children: restrictions["curfew"] != null &&
+                              restrictions["curfew"].isNotEmpty
                           ? restrictions["curfew"]
                           : [
                               Text(
@@ -464,7 +502,7 @@ class _Restrictions extends State<Restrictions> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SvgPicture.asset('assets/icons/group.svg',
-                            color: Constants.black(context),
+                            color: Color(0xFF242424),
                             height: 35 /
                                 (MediaQuery.of(context).size.width < 380
                                     ? 1.3
@@ -522,7 +560,6 @@ class _Restrictions extends State<Restrictions> {
           AnimatedContainer(
             duration: Duration(milliseconds: 100),
             decoration: BoxDecoration(
-              color: Constants.trueWhite(context),
               borderRadius: BorderRadius.all(
                 Radius.circular(30),
               ),
@@ -541,7 +578,8 @@ class _Restrictions extends State<Restrictions> {
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: restrictions["groups"] != null
+                      children: restrictions["groups"] != null &&
+                              restrictions["groups"].isNotEmpty
                           ? restrictions["groups"]
                           : [
                               Text(
@@ -587,7 +625,7 @@ class _Restrictions extends State<Restrictions> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SvgPicture.asset('assets/icons/restaurant.svg',
-                            color: Constants.black(context),
+                            color: Color(0xFF242424),
                             height: 35 /
                                 (MediaQuery.of(context).size.width < 380
                                     ? 1.3
@@ -646,7 +684,6 @@ class _Restrictions extends State<Restrictions> {
           AnimatedContainer(
             duration: Duration(milliseconds: 100),
             decoration: BoxDecoration(
-              color: Constants.trueWhite(context),
               borderRadius: BorderRadius.all(
                 Radius.circular(30),
               ),
@@ -665,7 +702,8 @@ class _Restrictions extends State<Restrictions> {
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: restrictions["restaurants"] != null
+                      children: restrictions["restaurants"] != null &&
+                              restrictions["restaurants"].isNotEmpty
                           ? restrictions["restaurants"]
                           : [
                               Text(
@@ -711,7 +749,7 @@ class _Restrictions extends State<Restrictions> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SvgPicture.asset('assets/icons/shop.svg',
-                            color: Constants.black(context),
+                            color: Color(0xFF242424),
                             height: 34 /
                                 (MediaQuery.of(context).size.width < 380
                                     ? 1.3
@@ -769,7 +807,6 @@ class _Restrictions extends State<Restrictions> {
           AnimatedContainer(
             duration: Duration(milliseconds: 100),
             decoration: BoxDecoration(
-              color: Constants.trueWhite(context),
               borderRadius: BorderRadius.all(
                 Radius.circular(30),
               ),
@@ -788,7 +825,8 @@ class _Restrictions extends State<Restrictions> {
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: restrictions["commerce"] != null
+                      children: restrictions["commerce"] != null &&
+                              restrictions["commerce"].isNotEmpty
                           ? restrictions["commerce"]
                           : [
                               Text(
@@ -834,7 +872,7 @@ class _Restrictions extends State<Restrictions> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SvgPicture.asset('assets/icons/bus.svg',
-                            color: Constants.black(context),
+                            color: Color(0xFF242424),
                             height: 32 /
                                 (MediaQuery.of(context).size.width < 380
                                     ? 1.3
@@ -892,7 +930,6 @@ class _Restrictions extends State<Restrictions> {
           AnimatedContainer(
             duration: Duration(milliseconds: 100),
             decoration: BoxDecoration(
-              color: Constants.trueWhite(context),
               borderRadius: BorderRadius.all(
                 Radius.circular(30),
               ),
@@ -911,7 +948,8 @@ class _Restrictions extends State<Restrictions> {
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: restrictions["public transport"] != null
+                      children: restrictions["public transport"] != null &&
+                              restrictions["public transport"].isNotEmpty
                           ? restrictions["public transport"]
                           : [
                               Text(
@@ -957,7 +995,7 @@ class _Restrictions extends State<Restrictions> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SvgPicture.asset('assets/icons/comedy.svg',
-                            color: Constants.black(context),
+                            color: Color(0xFF242424),
                             height: 33 /
                                 (MediaQuery.of(context).size.width < 380
                                     ? 1.3
@@ -1016,7 +1054,6 @@ class _Restrictions extends State<Restrictions> {
           AnimatedContainer(
             duration: Duration(milliseconds: 100),
             decoration: BoxDecoration(
-              color: Constants.trueWhite(context),
               borderRadius: BorderRadius.all(
                 Radius.circular(30),
               ),
@@ -1035,7 +1072,8 @@ class _Restrictions extends State<Restrictions> {
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: restrictions["culture"] != null
+                      children: restrictions["culture"] != null &&
+                              restrictions["culture"].isNotEmpty
                           ? restrictions["culture"]
                           : [
                               Text(
@@ -1081,7 +1119,7 @@ class _Restrictions extends State<Restrictions> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SvgPicture.asset('assets/icons/slide.svg',
-                            color: Constants.black(context),
+                            color: Color(0xFF242424),
                             height: 33 /
                                 (MediaQuery.of(context).size.width < 380
                                     ? 1.3
@@ -1140,7 +1178,6 @@ class _Restrictions extends State<Restrictions> {
           AnimatedContainer(
             duration: Duration(milliseconds: 100),
             decoration: BoxDecoration(
-              color: Constants.trueWhite(context),
               borderRadius: BorderRadius.all(
                 Radius.circular(30),
               ),
@@ -1159,7 +1196,8 @@ class _Restrictions extends State<Restrictions> {
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: restrictions["playgrounds"] != null
+                      children: restrictions["playgrounds"] != null &&
+                              restrictions["playgrounds"].isNotEmpty
                           ? restrictions["playgrounds"]
                           : [
                               Text(

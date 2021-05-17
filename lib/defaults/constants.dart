@@ -63,6 +63,10 @@ class Constants {
       MediaQuery.of(context).platformBrightness == Brightness.light
           ? Colors.red[400]
           : Colors.red[300];
+  static Color orange(BuildContext context) =>
+      MediaQuery.of(context).platformBrightness == Brightness.light
+          ? Colors.orange[400]
+          : Colors.orange[300];
 
   // Vertical spacings used for MARGINS and PADDINGS
   static double v1(BuildContext context) =>

@@ -169,27 +169,29 @@ class _Home extends State<Home> {
     final ids = places.toList().map((e) => e["place_id"]).toList().toSet();
     places.toList().retainWhere((x) => ids.remove(x["place_id"]));
 
-    setState(() {
-      markers.clear();
-      places.forEach((place) {
-        final marker = Marker(
-            markerId: MarkerId(place["place_id"]),
-            icon: BitmapDescriptor.defaultMarker,
-            position:
-                LatLng(place["location"]["lat"], place["location"]["lng"]));
-        markers[place["place_id"]] = marker;
+    if (mounted) {
+      setState(() {
+        markers.clear();
+        places.forEach((place) {
+          final marker = Marker(
+              markerId: MarkerId(place["place_id"]),
+              icon: BitmapDescriptor.defaultMarker,
+              position:
+                  LatLng(place["location"]["lat"], place["location"]["lng"]));
+          markers[place["place_id"]] = marker;
+        });
+        Geocoder.local
+            .findAddressesFromCoordinates(Coordinates(l.latitude, l.longitude))
+            .then((addresses) {
+          Address newAddress = addresses.first;
+          address = newAddress.locality.toString() +
+              ', ' +
+              newAddress.adminArea.toString() +
+              ', ' +
+              newAddress.countryName.toString();
+        }).catchError((error) => {});
       });
-      Geocoder.local
-          .findAddressesFromCoordinates(Coordinates(l.latitude, l.longitude))
-          .then((addresses) {
-        Address newAddress = addresses.first;
-        address = newAddress.locality.toString() +
-            ', ' +
-            newAddress.adminArea.toString() +
-            ', ' +
-            newAddress.countryName.toString();
-      }).catchError((error) => {});
-    });
+    }
   }
 
   void getFirstLocation() {
