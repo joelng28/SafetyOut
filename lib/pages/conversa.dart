@@ -25,9 +25,7 @@ class _Conversa extends State<Conversa> {
   _Conversa(this.roomId, this.destUserId);
   final textController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  List<Message> messages = [
-    Message(messageContent: "Hello", owner: false),
-  ];
+  List<Message> messages = [];
   IO.Socket socket;
   dynamic chatRoomId;
   bool isConected = false;

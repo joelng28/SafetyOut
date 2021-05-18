@@ -336,15 +336,21 @@ class _Contacts extends State<Contacts> {
                             builder: (context) => AlertDialog(
                                     title: Text(
                                         'Envia una sol·licitud de contacte'),
-                                    content: EmailInput(
-                                      labelText: AppLocalizations.of(context)
-                                          .translate("Correu_electronic"),
-                                      prefixIcon: FontAwesomeIcons.solidUser,
-                                      onChanged: (val) => setState(() {
-                                        email = val;
-                                      }),
-                                      onSubmitted: (val) =>
-                                          pwdFocusNode.requestFocus(),
+                                    content: Row(
+                                      children: [
+                                        EmailInput(
+                                          labelText: AppLocalizations.of(
+                                                  context)
+                                              .translate("Correu_electronic"),
+                                          prefixIcon:
+                                              FontAwesomeIcons.solidUser,
+                                          onChanged: (val) => setState(() {
+                                            email = val;
+                                          }),
+                                          onSubmitted: (val) =>
+                                              pwdFocusNode.requestFocus(),
+                                        ),
+                                      ],
                                     ),
                                     actions: <Widget>[
                                       TextButton(
@@ -407,7 +413,7 @@ class _Contacts extends State<Contacts> {
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: Constants.h2(context)),
-                  child: Flexible(child: Text(Contactos[index])),
+                  child: Text(Contactos[index]),
                 )
               ]),
               separatorBuilder: (_, __) => Divider(
