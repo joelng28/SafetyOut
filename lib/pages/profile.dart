@@ -273,7 +273,7 @@ class _Profile extends State<Profile> {
                                           color: tab == ProfileTab.CONTACTS
                                               ? Constants.black(context)
                                               : Constants.grey(context),
-                                          fontSize: Constants.s(context),
+                                          fontSize: Constants.xs(context),
                                           fontWeight: Constants.bold),
                                       textAlign: TextAlign.center,
                                     ),
@@ -309,7 +309,7 @@ class _Profile extends State<Profile> {
                                           color: tab == ProfileTab.BUBBLES
                                               ? Constants.black(context)
                                               : Constants.grey(context),
-                                          fontSize: Constants.s(context),
+                                          fontSize: Constants.xs(context),
                                           fontWeight: Constants.bold),
                                       textAlign: TextAlign.center,
                                     ),
@@ -345,7 +345,7 @@ class _Profile extends State<Profile> {
                                           color: tab == ProfileTab.CHATS
                                               ? Constants.black(context)
                                               : Constants.grey(context),
-                                          fontSize: Constants.s(context),
+                                          fontSize: Constants.xs(context),
                                           fontWeight: Constants.bold),
                                       textAlign: TextAlign.center,
                                     ),

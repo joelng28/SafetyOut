@@ -2,11 +2,9 @@ import 'dart:convert';
 //import 'dart:html';
 
 import 'package:app/defaults/constants.dart';
-import 'package:app/state/reg.dart';
 import 'package:app/storage/secure_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 // ignore: library_prefixes
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:app/models/chatModel.dart';
@@ -27,9 +25,7 @@ class _Conversa extends State<Conversa> {
   _Conversa(this.roomId, this.destUserId);
   final textController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  List<Message> messages = [
-    Message(messageContent: "Hello", owner: false),
-  ];
+  List<Message> messages = [];
   IO.Socket socket;
   dynamic chatRoomId;
   bool isConected = false;
