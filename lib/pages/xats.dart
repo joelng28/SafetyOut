@@ -45,6 +45,7 @@ class _Chats extends State<Chats> {
           chatList.forEach((element) {
             Map<String, dynamic> chat = element;
             String userid = chat["user2_id"].toString();
+            if (userid == id) userid = chat["user1_id"].toString();
             var url2 =
                 Uri.parse('https://safetyout.herokuapp.com/user/' + userid);
             http.get(url2).then((res) {

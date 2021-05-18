@@ -16,14 +16,15 @@ import 'package:http/http.dart' as http;
 import '../app_localizations.dart';
 
 class Conversa extends StatefulWidget {
-  Conversa({Key key, @required this.destUserId}) : super(key: key);
+  Conversa({Key key, this.roomId, @required this.destUserId}) : super(key: key);
   final String destUserId;
+  final String roomId;
   @override
-  _Conversa createState() => _Conversa(this.destUserId);
+  _Conversa createState() => _Conversa(this.roomId, this.destUserId);
 }
 
 class _Conversa extends State<Conversa> {
-  _Conversa(this.destUserId);
+  _Conversa(this.roomId, this.destUserId);
   final textController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   List<Message> messages = [
@@ -34,6 +35,7 @@ class _Conversa extends State<Conversa> {
   bool isConected = false;
   String name;
   final String destUserId;
+  final String roomId;
   bool connected = false;
   bool takenName = false;
 
