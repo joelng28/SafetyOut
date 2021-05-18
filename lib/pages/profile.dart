@@ -28,18 +28,49 @@ class _Profile extends State<Profile> {
   @override
   void initState() {
     super.initState();
-    SecureStorage.readSecureStorage('SafetyOUT_UserId').then((id) {
-      var url = Uri.parse('https://safetyout.herokuapp.com/user/' + id);
-      http.get(url).then((res) {
-        if (res.statusCode == 200) {
-          Map<String, dynamic> body = jsonDecode(res.body);
-          Map<String, dynamic> user = body["user"];
-          setState(() {
-            name = user["name"];
-            surnames = user["surnames"];
-          });
-        } else {
+    if (mounted) {
+      SecureStorage.readSecureStorage('SafetyOUT_UserId').then((id) {
+        var url = Uri.parse('https://safetyout.herokuapp.com/user/' + id);
+        http.get(url).then((res) {
           print(res.statusCode);
+          if (res.statusCode == 200) {
+            Map<String, dynamic> body = jsonDecode(res.body);
+            Map<String, dynamic> user = body["user"];
+            setState(() {
+              name = user["name"];
+              surnames = user["surnames"];
+            });
+          } else {
+            print(res.statusCode);
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                    content: SingleChildScrollView(
+                        child: ListBody(
+                      children: <Widget>[
+                        Text(
+                            AppLocalizations.of(context)
+                                .translate("Error_de_xarxa"),
+                            style: TextStyle(fontSize: Constants.m(context))),
+                      ],
+                    )),
+                    actions: <Widget>[
+                      TextButton(
+                        child: Text(
+                            AppLocalizations.of(context).translate("Acceptar"),
+                            style: TextStyle(color: Constants.black(context))),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  );
+                });
+          }
+        }).catchError((err) {
+          //Sale error por pantalla
           showDialog(
               context: context,
               builder: (BuildContext context) {
@@ -66,37 +97,9 @@ class _Profile extends State<Profile> {
                   ],
                 );
               });
-        }
-      }).catchError((err) {
-        //Sale error por pantalla
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
-                content: SingleChildScrollView(
-                    child: ListBody(
-                  children: <Widget>[
-                    Text(
-                        AppLocalizations.of(context)
-                            .translate("Error_de_xarxa"),
-                        style: TextStyle(fontSize: Constants.m(context))),
-                  ],
-                )),
-                actions: <Widget>[
-                  TextButton(
-                    child: Text(
-                        AppLocalizations.of(context).translate("Acceptar"),
-                        style: TextStyle(color: Constants.black(context))),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              );
-            });
+        });
       });
-    });
+    }
   }
 
   @override
