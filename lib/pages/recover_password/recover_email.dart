@@ -83,7 +83,9 @@ class _RecoverEmail extends State<RecoverEmail> {
                     Text(
                         AppLocalizations.of(context)
                             .translate("El_correu_no_és_correcte"),
-                        style: TextStyle(fontSize: Constants.m(context))),
+                        style: TextStyle(
+                            fontSize: Constants.m(context),
+                            color: Constants.black(context))),
                   ],
                 )),
                 actions: <Widget>[

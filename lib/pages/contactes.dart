@@ -109,7 +109,9 @@ class _Contacts extends State<Contacts> {
                     Text(
                         AppLocalizations.of(context)
                             .translate("Sol·licitud_acceptada"),
-                        style: TextStyle(fontSize: Constants.m(context))),
+                        style: TextStyle(
+                            fontSize: Constants.m(context),
+                            color: Constants.black(context))),
                   ],
                 )),
                 actions: <Widget>[
@@ -145,7 +147,9 @@ class _Contacts extends State<Contacts> {
                     Text(
                         AppLocalizations.of(context)
                             .translate("Sol·licitud_rebutjada"),
-                        style: TextStyle(fontSize: Constants.m(context))),
+                        style: TextStyle(
+                            fontSize: Constants.m(context),
+                            color: Constants.black(context))),
                   ],
                 )),
                 actions: <Widget>[
@@ -191,7 +195,9 @@ class _Contacts extends State<Contacts> {
                           Text(
                               AppLocalizations.of(context)
                                   .translate("Sol·licitud_pendent"),
-                              style: TextStyle(fontSize: Constants.m(context))),
+                              style: TextStyle(
+                                  fontSize: Constants.m(context),
+                                  color: Constants.black(context))),
                         ],
                       )),
                       actions: <Widget>[
@@ -224,7 +230,9 @@ class _Contacts extends State<Contacts> {
                   child: ListBody(
                 children: <Widget>[
                   Text(AppLocalizations.of(context).translate("Error de xarxa"),
-                      style: TextStyle(fontSize: Constants.m(context))),
+                      style: TextStyle(
+                          fontSize: Constants.m(context),
+                          color: Constants.black(context))),
                 ],
               )),
               actions: <Widget>[
@@ -335,7 +343,10 @@ class _Contacts extends State<Contacts> {
                             barrierDismissible: false,
                             builder: (context) => AlertDialog(
                                     title: Text(
-                                        'Envia una sol·licitud de contacte'),
+                                        'Envia una sol·licitud de contacte',
+                                        style: TextStyle(
+                                            fontSize: Constants.m(context),
+                                            color: Constants.black(context))),
                                     content: Row(
                                       children: [
                                         EmailInput(

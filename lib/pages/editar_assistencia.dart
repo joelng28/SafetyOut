@@ -108,7 +108,9 @@ class _EditarAssistencia extends State<EditarAssistencia> {
                     Text(
                         AppLocalizations.of(context).translate(
                             "Lhora_dentrada_ha_de_ser_anterior_a_lhora_de_sortida"),
-                        style: TextStyle(fontSize: Constants.m(context))),
+                        style: TextStyle(
+                            fontSize: Constants.m(context),
+                            color: Constants.black(context))),
                   ],
                 )),
                 actions: <Widget>[
@@ -173,7 +175,9 @@ class _EditarAssistencia extends State<EditarAssistencia> {
                           Text(
                               AppLocalizations.of(context).translate(
                                   "Ja_has_notificat_assistència_en_aquest_lloc_data_i_hora"),
-                              style: TextStyle(fontSize: Constants.m(context))),
+                              style: TextStyle(
+                                  fontSize: Constants.m(context),
+                                  color: Constants.black(context))),
                         ],
                       )),
                       actions: <Widget>[
@@ -202,7 +206,9 @@ class _EditarAssistencia extends State<EditarAssistencia> {
                           Text(
                               AppLocalizations.of(context)
                                   .translate("Error_de_xarxa"),
-                              style: TextStyle(fontSize: Constants.m(context))),
+                              style: TextStyle(
+                                  fontSize: Constants.m(context),
+                                  color: Constants.black(context))),
                         ],
                       )),
                       actions: <Widget>[
@@ -264,7 +270,9 @@ class _EditarAssistencia extends State<EditarAssistencia> {
                     Text(
                         AppLocalizations.of(context)
                             .translate("Error_de_xarxa"),
-                        style: TextStyle(fontSize: Constants.m(context))),
+                        style: TextStyle(
+                            fontSize: Constants.m(context),
+                            color: Constants.black(context))),
                   ],
                 )),
                 actions: <Widget>[
@@ -291,7 +299,9 @@ class _EditarAssistencia extends State<EditarAssistencia> {
                   child: ListBody(
                 children: <Widget>[
                   Text(AppLocalizations.of(context).translate("Error_de_xarxa"),
-                      style: TextStyle(fontSize: Constants.m(context))),
+                      style: TextStyle(
+                          fontSize: Constants.m(context),
+                          color: Constants.black(context))),
                 ],
               )),
               actions: <Widget>[

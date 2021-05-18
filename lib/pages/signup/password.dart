@@ -41,7 +41,9 @@ class _RegPassword extends State<RegPassword> {
                     Text(
                         AppLocalizations.of(context)
                             .translate("Les_contrasenyes_no_coincideixen"),
-                        style: TextStyle(fontSize: Constants.m(context))),
+                        style: TextStyle(
+                            fontSize: Constants.m(context),
+                            color: Constants.black(context))),
                   ],
                 )),
                 actions: <Widget>[
@@ -71,25 +73,31 @@ class _RegPassword extends State<RegPassword> {
                     Text(
                         AppLocalizations.of(context).translate(
                             "La_contrasenya_ha_de_contenir_com_a_mínim:"),
-                        style: TextStyle(fontSize: Constants.m(context))),
+                        style: TextStyle(
+                            fontSize: Constants.m(context),
+                            color: Constants.black(context))),
                     Text(AppLocalizations.of(context).translate("8_caràcters"),
                         style: TextStyle(
                             fontSize: Constants.m(context),
-                            fontWeight: Constants.bold)),
+                            fontWeight: Constants.bold,
+                            color: Constants.black(context))),
                     Text(AppLocalizations.of(context).translate("Un_número"),
                         style: TextStyle(
                             fontSize: Constants.m(context),
-                            fontWeight: Constants.bold)),
+                            fontWeight: Constants.bold,
+                            color: Constants.black(context))),
                     Text(
                         AppLocalizations.of(context).translate("Una_minúscula"),
                         style: TextStyle(
                             fontSize: Constants.m(context),
-                            fontWeight: Constants.bold)),
+                            fontWeight: Constants.bold,
+                            color: Constants.black(context))),
                     Text(
                         AppLocalizations.of(context).translate("Una_majúscula"),
                         style: TextStyle(
                             fontSize: Constants.m(context),
-                            fontWeight: Constants.bold)),
+                            fontWeight: Constants.bold,
+                            color: Constants.black(context))),
                   ],
                 )),
                 actions: <Widget>[
@@ -157,7 +165,9 @@ class _RegPassword extends State<RegPassword> {
                         Text(
                             AppLocalizations.of(context)
                                 .translate("Error_de_xarxa"),
-                            style: TextStyle(fontSize: Constants.m(context))),
+                            style: TextStyle(
+                                fontSize: Constants.m(context),
+                                color: Constants.black(context))),
                       ],
                     )),
                     actions: <Widget>[
@@ -185,7 +195,9 @@ class _RegPassword extends State<RegPassword> {
                       Text(
                           AppLocalizations.of(context)
                               .translate("Error_de_xarxa"),
-                          style: TextStyle(fontSize: Constants.m(context))),
+                          style: TextStyle(
+                              fontSize: Constants.m(context),
+                              color: Constants.black(context))),
                     ],
                   )),
                   actions: <Widget>[
