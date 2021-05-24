@@ -267,7 +267,7 @@ class _Discover extends State<Discover> {
     places = [];
     await Future.wait([
       http.get(urlPark),
-/*       http.get(urlNature),
+      /* http.get(urlNature),
       http.get(urlSight),
       http.get(urlTerrace),
       http.get(urlMountain),
