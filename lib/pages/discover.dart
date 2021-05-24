@@ -52,6 +52,12 @@ class _Discover extends State<Discover> {
   bool viewSug = false;
   bool fullSugs = false;
 
+  @override
+  void dispose() {
+    controller = null;
+    super.dispose();
+  }
+
   void getOcupation(LatLng cords) async {
     DateTime now = DateTime.now();
     Uri url = Uri.parse(

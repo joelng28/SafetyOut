@@ -35,6 +35,12 @@ class _Home extends State<Home> {
   final Map<String, Marker> markers = {};
   List<Map<String, dynamic>> places = [];
 
+  @override
+  void dispose() {
+    controller = null;
+    super.dispose();
+  }
+
   Future<void> onMapCreated(GoogleMapController cntlr) async {
     String mapStyle;
     Brightness theme = MediaQuery.of(context).platformBrightness;
