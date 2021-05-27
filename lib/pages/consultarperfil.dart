@@ -19,6 +19,43 @@ class _ConsultarPerfil extends State<ConsultarPerfil> {
   String name = '';
   String surnames = '';
   final String id;
+  
+  Function deleteContact = (BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+            content: SingleChildScrollView(
+                child: ListBody(
+              children: <Widget>[
+                Text(
+                    AppLocalizations.of(context)
+                        .translate("Segur_que_vols_eliminar_el_contacte"),
+                    style: TextStyle(fontSize: Constants.m(context))),
+              ],
+            )),
+            actions: <Widget>[
+              TextButton(
+                child: Text(AppLocalizations.of(context).translate("Eliminar"),
+                    style: TextStyle(color: Constants.red(context))),
+                onPressed: () {
+                  //CRIDES A LA API PER ELIMINAR CONTACTE
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: Text(
+                    AppLocalizations.of(context).translate("Cancel·lar"),
+                    style: TextStyle(color: Constants.black(context))),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  };
 
   @override
   void initState() {
@@ -206,7 +243,9 @@ class _ConsultarPerfil extends State<ConsultarPerfil> {
                                                   color:
                                                       Constants.red(context)),
                                             ),
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              deleteContact(context);
+                                            },
                                             style: ElevatedButton.styleFrom(
                                                 primary: Constants.trueWhite(
                                                     context),
