@@ -6,63 +6,36 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 
-class Profile extends StatefulWidget {
-  Profile({Key key}) : super(key: key);
+class ConsultarPerfil extends StatefulWidget {
+  ConsultarPerfil({Key key, @required this.id}) : super(key: key);
+  final String id;
 
   @override
-  _Profile createState() => _Profile();
+  _ConsultarPerfil createState() => _ConsultarPerfil(this.id);
 }
 
-class _Profile extends State<Profile> {
+class _ConsultarPerfil extends State<ConsultarPerfil> {
+  _ConsultarPerfil(this.id);
   String name = '';
   String surnames = '';
+  final String id;
 
   @override
   void initState() {
-    /*super.initState();
+    super.initState();
     if (mounted) {
-      SecureStorage.readSecureStorage('SafetyOUT_UserId').then((id) {
-        var url = Uri.parse('https://safetyout.herokuapp.com/user/' + id);
-        http.get(url).then((res) {
+      var url = Uri.parse('https://safetyout.herokuapp.com/user/' + id);
+      http.get(url).then((res) {
+        print(res.statusCode);
+        if (res.statusCode == 200) {
+          Map<String, dynamic> body = jsonDecode(res.body);
+          Map<String, dynamic> user = body["user"];
+          setState(() {
+            name = user["name"];
+            surnames = user["surnames"];
+          });
+        } else {
           print(res.statusCode);
-          if (res.statusCode == 200) {
-            Map<String, dynamic> body = jsonDecode(res.body);
-            Map<String, dynamic> user = body["user"];
-            setState(() {
-              name = user["name"];
-              surnames = user["surnames"];
-            });
-          } else {
-            print(res.statusCode);
-            showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
-                    content: SingleChildScrollView(
-                        child: ListBody(
-                      children: <Widget>[
-                        Text(
-                            AppLocalizations.of(context)
-                                .translate("Error_de_xarxa"),
-                            style: TextStyle(fontSize: Constants.m(context))),
-                      ],
-                    )),
-                    actions: <Widget>[
-                      TextButton(
-                        child: Text(
-                            AppLocalizations.of(context).translate("Acceptar"),
-                            style: TextStyle(color: Constants.black(context))),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
-                  );
-                });
-          }
-        }).catchError((err) {
-          //Sale error por pantalla
           showDialog(
               context: context,
               builder: (BuildContext context) {
@@ -89,9 +62,37 @@ class _Profile extends State<Profile> {
                   ],
                 );
               });
-        });
+        }
+      }).catchError((err) {
+        //Sale error por pantalla
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                content: SingleChildScrollView(
+                    child: ListBody(
+                  children: <Widget>[
+                    Text(
+                        AppLocalizations.of(context)
+                            .translate("Error_de_xarxa"),
+                        style: TextStyle(fontSize: Constants.m(context))),
+                  ],
+                )),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text(
+                        AppLocalizations.of(context).translate("Acceptar"),
+                        style: TextStyle(color: Constants.black(context))),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            });
       });
-    }*/
+    }
   }
 
   @override
@@ -100,7 +101,23 @@ class _Profile extends State<Profile> {
       body: SafeArea(
         child: Column(
           children: <Widget>[
-            name == 'Hola'
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                //Icono back
+                IconButton(
+                  icon: const Icon(Icons.arrow_back_ios),
+                  color: Constants.black(context),
+                  iconSize: Constants.xxl(context),
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
+            name == ''
                 ? Expanded(
                     child: Container(
                       decoration:
@@ -169,7 +186,7 @@ class _Profile extends State<Profile> {
                                   ),
                                   Row(
                                     children: [
-                                      //Boton editar perfil
+                                      //Boton borrar contacto
                                       Padding(
                                         padding: EdgeInsets.only(
                                             top: Constants.v1(context)),
