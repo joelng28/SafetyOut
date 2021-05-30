@@ -273,13 +273,25 @@ class _ConsultarPerfil extends State<ConsultarPerfil> {
                               ),
                             ],
                           ),
+                          Padding(
+                              padding:
+                                  EdgeInsets.only(top: Constants.h2(context)),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Assoliments',
+                                    style: TextStyle(
+                                      color: Constants.black(context),
+                                      fontSize: Constants.l(context),
+                                      fontWeight: Constants.bolder,
+                                    ),
+                                  )
+                                ],
+                              ))
                         ],
                       ),
                     ),
-              Padding(
-                padding: EdgeInsets.only(top: Constants.h2(context)),
-                child: Text('Assoliments'),
-              )
             ],
           ),
         ),
