@@ -59,6 +59,8 @@ class _Chats extends State<Chats> {
                       name: user2["name"].toString() + " " + user2["surnames"]);
                   chats.add(c);
                 });
+                chats.sort((a, b) =>
+                    a.name.toLowerCase().compareTo(b.name.toLowerCase()));
               } else {
                 //print(res.statusCode);
                 showDialog(

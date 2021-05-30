@@ -2,6 +2,7 @@ import 'dart:convert';
 //import 'dart:html';
 
 import 'package:app/defaults/constants.dart';
+import 'package:app/pages/profile.dart';
 import 'package:app/storage/secure_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -36,13 +37,15 @@ class _Conversa extends State<Conversa> {
   bool takenName = false;
 
   void sendMessage() {
-    SecureStorage.readSecureStorage('SafetyOUT_UserId').then((id) {
-      socket.emit('message', {
-        'chatRoom': chatRoomId.toString(),
-        'author': id,
-        'message': textController.text.toString()
+    if (textController.text.toString().isNotEmpty) {
+      SecureStorage.readSecureStorage('SafetyOUT_UserId').then((id) {
+        socket.emit('message', {
+          'chatRoom': chatRoomId.toString(),
+          'author': id,
+          'message': textController.text.toString()
+        });
       });
-    });
+    }
   }
 
   void handleMessage(dynamic data) {
@@ -215,6 +218,115 @@ class _Conversa extends State<Conversa> {
     });
   }
 
+  Function deleteChat = (BuildContext context, String chatId) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+            content: SingleChildScrollView(
+                child: ListBody(
+              children: <Widget>[
+                Text(
+                    AppLocalizations.of(context)
+                        .translate("Segur_que_vols_eliminar_la conversa"),
+                    style: TextStyle(fontSize: Constants.m(context))),
+              ],
+            )),
+            actions: <Widget>[
+              TextButton(
+                child: Text(AppLocalizations.of(context).translate("Eliminar"),
+                    style: TextStyle(color: Constants.red(context))),
+                onPressed: () {
+                  var url = Uri.parse(
+                      'https://safetyout.herokuapp.com/chat/' + chatId);
+                  http.delete(url).then((res) {
+                    if (res.statusCode == 200) {
+                      print("OK");
+                      Navigator.of(context).pop();
+                      Navigator.of(context).push(PageRouteBuilder(
+                          pageBuilder: (_, __, ___) =>
+                              Profile())); //Tornar a profile
+                    } else {
+                      print(res.statusCode);
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              contentPadding:
+                                  EdgeInsets.fromLTRB(24, 20, 24, 0),
+                              content: SingleChildScrollView(
+                                  child: ListBody(
+                                children: <Widget>[
+                                  Text(
+                                      AppLocalizations.of(context)
+                                          .translate("Error_de_xarxa"),
+                                      style: TextStyle(
+                                          fontSize: Constants.m(context))),
+                                ],
+                              )),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: Text(
+                                      AppLocalizations.of(context)
+                                          .translate("Acceptar"),
+                                      style: TextStyle(
+                                          color: Constants.black(context))),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          });
+                    }
+                  }).catchError((err) {
+                    //Sale error por pantalla
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                            content: SingleChildScrollView(
+                                child: ListBody(
+                              children: <Widget>[
+                                Text(
+                                    AppLocalizations.of(context)
+                                        .translate("Error_de_xarxa"),
+                                    style: TextStyle(
+                                        fontSize: Constants.m(context))),
+                              ],
+                            )),
+                            actions: <Widget>[
+                              TextButton(
+                                child: Text(
+                                    AppLocalizations.of(context)
+                                        .translate("Acceptar"),
+                                    style: TextStyle(
+                                        color: Constants.black(context))),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        });
+                  });
+                },
+              ),
+              TextButton(
+                child: Text(
+                    AppLocalizations.of(context).translate("Cancel·lar"),
+                    style: TextStyle(color: Constants.black(context))),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  };
+
   @override
   void dispose() {
     textController.dispose();
@@ -258,11 +370,18 @@ class _Conversa extends State<Conversa> {
           leading: IconButton(
             icon: Icon(Icons.arrow_back_ios),
             onPressed: () {
-              Navigator.of(context).pop();
+              Navigator.of(context).push(
+                  PageRouteBuilder(pageBuilder: (_, __, ___) => Profile()));
             },
           ),
           title: Text(name),
-          actions: [IconButton(icon: Icon(Icons.more_horiz), onPressed: () {})],
+          actions: [
+            IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: () {
+                  deleteChat(context, chatRoomId.toString());
+                })
+          ],
         ),
         body: Stack(
           children: <Widget>[
