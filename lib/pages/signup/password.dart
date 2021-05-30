@@ -135,7 +135,8 @@ class _RegPassword extends State<RegPassword> {
             //Guardar key
             Map<String, dynamic> body = jsonDecode(res.body);
             SecureStorage.writeSecureStorage('SafetyOUT_Token', body["token"]);
-            SecureStorage.writeSecureStorage('SafetyOUT_Token', body["userId"]);
+            SecureStorage.writeSecureStorage(
+                'SafetyOUT_UserId', body["userId"]);
             Navigator.of(context).pushReplacementNamed('/');
             setState(() {
               isLoading = false;

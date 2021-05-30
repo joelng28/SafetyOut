@@ -2,13 +2,11 @@ import 'dart:convert';
 
 import 'package:app/defaults/constants.dart';
 import 'package:app/pages/newchat.dart';
-import 'package:app/state/reg.dart';
 import 'package:app/storage/secure_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:app/models/contactChat.dart';
-import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
 import '../app_localizations.dart';
@@ -47,6 +45,7 @@ class _Chats extends State<Chats> {
           chatList.forEach((element) {
             Map<String, dynamic> chat = element;
             String userid = chat["user2_id"].toString();
+            if (userid == id) userid = chat["user1_id"].toString();
             var url2 =
                 Uri.parse('https://safetyout.herokuapp.com/user/' + userid);
             http.get(url2).then((res) {
@@ -57,8 +56,7 @@ class _Chats extends State<Chats> {
                   print(userid);
                   Contact c = Contact(
                       destUserId: userid,
-                      name: user2["name"].toString() + " " + user2["surnames"],
-                      lastMessage: "últim Missatge");
+                      name: user2["name"].toString() + " " + user2["surnames"]);
                   chats.add(c);
                 });
               } else {
@@ -228,18 +226,12 @@ class _Chats extends State<Chats> {
                           fontWeight: Constants.bolder,
                           fontSize: Constants.l(context)),
                     ),
-                    subtitle: Text(
-                      chats[index].lastMessage,
-                      style: TextStyle(
-                          color: Constants.grey(context),
-                          fontSize: Constants.s(context)),
-                    ),
                     onTap: () {
-                      print(chats[index].destUserId);
-                      /*Provider.of<RegState>(context, listen: false)
-                          .setId(chats[index].destUserId.toString());*/
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Conversa()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Conversa(
+                                  destUserId: chats[index].destUserId)));
                     },
                   ));
                 })
@@ -260,7 +252,7 @@ class _Chats extends State<Chats> {
                   backgroundColor: Constants.green(context)),
               body: Stack(children: [
                 Padding(
-                    padding: EdgeInsets.all(25),
+                    padding: EdgeInsets.all(Constants.w6(context)),
                     child: Column(
                       children: [
                         Row(
@@ -271,7 +263,7 @@ class _Chats extends State<Chats> {
                                     .translate("Aixó_està_molt_tranquil"),
                                 style: TextStyle(
                                     color: Constants.grey(context),
-                                    fontSize: Constants.l(context),
+                                    fontSize: Constants.s(context),
                                     fontWeight: Constants.bolder))
                           ],
                         ),
@@ -298,7 +290,7 @@ class _Chats extends State<Chats> {
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       color: Constants.grey(context),
-                                      fontSize: Constants.l(context),
+                                      fontSize: Constants.s(context),
                                       fontWeight: Constants.bolder))
                             ]),
                       ],

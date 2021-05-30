@@ -2,11 +2,9 @@ import 'dart:convert';
 //import 'dart:html';
 
 import 'package:app/defaults/constants.dart';
-import 'package:app/state/reg.dart';
 import 'package:app/storage/secure_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 // ignore: library_prefixes
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:app/models/chatModel.dart';
@@ -16,23 +14,26 @@ import 'package:http/http.dart' as http;
 import '../app_localizations.dart';
 
 class Conversa extends StatefulWidget {
-  Conversa({Key key}) : super(key: key);
-
+  Conversa({Key key, this.roomId, @required this.destUserId}) : super(key: key);
+  final String destUserId;
+  final String roomId;
   @override
-  _Conversa createState() => _Conversa();
+  _Conversa createState() => _Conversa(this.roomId, this.destUserId);
 }
 
 class _Conversa extends State<Conversa> {
+  _Conversa(this.roomId, this.destUserId);
   final textController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  List<Message> messages = [
-    Message(messageContent: "Hello", owner: false),
-  ];
+  List<Message> messages = [];
   IO.Socket socket;
   dynamic chatRoomId;
   bool isConected = false;
   String name;
-  String destUserId;
+  final String destUserId;
+  final String roomId;
+  bool connected = false;
+  bool takenName = false;
 
   void sendMessage() {
     SecureStorage.readSecureStorage('SafetyOUT_UserId').then((id) {
@@ -63,60 +64,33 @@ class _Conversa extends State<Conversa> {
     });
   }
 
-  void handleJoin(dynamic data) {
+  void handleJoin(dynamic data, String id) {
     chatRoomId = data;
     isConected = true;
     print(chatRoomId);
+    initializeChatList(id);
   }
 
-  void initializeChatList() {
-    String chatId = Provider.of<RegState>(context, listen: false).getId;
-    SecureStorage.readSecureStorage('SafetyOUT_UserId').then((id) {
-      var url = Uri.parse(
-          'https://safetyout.herokuapp.com/chat/' + chatId + "/messages");
-      http.get(url).then((res) {
-        if (res.statusCode == 200) {
-          Map<String, dynamic> body = jsonDecode(res.body);
-          List<dynamic> messagesaux = body["messages"];
-          messagesaux.forEach((element) {
-            Map<String, dynamic> message = element;
-            setState(() {
-              Message m = Message(
-                  messageContent: message["message"],
-                  owner: message["user_id"].toString() == id ? true : false);
-              messages.add(m);
-            });
+  void initializeChatList(String id) {
+    var url = Uri.parse('https://safetyout.herokuapp.com/chat/' +
+        chatRoomId.toString() +
+        "/messages");
+    http.get(url).then((res) {
+      if (res.statusCode == 200) {
+        Map<String, dynamic> body = jsonDecode(res.body);
+        print(body);
+        List<dynamic> messagesaux = body["messages"];
+        messagesaux.forEach((element) {
+          Map<String, dynamic> message = element;
+          setState(() {
+            Message m = Message(
+                messageContent: message["message"],
+                owner: message["user_id"].toString() == id ? true : false);
+            messages.add(m);
           });
-        } else {
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
-                  content: SingleChildScrollView(
-                      child: ListBody(
-                    children: <Widget>[
-                      Text(
-                          AppLocalizations.of(context)
-                              .translate("Error_de_xarxa"),
-                          style: TextStyle(fontSize: Constants.m(context))),
-                    ],
-                  )),
-                  actions: <Widget>[
-                    TextButton(
-                      child: Text(
-                          AppLocalizations.of(context).translate("Acceptar"),
-                          style: TextStyle(color: Constants.black(context))),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
-                );
-              });
-        }
-      }).catchError((err) {
-        //Sale error por pantalla
+        });
+      } else {
+        print(res.statusCode);
         showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -143,7 +117,33 @@ class _Conversa extends State<Conversa> {
                 ],
               );
             });
-      });
+      }
+    }).catchError((err) {
+      //Sale error por pantalla
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+              content: SingleChildScrollView(
+                  child: ListBody(
+                children: <Widget>[
+                  Text(AppLocalizations.of(context).translate("Error_de_xarxa"),
+                      style: TextStyle(fontSize: Constants.m(context))),
+                ],
+              )),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                      AppLocalizations.of(context).translate("Acceptar"),
+                      style: TextStyle(color: Constants.black(context))),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          });
     });
   }
 
@@ -156,6 +156,7 @@ class _Conversa extends State<Conversa> {
         setState(() {
           name = user["name"] + " " + user["surnames"];
         });
+        takenName = true;
       } else {
         //print(res.statusCode);
         showDialog(
@@ -224,12 +225,10 @@ class _Conversa extends State<Conversa> {
   void initState() {
     super.initState();
 
-    destUserId = "609116e842fa750022ab15b7";
+    //destUserId = "609116e842fa750022ab15b7";
     //destUserId = Provider.of<RegState>(context, listen: false).getId;
 
     getName();
-
-    initializeChatList();
 
     SecureStorage.readSecureStorage('SafetyOUT_UserId').then((id) {
       try {
@@ -242,7 +241,7 @@ class _Conversa extends State<Conversa> {
             'user2_id': destUserId //destUserId
           });
         });
-        socket.on('joined', (data) => handleJoin(data));
+        socket.on('joined', (data) => handleJoin(data, id));
         socket.on('message', (data) => handleMessage(data));
       } catch (e) {
         print(e.toString());

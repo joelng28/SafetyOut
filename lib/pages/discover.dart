@@ -52,6 +52,12 @@ class _Discover extends State<Discover> {
   bool viewSug = false;
   bool fullSugs = false;
 
+  @override
+  void dispose() {
+    controller = null;
+    super.dispose();
+  }
+
   void getOcupation(LatLng cords) async {
     DateTime now = DateTime.now();
     Uri url = Uri.parse(
@@ -267,7 +273,7 @@ class _Discover extends State<Discover> {
     places = [];
     await Future.wait([
       http.get(urlPark),
-/*       http.get(urlNature),
+      /* http.get(urlNature),
       http.get(urlSight),
       http.get(urlTerrace),
       http.get(urlMountain),
