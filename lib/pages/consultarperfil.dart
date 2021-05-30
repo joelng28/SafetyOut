@@ -19,7 +19,7 @@ class _ConsultarPerfil extends State<ConsultarPerfil> {
   String name = '';
   String surnames = '';
   final String id;
-  
+
   Function deleteContact = (BuildContext context) {
     showDialog(
         context: context,
@@ -136,148 +136,152 @@ class _ConsultarPerfil extends State<ConsultarPerfil> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                //Icono back
-                IconButton(
-                  icon: const Icon(Icons.arrow_back_ios),
-                  color: Constants.black(context),
-                  iconSize: Constants.xxl(context),
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
-            ),
-            name == ''
-                ? Expanded(
-                    child: Container(
-                      decoration:
-                          BoxDecoration(color: Constants.trueWhite(context)),
-                      child: Center(
-                        child: SpinKitFadingCube(
-                            color: Colors.grey,
-                            size: 40.0 /
-                                (MediaQuery.of(context).size.height < 700
-                                    ? 1.3
-                                    : MediaQuery.of(context).size.height < 800
-                                        ? 1.15
-                                        : 1)),
+        child: Padding(
+          padding: EdgeInsets.all(Constants.xs(context)),
+          child: Column(
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  //Icono back
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back_ios),
+                    color: Constants.black(context),
+                    iconSize: Constants.xxl(context),
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
+              name == ''
+                  ? Expanded(
+                      child: Container(
+                        decoration:
+                            BoxDecoration(color: Constants.trueWhite(context)),
+                        child: Center(
+                          child: SpinKitFadingCube(
+                              color: Colors.grey,
+                              size: 40.0 /
+                                  (MediaQuery.of(context).size.height < 700
+                                      ? 1.3
+                                      : MediaQuery.of(context).size.height < 800
+                                          ? 1.15
+                                          : 1)),
+                        ),
+                      ),
+                    )
+                  : Expanded(
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    left: Constants.h7(context)),
+                                child: Column(
+                                  children: [
+                                    //Imagen perfil
+                                    Container(
+                                      width: Constants.w9(context),
+                                      height: Constants.w9(context),
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                              fit: BoxFit.fill,
+                                              image: NetworkImage(
+                                                  //Imagen de prueba, se colocará la imagen del usuario
+                                                  "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"))),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    right: Constants.h1(context),
+                                    left: Constants.h1(context)),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        //Nombre usuario
+                                        SizedBox(
+                                          width: Constants.w11(context),
+                                          child: Text(
+                                            name + ' ' + surnames,
+                                            maxLines: 1,
+                                            style: TextStyle(
+                                              fontSize: Constants.l(context),
+                                              fontWeight: Constants.bolder,
+                                            ),
+                                            overflow: TextOverflow.clip,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        //Boton borrar contacto
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              top: Constants.v1(context)),
+                                          child: Container(
+                                            height: Constants.a6(context) +
+                                                Constants.a2(context),
+                                            width: Constants.w10(context),
+                                            child: TextButton(
+                                              child: Text(
+                                                AppLocalizations.of(context)
+                                                    .translate(
+                                                        "Esborrar_contacte"),
+                                                style: TextStyle(
+                                                    fontSize:
+                                                        Constants.xs(context),
+                                                    fontWeight:
+                                                        Constants.bolder,
+                                                    color:
+                                                        Constants.red(context)),
+                                              ),
+                                              onPressed: () {
+                                                deleteContact(context);
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                  primary: Constants.trueWhite(
+                                                      context),
+                                                  textStyle: TextStyle(
+                                                    color: Constants.black(
+                                                        context),
+                                                  ),
+                                                  side: BorderSide(
+                                                      color: Constants.black(
+                                                          context)),
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10.0))),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
-                  )
-                : Expanded(
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding:
-                                  EdgeInsets.only(left: Constants.h7(context)),
-                              child: Column(
-                                children: [
-                                  //Imagen perfil
-                                  Container(
-                                    width: Constants.w9(context),
-                                    height: Constants.w9(context),
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        image: DecorationImage(
-                                            fit: BoxFit.fill,
-                                            image: NetworkImage(
-                                                //Imagen de prueba, se colocará la imagen del usuario
-                                                "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"))),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  right: Constants.h1(context),
-                                  left: Constants.h1(context)),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      //Nombre usuario
-                                      SizedBox(
-                                        width: Constants.w11(context),
-                                        child: Text(
-                                          name + ' ' + surnames,
-                                          maxLines: 1,
-                                          style: TextStyle(
-                                            fontSize: Constants.l(context),
-                                            fontWeight: Constants.bolder,
-                                          ),
-                                          overflow: TextOverflow.clip,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      //Boton borrar contacto
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                            top: Constants.v1(context)),
-                                        child: Container(
-                                          height: Constants.a6(context) +
-                                              Constants.a2(context),
-                                          width: Constants.w10(context),
-                                          child: TextButton(
-                                            child: Text(
-                                              AppLocalizations.of(context)
-                                                  .translate(
-                                                      "Esborrar_contacte"),
-                                              style: TextStyle(
-                                                  fontSize:
-                                                      Constants.xs(context),
-                                                  fontWeight: Constants.bolder,
-                                                  color:
-                                                      Constants.red(context)),
-                                            ),
-                                            onPressed: () {
-                                              deleteContact(context);
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                                primary: Constants.trueWhite(
-                                                    context),
-                                                textStyle: TextStyle(
-                                                  color:
-                                                      Constants.black(context),
-                                                ),
-                                                side: BorderSide(
-                                                    color: Constants.black(
-                                                        context)),
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10.0))),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-            Padding(
-              padding: EdgeInsets.only(top: Constants.h2(context)),
-              child: Text('Assoliments'),
-            )
-          ],
+              Padding(
+                padding: EdgeInsets.only(top: Constants.h2(context)),
+                child: Text('Assoliments'),
+              )
+            ],
+          ),
         ),
       ),
     );
