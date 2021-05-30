@@ -37,13 +37,15 @@ class _Conversa extends State<Conversa> {
   bool takenName = false;
 
   void sendMessage() {
-    SecureStorage.readSecureStorage('SafetyOUT_UserId').then((id) {
-      socket.emit('message', {
-        'chatRoom': chatRoomId.toString(),
-        'author': id,
-        'message': textController.text.toString()
+    if (textController.text.toString().isNotEmpty) {
+      SecureStorage.readSecureStorage('SafetyOUT_UserId').then((id) {
+        socket.emit('message', {
+          'chatRoom': chatRoomId.toString(),
+          'author': id,
+          'message': textController.text.toString()
+        });
       });
-    });
+    }
   }
 
   void handleMessage(dynamic data) {
