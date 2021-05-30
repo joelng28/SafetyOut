@@ -370,7 +370,8 @@ class _Conversa extends State<Conversa> {
           leading: IconButton(
             icon: Icon(Icons.arrow_back_ios),
             onPressed: () {
-              Navigator.of(context).pop();
+              Navigator.of(context).push(
+                  PageRouteBuilder(pageBuilder: (_, __, ___) => Profile()));
             },
           ),
           title: Text(name),
