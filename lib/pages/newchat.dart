@@ -51,6 +51,8 @@ class _NewChat extends State<NewChat> {
                       name: user2["name"].toString() + " " + user2["surnames"]);
                   contacts.add(c);
                 });
+                contacts.sort((a, b) =>
+                    a.name.toLowerCase().compareTo(b.name.toLowerCase()));
               } else {
                 //print(res.statusCode);
                 showDialog(
