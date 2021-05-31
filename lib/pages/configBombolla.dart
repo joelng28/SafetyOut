@@ -23,7 +23,7 @@ class _ConfigBubble extends State<ConfigBubble> {
   _ConfigBubble(this.bubbleId, this.userId);
   final String bubbleId;
   final String userId;
-  String adminId;
+  bool isAdmin = false;
   List<String> MembersIDs = [];
   List<String> MembersNames = [];
   static String bubbleName;
@@ -36,17 +36,44 @@ class _ConfigBubble extends State<ConfigBubble> {
         Map<String, dynamic> body = jsonDecode(resName.body);
         setState(() {
           bubbleName = body['name'];
-          adminId = body['admin'];
+          SecureStorage.readSecureStorage('SafetyOUT_UserId').then((id) {
+            isAdmin = id == body['admin'];
+          });
           MembersIDs = body['members'];
         });
       }
     });
   }
 
+  void getParticipants() {
+    MembersNames.clear();
+    MembersIDs.forEach((id) {
+      var urlName = Uri.parse(
+          'https://safetyout.herokuapp.com/user/' + id);
+      http.get(urlName).then((resName) {
+        if (resName.statusCode == 200) {
+          Map<String, dynamic> bodyName = jsonDecode(resName.body);
+          Map<String, dynamic> user = bodyName["user"];
+          setState(() {
+            MembersNames.add(user['name'] + " " + user["surnames"]);
+          });
+        }
+      });
+    });
+  }
+
+  void eliminarParticipant(int index) {}
+
+  void eliminarBombolla() {}
+
+  void sortirBombolla() {}
+
   @override
   void initState() {
     super.initState();
     getInfoBombolla();
+    getParticipants();
+
   }
 
   @override
@@ -140,8 +167,65 @@ class _ConfigBubble extends State<ConfigBubble> {
                   ],
                 ),
               ),
+              Flexible(
+                child: Padding(
+                    padding: EdgeInsets.only(
+                        top: Constants.v2(context),
+                        left: Constants.h1(context),
+                        right: Constants.h1(context)),
+                    child: ListView.separated(
+                        separatorBuilder: (_, __) => Divider(),
+                        itemCount: MembersNames.length,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                              leading: Container(
+                                  width: Constants.w9(context),
+                                  height: Constants.w9(context),
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      image: DecorationImage(
+                                        //fit: BoxFit.cover,
+                                          image: NetworkImage(
+                                            //Imagen de prueba, se colocará la imagen del usuario
+                                              "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg")))
+                              ),
+                              title: Text(
+                                MembersNames[index],
+                                style: TextStyle(
+                                    color: Constants.black(context),
+                                    fontWeight: Constants.bolder,
+                                    fontSize: Constants.l(context)),
+                              ),
+                              trailing: isAdmin ? Icon(
+                                  Icons.close,
+                                  color: Constants.red(context)
+                              ) : null,
+                              onTap: () {eliminarParticipant(index);}
+                          );
+                        }
+                    )
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(bottom: Constants.v7(context)),
+                child: InkWell(
+                    highlightColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    focusColor: Colors.transparent,
+                    child: Text(
+                        isAdmin ?
+                        AppLocalizations.of(context).translate("Borrar_Bombolla")
+                        : AppLocalizations.of(context).translate("Sortir_Bombolla"),
+                        style: TextStyle(
+                            fontSize: Constants.m(context),
+                            fontWeight: Constants.bold,
+                            color: Constants.red(context))),
+                    onTap: () => isAdmin ? eliminarBombolla() : sortirBombolla()),
+              ),
             ])
         )
     );
   }
+
+
 }
