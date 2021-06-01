@@ -5,6 +5,8 @@ import 'package:app/defaults/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
+import 'package:app/storage/secure_storage.dart';
+import 'package:app/pages/profile.dart';
 
 class ConsultarPerfil extends StatefulWidget {
   ConsultarPerfil({Key key, @required this.id}) : super(key: key);
@@ -20,7 +22,7 @@ class _ConsultarPerfil extends State<ConsultarPerfil> {
   String surnames = '';
   final String id;
 
-  Function deleteContact = (BuildContext context) {
+  Function deleteContact = (BuildContext context, String id) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -40,8 +42,90 @@ class _ConsultarPerfil extends State<ConsultarPerfil> {
                 child: Text(AppLocalizations.of(context).translate("Eliminar"),
                     style: TextStyle(color: Constants.red(context))),
                 onPressed: () {
-                  //CRIDES A LA API PER ELIMINAR CONTACTE
-                  Navigator.of(context).pop();
+                  SecureStorage.readSecureStorage('SafetyOUT_UserId')
+                      .then((id1) {
+                    var url = Uri.parse(
+                        'https://safetyout.herokuapp.com/friendRequest/' +
+                            id1 +
+                            '/deleteFriend');
+                    http.delete(url, body: {'friend_id': id}).then((res) {
+                      print("BUEN");
+                      if (res.statusCode == 201) {
+                        print("ENTRO");
+                        Navigator.of(context).pop();
+                        Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                              pageBuilder: (_, __, ___) => Profile()),
+                        );
+                      } else {
+                        print("NO");
+                        print(res.statusCode);
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                contentPadding:
+                                    EdgeInsets.fromLTRB(24, 20, 24, 0),
+                                content: SingleChildScrollView(
+                                    child: ListBody(
+                                  children: <Widget>[
+                                    Text(
+                                        AppLocalizations.of(context)
+                                            .translate("Error_de_xarxa"),
+                                        style: TextStyle(
+                                            fontSize: Constants.m(context))),
+                                  ],
+                                )),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: Text(
+                                        AppLocalizations.of(context)
+                                            .translate("Acceptar"),
+                                        style: TextStyle(
+                                            color: Constants.black(context))),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            });
+                      }
+                    }).catchError((err) {
+                      //Sale error por pantalla
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              contentPadding:
+                                  EdgeInsets.fromLTRB(24, 20, 24, 0),
+                              content: SingleChildScrollView(
+                                  child: ListBody(
+                                children: <Widget>[
+                                  Text(
+                                      AppLocalizations.of(context)
+                                          .translate("Error_de_xarxa"),
+                                      style: TextStyle(
+                                          fontSize: Constants.m(context))),
+                                ],
+                              )),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: Text(
+                                      AppLocalizations.of(context)
+                                          .translate("Acceptar"),
+                                      style: TextStyle(
+                                          color: Constants.black(context))),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          });
+                    });
+                  });
                 },
               ),
               TextButton(
@@ -256,7 +340,7 @@ class _ConsultarPerfil extends State<ConsultarPerfil> {
                                                         Constants.red(context)),
                                               ),
                                               onPressed: () {
-                                                deleteContact(context);
+                                                deleteContact(context, id);
                                               },
                                               style: ElevatedButton.styleFrom(
                                                   primary: Constants.trueWhite(
