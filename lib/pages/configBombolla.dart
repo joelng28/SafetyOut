@@ -172,6 +172,8 @@ class _ConfigBubble extends State<ConfigBubble> {
 
   void deleteMember(int index) {}
 
+  void deleteBubble() {}
+
   @override
   void initState() {
     super.initState();
@@ -297,8 +299,6 @@ class _ConfigBubble extends State<ConfigBubble> {
                                         fontSize: Constants.l(context)),
                                   ),
                                   trailing: adminId == userId ? IconButton(
-                                      splashColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
                                       icon: Icon(Icons.close, color: Constants.red(context)),
                                       iconSize: Constants.w6(context),
                                       onPressed: () {
@@ -331,7 +331,28 @@ class _ConfigBubble extends State<ConfigBubble> {
                   ],
                 ),
               )
-            : Container() //Boton eliminar bombolla
+            : SafeArea(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(bottom: Constants.v7(context)),
+                      child: InkWell(
+                          highlightColor: Colors.transparent,
+                          splashColor: Colors.transparent,
+                          focusColor: Colors.transparent,
+                          onTap: () => deleteBubble(),
+                          child: Text("Eliminar bombolla",
+                              style: TextStyle(
+                                  fontSize: Constants.m(context),
+                                  fontWeight: Constants.bold,
+                                  color: Constants.red(context)))),
+                    ),
+                  ],
+                ),
+        )//Boton eliminar bombolla
         );
   }
+
+
 }
