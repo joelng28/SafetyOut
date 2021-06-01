@@ -139,6 +139,7 @@
     "Participants": "Participants",
     "Nom_Bombolla": "Nom de la bombolla",
     "Segur_que_vols_eliminar_la conversa": "Segur que vols eliminar la conversa?",
-    "Borrar_Bombolla": "Borrar la bombolla",
-    "Sortir_Bombolla": "Sortir de bombolla"
+    "Sortir_de_la_bombolla": "Sortir de la bombolla",
+    "Segur_que_vols_sortir_de_la_bombolla": "Segur que vols sortir de la bombolla?",
+    "Sortir": "Sortir"
 }
