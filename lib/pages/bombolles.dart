@@ -43,9 +43,10 @@ class _Bubbles extends State<Bubbles> {
               http.get(urlName).then((resName) {
                 if (resName.statusCode == 200) {
                   Map<String, dynamic> bodyName = jsonDecode(resName.body);
+                  Map<String, dynamic> binfo = bodyName["bubble"];
                   setState(() {
-                    SolPompNames.add(bodyName['name']);
-                    SolPompIDs.add(bInvitantion['bubble_id']);
+                    SolPompNames.add(binfo['name']);
+                    SolPompIDs.add(bInvitantion['_id']);
                   });
                 }
               });
