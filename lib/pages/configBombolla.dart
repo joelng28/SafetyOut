@@ -31,14 +31,30 @@ class _ConfigBubble extends State<ConfigBubble> {
 
   void getInfoBombolla() {
     MembersIDs.clear();
+    MembersNames.clear();
     var urlB = Uri.parse('https://safetyout.herokuapp.com/bubble/' + bubbleId);
-    http.get(urlB).then((resName) {
-      if (resName.statusCode == 200) {
-        Map<String, dynamic> body = jsonDecode(resName.body);
+    http.get(urlB).then((res) {
+      if (res.statusCode == 200) {
+        Map<String, dynamic> body = jsonDecode(res.body);
+        Map<String, dynamic> binfo = body["bubble"];
         setState(() {
-          bubbleName = body['name'];
-          adminId = body['admin'];
-          MembersIDs = body['members'];
+          bubbleName = binfo['name'];
+          adminId = binfo['admin'];
+          binfo['members'].forEach((m) {
+            Map<String, dynamic> member = m;
+            MembersIDs.add(member["userId"]);
+            var urlName = Uri.parse(
+                'https://safetyout.herokuapp.com/user/' + member["userId"]);
+            http.get(urlName).then((resName) {
+              if (resName.statusCode == 200) {
+                Map<String, dynamic> bodyName = jsonDecode(resName.body);
+                Map<String, dynamic> user = bodyName["user"];
+                setState(() {
+                  MembersNames.add(user['name'] + " " + user["surnames"]);
+                });
+              }
+            });
+          });
         });
       }
     });
@@ -154,6 +170,8 @@ class _ConfigBubble extends State<ConfigBubble> {
         });
   }
 
+  void deleteMember(int index) {}
+
   @override
   void initState() {
     super.initState();
@@ -165,89 +183,132 @@ class _ConfigBubble extends State<ConfigBubble> {
     return Scaffold(
         body: SafeArea(
             child: Column(children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(top: Constants.xs(context)),
-            child: Stack(
-              children: [
-                Align(
+              Padding(
+                padding: EdgeInsets.only(top: Constants.xs(context)),
+                child: Stack(
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(left: Constants.xxs(context)),
+                        child: InkWell(
+                          highlightColor: Colors.transparent,
+                          splashColor: Colors.transparent,
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Icon(Icons.arrow_back_ios_rounded,
+                              size: 32 /
+                                  (MediaQuery.of(context).size.width < 380
+                                      ? 1.3
+                                      : 1),
+                              color: Constants.black(context)),
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Visibility(
+                        visible: MediaQuery.of(context).viewInsets.bottom == 0,
+                        child: Text("Configurar Bombolla",
+                            style: TextStyle(
+                                color: Constants.darkGrey(context),
+                                fontSize: Constants.xl(context),
+                                fontWeight: Constants.bolder)),
+                      ),
+                    ),
+                    Align(
+                      // BotoCrearBombolla
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: EdgeInsets.only(right: Constants.xxs(context)),
+                        child: InkWell(
+                          highlightColor: Colors.transparent,
+                          splashColor: Colors.transparent,
+                          onTap: () {},
+                          child: Icon(Icons.check,
+                              size: 32 /
+                                  (MediaQuery.of(context).size.width < 380
+                                      ? 1.3
+                                      : 1),
+                              color: Constants.black(context)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Align(
                   alignment: Alignment.centerLeft,
                   child: Padding(
-                    padding: EdgeInsets.only(left: Constants.xxs(context)),
-                    child: InkWell(
-                      highlightColor: Colors.transparent,
-                      splashColor: Colors.transparent,
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Icon(Icons.arrow_back_ios_rounded,
-                          size: 32 /
-                              (MediaQuery.of(context).size.width < 380
-                                  ? 1.3
-                                  : 1),
-                          color: Constants.black(context)),
-                    ),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.center,
-                  child: Visibility(
-                    visible: MediaQuery.of(context).viewInsets.bottom == 0,
-                    child: Text("Configurar Bombolla",
+                      padding: EdgeInsets.only(
+                          top: Constants.v7(context), left: Constants.h7(context)),
+                      child: Text(
+                        AppLocalizations.of(context).translate('Nom_Bombolla'),
                         style: TextStyle(
-                            color: Constants.darkGrey(context),
-                            fontSize: Constants.xl(context),
-                            fontWeight: Constants.bolder)),
-                  ),
+                            color: Constants.black(context),
+                            fontSize: Constants.m(context),
+                            fontWeight: Constants.bold),
+                      ))),
+              Padding(
+                padding: EdgeInsets.fromLTRB(Constants.h7(context),
+                    Constants.v1(context), Constants.h7(context), 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    RawInput(
+                      labelText:
+                          AppLocalizations.of(context).translate("Nom_Bombolla"),
+                      onChanged: (value) => setState(() {
+                        bubbleName = value;
+                      }),
+                    )
+                  ],
                 ),
-                Align(
-                  // BotoCrearBombolla
-                  alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: EdgeInsets.only(right: Constants.xxs(context)),
-                    child: InkWell(
-                      highlightColor: Colors.transparent,
-                      splashColor: Colors.transparent,
-                      onTap: () {},
-                      child: Icon(Icons.check,
-                          size: 32 /
-                              (MediaQuery.of(context).size.width < 380
-                                  ? 1.3
-                                  : 1),
-                          color: Constants.black(context)),
-                    ),
-                  ),
+              ),
+              Flexible(
+                child: Padding(
+                    padding: EdgeInsets.only(
+                        top: Constants.v2(context),
+                        left: Constants.h1(context),
+                        right: Constants.h1(context)),
+                    child: ListView.separated(
+                        separatorBuilder: (_, __) => Divider(),
+                        itemCount: MembersNames.length,
+                        itemBuilder: (context, index) {
+                          return Container(
+                              child: ListTile(
+                                  leading: Container(
+                                      width: Constants.w9(context),
+                                      height: Constants.w9(context),
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                            //fit: BoxFit.cover,
+                                              image: NetworkImage(
+                                                //Imagen de prueba, se colocará la imagen del usuario
+                                                  "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg")))
+                                  ),
+                                  title: Text(
+                                    MembersNames[index],
+                                    style: TextStyle(
+                                        color: Constants.black(context),
+                                        fontWeight: Constants.bolder,
+                                        fontSize: Constants.l(context)),
+                                  ),
+                                  trailing: adminId == userId ? IconButton(
+                                      splashColor: Colors.transparent,
+                                      highlightColor: Colors.transparent,
+                                      icon: Icon(Icons.close, color: Constants.red(context)),
+                                      iconSize: Constants.w6(context),
+                                      onPressed: () {
+                                        deleteMember(index);
+                                      }) : null,
+                              ));
+                        }
+                    )
                 ),
-              ],
-            ),
-          ),
-          Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                  padding: EdgeInsets.only(
-                      top: Constants.v7(context), left: Constants.h7(context)),
-                  child: Text(
-                    AppLocalizations.of(context).translate('Nom_Bombolla'),
-                    style: TextStyle(
-                        color: Constants.black(context),
-                        fontSize: Constants.m(context),
-                        fontWeight: Constants.bold),
-                  ))),
-          Padding(
-            padding: EdgeInsets.fromLTRB(Constants.h7(context),
-                Constants.v1(context), Constants.h7(context), 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                RawInput(
-                  labelText:
-                      AppLocalizations.of(context).translate("Nom_Bombolla"),
-                  onChanged: (value) => setState(() {
-                    bubbleName = value;
-                  }),
-                )
-              ],
-            ),
-          ),
+              )
         ])),
         bottomSheet: (adminId != userId) == true
             ? SafeArea(
