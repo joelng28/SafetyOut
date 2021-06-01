@@ -249,25 +249,28 @@ class _ConfigBubble extends State<ConfigBubble> {
             ),
           ),
         ])),
-        bottomSheet: SafeArea(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(bottom: Constants.v7(context)),
-                child: InkWell(
-                    highlightColor: Colors.transparent,
-                    splashColor: Colors.transparent,
-                    focusColor: Colors.transparent,
-                    onTap: () => outOfBubble(),
-                    child: Text("Sortir de la bombolla",
-                        style: TextStyle(
-                            fontSize: Constants.m(context),
-                            fontWeight: Constants.bold,
-                            color: Constants.red(context)))),
-              ),
-            ],
-          ),
-        ));
+        bottomSheet: (adminId != userId) == true
+            ? SafeArea(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(bottom: Constants.v7(context)),
+                      child: InkWell(
+                          highlightColor: Colors.transparent,
+                          splashColor: Colors.transparent,
+                          focusColor: Colors.transparent,
+                          onTap: () => outOfBubble(),
+                          child: Text("Sortir de la bombolla",
+                              style: TextStyle(
+                                  fontSize: Constants.m(context),
+                                  fontWeight: Constants.bold,
+                                  color: Constants.red(context)))),
+                    ),
+                  ],
+                ),
+              )
+            : Container() //Boton eliminar bombolla
+        );
   }
 }
