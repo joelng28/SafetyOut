@@ -137,5 +137,8 @@
     "Bombolles": "Bombolles",
     "Xats": "Xats",
     "Participants": "Participants",
-    "Nom_Bombolla": "Nom de la bombolla"
+    "Nom_Bombolla": "Nom de la bombolla",
+    "Eliminar_compte": "Eliminar compte",
+    "Segur_que_vols_eliminar_el_compte": "Segur que vols eliminar el compte?",
+    "Segur_que_vols_eliminar_el_contacte": "Segur que vols eliminar el contacte?"
 }

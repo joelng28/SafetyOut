@@ -336,6 +336,10 @@ class _Contacts extends State<Contacts> {
                             builder: (context) => AlertDialog(
                                     title: Text(
                                         'Envia una sol·licitud de contacte'),
+                                    titleTextStyle: TextStyle(
+                                        color: Constants.black(context),
+                                        fontSize: Constants.m(context),
+                                        fontWeight: Constants.bolder),
                                     content: Row(
                                       children: [
                                         EmailInput(

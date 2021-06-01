@@ -138,6 +138,9 @@
     "Bombolles": "Bombolles",
     "Xats": "Xats",
     "Participants": "Participantes",
-    "Nom_Bombolla": "Nombre de la burbuja"
+    "Nom_Bombolla": "Nombre de la burbuja",
+    "Eliminar_compte": "Eliminar cuenta",
+    "Segur_que_vols_eliminar_el_compte": "¿Seguro que quieres eliminar la cuenta?",
+    "Segur_que_vols_eliminar_el_contacte": "¿Seguro que quieres eliminar el contacto?"
 }
     
