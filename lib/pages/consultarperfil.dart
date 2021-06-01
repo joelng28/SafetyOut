@@ -57,9 +57,7 @@ class _ConsultarPerfil extends State<ConsultarPerfil> {
         });
   };
 
-  @override
-  void initState() {
-    super.initState();
+  void setName() {
     if (mounted) {
       var url = Uri.parse('https://safetyout.herokuapp.com/user/' + id);
       http.get(url).then((res) {
@@ -130,6 +128,17 @@ class _ConsultarPerfil extends State<ConsultarPerfil> {
             });
       });
     }
+  }
+
+  void setTrophies() {}
+
+  @override
+  void initState() {
+    super.initState();
+
+    setName();
+
+    setTrophies();
   }
 
   @override
