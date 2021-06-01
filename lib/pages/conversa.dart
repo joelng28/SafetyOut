@@ -68,7 +68,7 @@ class _Conversa extends State<Conversa> {
   }
 
   void handleJoin(dynamic data, String id) {
-    chatRoomId = data;
+    chatRoomId = data["roomId"];
     isConected = true;
     print(chatRoomId);
     initializeChatList(id);
