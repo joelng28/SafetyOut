@@ -22,9 +22,6 @@ class _newBubble extends State<newBubble> {
   static List<bool> Participants = List<bool>.empty(growable: true);
   int npart = 0;
 
-
-
-
   @override
   void initState() {
     super.initState();
@@ -37,7 +34,7 @@ class _newBubble extends State<newBubble> {
     ContactosID.clear();
     SecureStorage.readSecureStorage('SafetyOUT_UserId').then((id) {
       var url2 =
-      Uri.parse('https://safetyout.herokuapp.com/user/' + id + '/friends');
+          Uri.parse('https://safetyout.herokuapp.com/user/' + id + '/friends');
       http.get(url2).then((res) {
         if (res.statusCode == 200) {
           Map<String, dynamic> body = jsonDecode(res.body);
@@ -65,16 +62,15 @@ class _newBubble extends State<newBubble> {
   void newBubble() {
     var url1 = Uri.parse('https://safetyout.herokuapp.com/bubble');
     SecureStorage.readSecureStorage('SafetyOUT_UserId').then((id) {
-      http.post(url1, body: {
-        'user_id': id,
-        'bubble_name': nameBubble
-      }).then((res) {
+      http.post(url1, body: {'user_id': id, 'bubble_name': nameBubble}).then(
+          (res) {
         Map<String, dynamic> body = jsonDecode(res.body);
         if (res.statusCode == 201) {
           Navigator.of(context).pop();
-          var url2 = Uri.parse('https://safetyout.herokuapp.com/bubbleInvitation');
+          var url2 =
+              Uri.parse('https://safetyout.herokuapp.com/bubbleInvitation');
           for (int index = 0; index < Contactos.length; ++index) {
-            if (Participants[index]){
+            if (Participants[index]) {
               http.post(url2, body: {
                 'invitee_id': ContactosID[index],
                 'bubble_id': body["bubble_id"],
@@ -82,8 +78,66 @@ class _newBubble extends State<newBubble> {
               });
             }
           }
-        }
-        else {
+
+          int achievementId = body["achievement"];
+
+          if (achievementId == 28) {
+            String achievementIcon = "bubble master";
+            String achievementText =
+                AppLocalizations.of(context).translate("Entra en una bombolla");
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                    content: SingleChildScrollView(
+                        child: Column(
+                      children: [
+                        Image(
+                            height: Constants.xxl(context) +
+                                Constants.xxl(context) +
+                                Constants.xxl(context) +
+                                Constants.xs(context),
+                            image: AssetImage("assets/icons/achievements/" +
+                                achievementIcon +
+                                ".png")),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(
+                              Constants.h1(context),
+                              Constants.v1(context),
+                              Constants.h1(context),
+                              Constants.v1(context)),
+                          child: Text(achievementText),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(
+                              Constants.h1(context),
+                              Constants.v1(context),
+                              Constants.h1(context),
+                              Constants.v1(context)),
+                          child: Text(
+                              AppLocalizations.of(context)
+                                  .translate("Nou assoliment!"),
+                              style: TextStyle(
+                                  color: Constants.black(context),
+                                  fontWeight: Constants.bold)),
+                        )
+                      ],
+                    )),
+                    actions: <Widget>[
+                      TextButton(
+                        child: Text(
+                            AppLocalizations.of(context).translate("Acceptar"),
+                            style: TextStyle(color: Constants.black(context))),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  );
+                });
+          }
+        } else {
           showDialog(
               context: context,
               builder: (BuildContext context) {
@@ -91,19 +145,16 @@ class _newBubble extends State<newBubble> {
                   contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
                   content: SingleChildScrollView(
                       child: ListBody(
-                        children: <Widget>[
-                          Text(
-                              body["message"],
-                              style: TextStyle(fontSize: Constants.m(context))),
-                        ],
-                      )),
+                    children: <Widget>[
+                      Text(body["message"],
+                          style: TextStyle(fontSize: Constants.m(context))),
+                    ],
+                  )),
                   actions: <Widget>[
                     TextButton(
                       child: Text(
-                          AppLocalizations.of(context)
-                              .translate("Acceptar"),
-                          style:
-                          TextStyle(color: Constants.black(context))),
+                          AppLocalizations.of(context).translate("Acceptar"),
+                          style: TextStyle(color: Constants.black(context))),
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
@@ -166,7 +217,9 @@ class _newBubble extends State<newBubble> {
                       child: InkWell(
                         highlightColor: Colors.transparent,
                         splashColor: Colors.transparent,
-                        onTap: () {newBubble();},
+                        onTap: () {
+                          newBubble();
+                        },
                         child: Icon(Icons.check,
                             size: 32 /
                                 (MediaQuery.of(context).size.width < 380
@@ -179,20 +232,19 @@ class _newBubble extends State<newBubble> {
                 ],
               ),
             ), //Header DONE
-            Align( alignment: Alignment.centerLeft,
-            child: Padding(
-              padding: EdgeInsets.only(
-                top: Constants.v7(context),
-                left: Constants.h7(context)),
-                child: Text(
-                  AppLocalizations.of(context)
-                    .translate('Nom_Bombolla'),
-                  style: TextStyle(
-                    color: Constants.black(context),
-                    fontSize: Constants.m(context),
-                    fontWeight: Constants.bold),
-                )
-            )),
+            Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                    padding: EdgeInsets.only(
+                        top: Constants.v7(context),
+                        left: Constants.h7(context)),
+                    child: Text(
+                      AppLocalizations.of(context).translate('Nom_Bombolla'),
+                      style: TextStyle(
+                          color: Constants.black(context),
+                          fontSize: Constants.m(context),
+                          fontWeight: Constants.bold),
+                    ))),
             Padding(
               padding: EdgeInsets.fromLTRB(Constants.h7(context),
                   Constants.v1(context), Constants.h7(context), 0),
@@ -201,7 +253,7 @@ class _newBubble extends State<newBubble> {
                 children: [
                   RawInput(
                     labelText:
-                    AppLocalizations.of(context).translate("Nom_Bombolla"),
+                        AppLocalizations.of(context).translate("Nom_Bombolla"),
                     onChanged: (value) => setState(() {
                       nameBubble = value;
                     }),
@@ -209,65 +261,66 @@ class _newBubble extends State<newBubble> {
                 ],
               ),
             ),
-            Align( alignment: Alignment.centerLeft,
+            Align(
+                alignment: Alignment.centerLeft,
                 child: Padding(
                     padding: EdgeInsets.only(
                         top: Constants.v7(context),
                         left: Constants.h7(context)),
                     child: Text(
-                      AppLocalizations.of(context)
-                          .translate('Participants') + " (" + npart.toString() + ")",
+                      AppLocalizations.of(context).translate('Participants') +
+                          " (" +
+                          npart.toString() +
+                          ")",
                       style: TextStyle(
                           color: Constants.black(context),
                           fontSize: Constants.m(context),
                           fontWeight: Constants.bold),
-                    )
-            )),
+                    ))),
             Flexible(
               child: Padding(
-                padding: EdgeInsets.only(
-                    top: Constants.v2(context),
-                    left: Constants.h1(context),
-                    right: Constants.h1(context)),
+                  padding: EdgeInsets.only(
+                      top: Constants.v2(context),
+                      left: Constants.h1(context),
+                      right: Constants.h1(context)),
                   child: ListView.separated(
                       separatorBuilder: (_, __) => Divider(),
                       itemCount: Contactos.length,
                       itemBuilder: (context, index) {
-                        if(index >= Participants.length) Participants.add(false);
+                        if (index >= Participants.length)
+                          Participants.add(false);
                         return Container(
-                            color: Participants[index] ? Constants.lightGrey(context) : null,
+                            color: Participants[index]
+                                ? Constants.lightGrey(context)
+                                : null,
                             child: ListTile(
-                              leading: Container(
-                                  width: Constants.w9(context),
-                                  height: Constants.w9(context),
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      image: DecorationImage(
-                                          //fit: BoxFit.cover,
-                                          image: NetworkImage(
-                                        //Imagen de prueba, se colocará la imagen del usuario
-                                          "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg")))
-                              ),
-                              title: Text(
-                                Contactos[index],
-                                style: TextStyle(
-                                    color: Constants.black(context),
-                                    fontWeight: Constants.bolder,
-                                    fontSize: Constants.l(context)),
-                              ),
-                              trailing: Participants[index] ? Icon(
-                                  Icons.close,
-                                  color: Constants.black(context)
-                              ) : null,
-                              onTap: () {
-                                setState(() {
-                                  festoogle(index);
-                                });
-                              }
-                        ));
-                      }
-                  )
-              ),
+                                leading: Container(
+                                    width: Constants.w9(context),
+                                    height: Constants.w9(context),
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        image: DecorationImage(
+                                            //fit: BoxFit.cover,
+                                            image: NetworkImage(
+                                                //Imagen de prueba, se colocará la imagen del usuario
+                                                "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg")))),
+                                title: Text(
+                                  Contactos[index],
+                                  style: TextStyle(
+                                      color: Constants.black(context),
+                                      fontWeight: Constants.bolder,
+                                      fontSize: Constants.l(context)),
+                                ),
+                                trailing: Participants[index]
+                                    ? Icon(Icons.close,
+                                        color: Constants.black(context))
+                                    : null,
+                                onTap: () {
+                                  setState(() {
+                                    festoogle(index);
+                                  });
+                                }));
+                      })),
             ) //Llista Participants DONE
           ],
         ),
@@ -275,12 +328,11 @@ class _newBubble extends State<newBubble> {
     );
   }
 
-  void festoogle(int index){
+  void festoogle(int index) {
     if (Participants[index]) {
       Participants[index] = false;
       --npart;
-    }
-    else {
+    } else {
       Participants[index] = true;
       ++npart;
     }

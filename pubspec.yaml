@@ -73,6 +73,7 @@ flutter:
     assets:
         - i18n/
         - assets/icons/
+        - assets/icons/achievements/
         - assets/map_styles/
 
     #   - images/a_dot_burr.jpeg

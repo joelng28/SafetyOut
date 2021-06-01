@@ -292,6 +292,103 @@ class _Activity extends State<Activity> {
                                                         body: body);
                                                     if (res.statusCode == 200) {
                                                       onDelete(placeId);
+
+                                                      Map<String, dynamic>
+                                                          resBody =
+                                                          jsonDecode(res.body);
+                                                      int achievementId =
+                                                          resBody[
+                                                              "achievement"];
+
+                                                      if (achievementId == 5) {
+                                                        String achievementIcon =
+                                                            "delete master";
+                                                        String achievementText =
+                                                            AppLocalizations.of(
+                                                                    context)
+                                                                .translate(
+                                                                    "Elimina una assistència");
+                                                        await showDialog(
+                                                            context: context,
+                                                            builder:
+                                                                (BuildContext
+                                                                    context) {
+                                                              return AlertDialog(
+                                                                contentPadding:
+                                                                    EdgeInsets
+                                                                        .fromLTRB(
+                                                                            24,
+                                                                            20,
+                                                                            24,
+                                                                            0),
+                                                                content:
+                                                                    SingleChildScrollView(
+                                                                        child:
+                                                                            Column(
+                                                                  children: [
+                                                                    Image(
+                                                                        height: Constants.xxl(context) +
+                                                                            Constants.xxl(
+                                                                                context) +
+                                                                            Constants.xxl(
+                                                                                context) +
+                                                                            Constants.xs(
+                                                                                context),
+                                                                        image: AssetImage("assets/icons/achievements/" +
+                                                                            achievementIcon +
+                                                                            ".png")),
+                                                                    Padding(
+                                                                      padding: EdgeInsets.fromLTRB(
+                                                                          Constants.h1(
+                                                                              context),
+                                                                          Constants.v1(
+                                                                              context),
+                                                                          Constants.h1(
+                                                                              context),
+                                                                          Constants.v1(
+                                                                              context)),
+                                                                      child: Text(
+                                                                          achievementText),
+                                                                    ),
+                                                                    Padding(
+                                                                      padding: EdgeInsets.fromLTRB(
+                                                                          Constants.h1(
+                                                                              context),
+                                                                          Constants.v1(
+                                                                              context),
+                                                                          Constants.h1(
+                                                                              context),
+                                                                          Constants.v1(
+                                                                              context)),
+                                                                      child: Text(
+                                                                          AppLocalizations.of(context).translate(
+                                                                              "Nou assoliment!"),
+                                                                          style: TextStyle(
+                                                                              color: Constants.black(context),
+                                                                              fontWeight: Constants.bold)),
+                                                                    )
+                                                                  ],
+                                                                )),
+                                                                actions: <
+                                                                    Widget>[
+                                                                  TextButton(
+                                                                    child: Text(
+                                                                        AppLocalizations.of(context).translate(
+                                                                            "Acceptar"),
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Constants.black(context))),
+                                                                    onPressed:
+                                                                        () {
+                                                                      Navigator.of(
+                                                                              context)
+                                                                          .pop();
+                                                                    },
+                                                                  ),
+                                                                ],
+                                                              );
+                                                            });
+                                                      }
                                                     }
                                                     Navigator.of(context).pop();
                                                   },

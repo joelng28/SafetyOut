@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:app/app_localizations.dart';
 import 'package:app/defaults/constants.dart';
+import 'package:app/pages/assoliments.dart';
 import 'package:app/pages/profileconfig.dart';
 import 'package:app/pages/bombolles.dart';
 import 'package:app/pages/contactes.dart';
@@ -9,6 +10,7 @@ import 'package:app/pages/xats.dart';
 import 'package:app/storage/secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 
 enum ProfileTab { CONTACTS, BUBBLES, CHATS }
@@ -109,8 +111,26 @@ class _Profile extends State<Profile> {
         child: Column(
           children: <Widget>[
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                Padding(
+                  padding: EdgeInsets.only(left: Constants.h1(context)),
+                  child: InkWell(
+                    focusColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                            pageBuilder: (_, __, ___) => Assoliments()),
+                      );
+                    },
+                    child: SvgPicture.asset('assets/icons/trophy.svg',
+                        color: Constants.black(context),
+                        height: Constants.xxl(context)),
+                  ),
+                ),
                 //Icono configuracion
                 IconButton(
                   icon: const Icon(Icons.settings),

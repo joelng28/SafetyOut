@@ -180,6 +180,97 @@ class _Contacts extends State<Contacts> {
           }).then((res) {
             if (res.statusCode == 201) {
               Navigator.of(context).pop();
+
+              body = jsonDecode(res.body);
+
+              int achievementId = body["achievement"];
+              String achievementIcon;
+              String achievementText;
+
+              if (achievementId != 0) {
+                switch (achievementId) {
+                  case 6:
+                    achievementIcon = "friends bronze";
+                    achievementText = AppLocalizations.of(context)
+                        .translate("Agrega 1 contacte");
+                    break;
+                  case 7:
+                    achievementIcon = "friends silver";
+                    achievementText = AppLocalizations.of(context)
+                        .translate("Agrega 5 contactes");
+                    break;
+                  case 8:
+                    achievementIcon = "friends gold";
+                    achievementText = AppLocalizations.of(context)
+                        .translate("Agrega 25 contactes");
+                    break;
+                  case 9:
+                    achievementIcon = "friends platinum";
+                    achievementText = AppLocalizations.of(context)
+                        .translate("Agrega 50 contactes");
+                    break;
+                  case 10:
+                    achievementIcon = "friends diamond";
+                    achievementText = AppLocalizations.of(context)
+                        .translate("Agrega 100 contactes");
+                    break;
+                }
+
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                        content: SingleChildScrollView(
+                            child: Column(
+                          children: [
+                            Image(
+                                height: Constants.xxl(context) +
+                                    Constants.xxl(context) +
+                                    Constants.xxl(context) +
+                                    Constants.xs(context),
+                                image: AssetImage("assets/icons/achievements/" +
+                                    achievementIcon +
+                                    ".png")),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(
+                                  Constants.h1(context),
+                                  Constants.v1(context),
+                                  Constants.h1(context),
+                                  Constants.v1(context)),
+                              child: Text(achievementText),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(
+                                  Constants.h1(context),
+                                  Constants.v1(context),
+                                  Constants.h1(context),
+                                  Constants.v1(context)),
+                              child: Text(
+                                  AppLocalizations.of(context)
+                                      .translate("Nou assoliment!"),
+                                  style: TextStyle(
+                                      color: Constants.black(context),
+                                      fontWeight: Constants.bold)),
+                            )
+                          ],
+                        )),
+                        actions: <Widget>[
+                          TextButton(
+                            child: Text(
+                                AppLocalizations.of(context)
+                                    .translate("Acceptar"),
+                                style:
+                                    TextStyle(color: Constants.black(context))),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    });
+              }
+
               showDialog(
                   context: context,
                   builder: (BuildContext context) {
