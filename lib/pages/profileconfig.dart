@@ -32,7 +32,9 @@ class _ProfileConfig extends State<ProfileConfig> {
                 Text(
                     AppLocalizations.of(context)
                         .translate("Segur_que_vols_tancar_sessió"),
-                    style: TextStyle(fontSize: Constants.m(context))),
+                    style: TextStyle(
+                        fontSize: Constants.m(context),
+                        color: Constants.black(context))),
               ],
             )),
             actions: <Widget>[

@@ -243,13 +243,16 @@ class _Activity extends State<Activity> {
                                                   child: ListBody(
                                                 children: <Widget>[
                                                   Text(
-                                                      AppLocalizations.of(
-                                                              context)
+                                                      AppLocalizations
+                                                              .of(context)
                                                           .translate(
                                                               "Segur_que_vols_eliminar_aquesta_assistencia"),
                                                       style: TextStyle(
                                                           fontSize: Constants.m(
-                                                              context))),
+                                                              context),
+                                                          color:
+                                                              Constants.black(
+                                                                  context))),
                                                 ],
                                               )),
                                               actions: <Widget>[

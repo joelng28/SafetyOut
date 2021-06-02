@@ -81,16 +81,13 @@ class _Home extends State<Home> {
     }
     controller = cntlr;
     location.onLocationChanged.listen((LocationData l) {
-      if (mounted) {
-        controller
-            .animateCamera(
-              CameraUpdate.newCameraPosition(
-                CameraPosition(
-                    target: LatLng(l.latitude, l.longitude), zoom: 18),
-              ),
-            )
-            .catchError((error) {});
-      }
+      controller
+          .animateCamera(
+            CameraUpdate.newCameraPosition(
+              CameraPosition(target: LatLng(l.latitude, l.longitude), zoom: 18),
+            ),
+          )
+          .catchError((error) {});
     });
   }
 
@@ -154,12 +151,12 @@ class _Home extends State<Home> {
     places = [];
     await Future.wait([
       http.get(urlPark),
-/*       http.get(urlNature),
+      http.get(urlNature),
       http.get(urlSight),
       http.get(urlTerrace),
       http.get(urlMountain),
       http.get(urlCastle),
-      http.get(urlRes) */
+      http.get(urlRes)
     ]).then((List responses) {
       responses.forEach((r) {
         Map<String, dynamic> body = jsonDecode(r.body);
@@ -233,7 +230,9 @@ class _Home extends State<Home> {
                   child: ListBody(
                 children: <Widget>[
                   Text(AppLocalizations.of(context).translate("Error de xarxa"),
-                      style: TextStyle(fontSize: Constants.m(context))),
+                      style: TextStyle(
+                          fontSize: Constants.m(context),
+                          color: Constants.black(context))),
                 ],
               )),
               actions: <Widget>[
