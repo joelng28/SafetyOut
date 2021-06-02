@@ -331,28 +331,7 @@ class _ConversaBubble extends State<ConversaBubble> {
                                               fontSize: Constants.s(context))),
                                     ),
                                   ],
-                                ) /*Text(messages[index].messageContent,
-                                style: TextStyle(
-                                    color: (messages[index].owner == false
-                                        ? Constants.black(context)
-                                        : Colors.black),
-                                    fontSize: Constants.s(context)))*/
-                                )
-                        /*Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            //border: Border.all(color: Colors.black),
-                            color: (messages[index].owner == false
-                                ? Constants.white(context)
-                                : Constants.green(context))),
-                        padding: EdgeInsets.all(10),
-                        child: Text(messages[index].messageContent,
-                            style: TextStyle(
-                                color: (messages[index].owner == false
-                                    ? Constants.black(context)
-                                    : Colors.black),
-                                fontSize: Constants.s(context))))*/
-                        ));
+                                ))));
               },
             ),
             Align(
