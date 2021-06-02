@@ -30,16 +30,190 @@ class _ConversaBubble extends State<ConversaBubble> {
   final String userId;
   final textController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  List<Contacts> members = [];
   List<Message> messages = [];
+  IO.Socket socket;
+  dynamic chatRoomId;
+  bool isConected = false;
+  String bubbleName;
 
-  void getMembersInfo() {}
-
-  Function deleteChat(context, String algo) {}
+  void getName() {
+    var url = Uri.parse('https://safetyout.herokuapp.com/bubble/' + bubbleId);
+    http.get(url).then((res) {
+      if (res.statusCode == 200) {
+        Map<String, dynamic> body = jsonDecode(res.body);
+        body = body['bubble'];
+        setState(() {
+          bubbleName = body['name'];
+        });
+        print("hola");
+      } else {
+        print(res.statusCode);
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                content: SingleChildScrollView(
+                    child: ListBody(
+                  children: <Widget>[
+                    Text(
+                        AppLocalizations.of(context)
+                            .translate("Error_de_xarxa"),
+                        style: TextStyle(fontSize: Constants.m(context))),
+                  ],
+                )),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text(
+                        AppLocalizations.of(context).translate("Acceptar"),
+                        style: TextStyle(color: Constants.black(context))),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            });
+      }
+    }).catchError((err) {
+      //Sale error por pantalla
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+              content: SingleChildScrollView(
+                  child: ListBody(
+                children: <Widget>[
+                  Text(AppLocalizations.of(context).translate("Error_de_xarxa"),
+                      style: TextStyle(fontSize: Constants.m(context))),
+                ],
+              )),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                      AppLocalizations.of(context).translate("Acceptar"),
+                      style: TextStyle(color: Constants.black(context))),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          });
+    });
+  }
 
   void sendMessage() {
-    messages.add(
-        Message(messageContent: textController.text.toString(), owner: false));
+    if (textController.text.toString().isNotEmpty) {
+      socket.emit('message', {
+        'chatRoom': chatRoomId.toString(),
+        'author': userId,
+        'message': textController.text.toString()
+      });
+    }
+  }
+
+  void handleJoin(dynamic data, String id) {
+    chatRoomId = data["roomId"];
+    isConected = true;
+    print(chatRoomId);
+    initializeChatList(id);
+  }
+
+  void handleMessage(dynamic data) {
+    setState(() {
+      messages.add(Message(
+          messageContent: data[2].toString(),
+          owner: data[1].toString() == userId ? true : false,
+          author: data[3].toString()));
+      if (messages.length > 4) {
+        _scrollController.animateTo(
+          messages.length.toDouble() * 70.0,
+          curve: Curves.easeOut,
+          duration: const Duration(milliseconds: 700),
+        );
+      }
+      textController.clear();
+    });
+    print(data[2].toString());
+  }
+
+  void initializeChatList(String id) {
+    var url = Uri.parse('https://safetyout.herokuapp.com/chat/' +
+        chatRoomId.toString() +
+        "/messages");
+    http.get(url).then((res) {
+      if (res.statusCode == 200) {
+        Map<String, dynamic> body = jsonDecode(res.body);
+        print(body);
+        List<dynamic> messagesaux = body["messages"];
+        messagesaux.forEach((element) {
+          Map<String, dynamic> message = element;
+          setState(() {
+            Message m = Message(
+                messageContent: message["message"],
+                owner: message["user_id"].toString() == id ? true : false,
+                author: message["username"].toString());
+            messages.add(m);
+          });
+        });
+      } else {
+        print(res.statusCode);
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                content: SingleChildScrollView(
+                    child: ListBody(
+                  children: <Widget>[
+                    Text(
+                        AppLocalizations.of(context)
+                            .translate("Error_de_xarxa"),
+                        style: TextStyle(fontSize: Constants.m(context))),
+                  ],
+                )),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text(
+                        AppLocalizations.of(context).translate("Acceptar"),
+                        style: TextStyle(color: Constants.black(context))),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            });
+      }
+    }).catchError((err) {
+      //Sale error por pantalla
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+              content: SingleChildScrollView(
+                  child: ListBody(
+                children: <Widget>[
+                  Text(AppLocalizations.of(context).translate("Error_de_xarxa"),
+                      style: TextStyle(fontSize: Constants.m(context))),
+                ],
+              )),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                      AppLocalizations.of(context).translate("Acceptar"),
+                      style: TextStyle(color: Constants.black(context))),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          });
+    });
   }
 
   @override
@@ -52,7 +226,24 @@ class _ConversaBubble extends State<ConversaBubble> {
   void initState() {
     super.initState();
 
-    getMembersInfo();
+    getName();
+
+    SecureStorage.readSecureStorage('SafetyOUT_UserId').then((id) {
+      try {
+        socket = IO.io('https://safetyout.herokuapp.com/',
+            OptionBuilder().setTransports(['websocket']).build());
+        socket.onConnect((_) {
+          print('connect');
+          socket.emit('joinBubbleChat', {
+            'bubble_id': bubbleId,
+          });
+        });
+        socket.on('joined', (data) => handleJoin(data, id));
+        socket.on('message', (data) => handleMessage(data));
+      } catch (e) {
+        print(e.toString());
+      }
+    });
   }
 
   @override
@@ -67,7 +258,7 @@ class _ConversaBubble extends State<ConversaBubble> {
               Navigator.of(context).pop();
             },
           ),
-          title: Text("Xat de la bombolla"),
+          title: Text(bubbleName),
           actions: [
             IconButton(
               icon: Icon(Icons.more_horiz),
@@ -79,7 +270,6 @@ class _ConversaBubble extends State<ConversaBubble> {
                             ConfigBubble(BubbleId: bubbleId, UserId: userId)));
               },
             ),
-            IconButton(icon: Icon(Icons.delete), onPressed: () {})
           ],
         ),
         body: Stack(
@@ -126,7 +316,7 @@ class _ConversaBubble extends State<ConversaBubble> {
                                 child: Column(
                                   children: [
                                     Container(
-                                      child: Text("Joel",
+                                      child: Text(messages[index].author,
                                           style: TextStyle(
                                               color: Constants.black(context),
                                               fontSize: Constants.s(context),
