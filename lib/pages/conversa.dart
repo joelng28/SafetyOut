@@ -52,7 +52,7 @@ class _Conversa extends State<Conversa> {
     SecureStorage.readSecureStorage('SafetyOUT_UserId').then((id) {
       setState(() {
         messages.add(Message(
-            messageContent: textController.text.toString(),
+            messageContent: data[2].toString(),
             owner: data[1].toString() == id ? true : false));
         if (messages.length > 4) {
           _scrollController.animateTo(

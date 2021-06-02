@@ -279,7 +279,7 @@ class _Bubbles extends State<Bubbles> {
                     child: Padding(
                         padding: EdgeInsets.only(left: Constants.h2(context)),
                         child: Text(
-                          SolPompNames[index] + PompNames.length.toString(),
+                          SolPompNames[index],
                           maxLines: 1,
                           overflow: TextOverflow.clip,
                         )),
@@ -295,6 +295,14 @@ class _Bubbles extends State<Bubbles> {
                           onPressed: () {
                             acceptarSolicitud(context, index);
                           })),
+                  IconButton(
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      icon: Icon(Icons.check, color: Colors.green),
+                      iconSize: Constants.w6(context),
+                      onPressed: () {
+                        acceptarSolicitud(context, index);
+                      }),
                   IconButton(
                       splashColor: Colors.transparent,
                       highlightColor: Colors.transparent,
