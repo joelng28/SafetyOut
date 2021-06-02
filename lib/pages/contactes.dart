@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:app/defaults/constants.dart';
+import 'package:app/models/contactChat.dart';
 import 'package:app/storage/secure_storage.dart';
 
 import 'package:app/widgets/email_input.dart';
@@ -10,6 +11,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../app_localizations.dart';
 import 'package:http/http.dart' as http;
 
+import 'consultarperfil.dart';
+
 class Contacts extends StatefulWidget {
   Contacts({Key key}) : super(key: key);
 
@@ -18,7 +21,7 @@ class Contacts extends StatefulWidget {
 }
 
 class _Contacts extends State<Contacts> {
-  List<String> Contactos = [];
+  List<Contact> Contactos = [];
   List<String> ContactoSolicitudName = [];
   List<String> ContactoSolicitudID = [];
   String email;
@@ -72,14 +75,23 @@ class _Contacts extends State<Contacts> {
           Map<String, dynamic> body = jsonDecode(res.body);
           setState(() {
             body["friends"].forEach((f) {
-              var urlName = Uri.parse(
-                  'https://safetyout.herokuapp.com/user/' + f["userId"]);
+              String userid = f["userId"].toString();
+              var urlName =
+                  Uri.parse('https://safetyout.herokuapp.com/user/' + userid);
               http.get(urlName).then((resName) {
                 if (resName.statusCode == 200) {
                   Map<String, dynamic> bodyName = jsonDecode(resName.body);
                   Map<String, dynamic> user = bodyName["user"];
                   setState(() {
-                    Contactos.add(user['name'] + " " + user["surnames"]);
+                    Contact c = Contact(
+                        name: user['name'] + " " + user["surnames"],
+                        photoUrl: user['profileImage'],
+                        destUserId: userid);
+                    Contactos.add(c);
+                  });
+                  setState(() {
+                    Contactos.sort((a, b) =>
+                        a.name.toLowerCase().compareTo(b.name.toLowerCase()));
                   });
                 }
               });
@@ -109,7 +121,9 @@ class _Contacts extends State<Contacts> {
                     Text(
                         AppLocalizations.of(context)
                             .translate("Sol·licitud_acceptada"),
-                        style: TextStyle(fontSize: Constants.m(context))),
+                        style: TextStyle(
+                            fontSize: Constants.m(context),
+                            color: Constants.black(context))),
                   ],
                 )),
                 actions: <Widget>[
@@ -145,7 +159,9 @@ class _Contacts extends State<Contacts> {
                     Text(
                         AppLocalizations.of(context)
                             .translate("Sol·licitud_rebutjada"),
-                        style: TextStyle(fontSize: Constants.m(context))),
+                        style: TextStyle(
+                            fontSize: Constants.m(context),
+                            color: Constants.black(context))),
                   ],
                 )),
                 actions: <Widget>[
@@ -165,8 +181,6 @@ class _Contacts extends State<Contacts> {
   }
 
   void submitEnviar(BuildContext context) {
-    print(email);
-
     var url = Uri.parse('https://safetyout.herokuapp.com/user?email=' + email);
     http.get(url).then((res) {
       if (res.statusCode == 200) {
@@ -180,6 +194,96 @@ class _Contacts extends State<Contacts> {
           }).then((res) {
             if (res.statusCode == 201) {
               Navigator.of(context).pop();
+              body = jsonDecode(res.body);
+
+              int achievementId = body["trophy"];
+              String achievementIcon;
+              String achievementText;
+
+              if (achievementId != -1) {
+                switch (achievementId) {
+                  case 6:
+                    achievementIcon = "friends bronze";
+                    achievementText = AppLocalizations.of(context)
+                        .translate("Agrega 1 contacte");
+                    break;
+                  case 7:
+                    achievementIcon = "friends silver";
+                    achievementText = AppLocalizations.of(context)
+                        .translate("Agrega 5 contactes");
+                    break;
+                  case 8:
+                    achievementIcon = "friends gold";
+                    achievementText = AppLocalizations.of(context)
+                        .translate("Agrega 25 contactes");
+                    break;
+                  case 9:
+                    achievementIcon = "friends platinum";
+                    achievementText = AppLocalizations.of(context)
+                        .translate("Agrega 50 contactes");
+                    break;
+                  case 10:
+                    achievementIcon = "friends diamond";
+                    achievementText = AppLocalizations.of(context)
+                        .translate("Agrega 100 contactes");
+                    break;
+                }
+
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                        content: SingleChildScrollView(
+                            child: Column(
+                          children: [
+                            Image(
+                                height: Constants.xxl(context) +
+                                    Constants.xxl(context) +
+                                    Constants.xxl(context) +
+                                    Constants.xs(context),
+                                image: AssetImage("assets/icons/achievements/" +
+                                    achievementIcon +
+                                    ".png")),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(
+                                  Constants.h1(context),
+                                  Constants.v1(context),
+                                  Constants.h1(context),
+                                  Constants.v1(context)),
+                              child: Text(achievementText),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(
+                                  Constants.h1(context),
+                                  Constants.v1(context),
+                                  Constants.h1(context),
+                                  Constants.v1(context)),
+                              child: Text(
+                                  AppLocalizations.of(context)
+                                      .translate("Nou assoliment!"),
+                                  style: TextStyle(
+                                      color: Constants.black(context),
+                                      fontWeight: Constants.bold)),
+                            )
+                          ],
+                        )),
+                        actions: <Widget>[
+                          TextButton(
+                            child: Text(
+                                AppLocalizations.of(context)
+                                    .translate("Acceptar"),
+                                style:
+                                    TextStyle(color: Constants.black(context))),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    });
+              }
+
               showDialog(
                   context: context,
                   builder: (BuildContext context) {
@@ -191,7 +295,9 @@ class _Contacts extends State<Contacts> {
                           Text(
                               AppLocalizations.of(context)
                                   .translate("Sol·licitud_pendent"),
-                              style: TextStyle(fontSize: Constants.m(context))),
+                              style: TextStyle(
+                                  fontSize: Constants.m(context),
+                                  color: Constants.black(context))),
                         ],
                       )),
                       actions: <Widget>[
@@ -224,7 +330,9 @@ class _Contacts extends State<Contacts> {
                   child: ListBody(
                 children: <Widget>[
                   Text(AppLocalizations.of(context).translate("Error de xarxa"),
-                      style: TextStyle(fontSize: Constants.m(context))),
+                      style: TextStyle(
+                          fontSize: Constants.m(context),
+                          color: Constants.black(context))),
                 ],
               )),
               actions: <Widget>[
@@ -399,12 +507,49 @@ class _Contacts extends State<Contacts> {
           child: Padding(
             padding: EdgeInsets.only(
                 top: Constants.v2(context),
-                left: Constants.h7(context),
+                //left: Constants.h7(context),
                 right: Constants.h7(context)),
             child: ListView.separated(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (_, index) =>
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                separatorBuilder: (_, __) => Divider(
+                      height: 20,
+                      thickness: 2,
+                    ),
+                itemCount: Contactos.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                      child: ListTile(
+                          leading: Container(
+                            width: Constants.w8(context),
+                            height: Constants.w8(context),
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                    fit: BoxFit.fill,
+                                    image: NetworkImage((Contactos[index]
+                                                    .photoUrl !=
+                                                '' &&
+                                            Contactos[index].photoUrl != null)
+                                        ? Contactos[index].photoUrl
+                                        :
+                                        //Imagen de prueba, se colocará la imagen del usuario
+                                        "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"))),
+                          ),
+                          title: Text(Contactos[index].name,
+                              style: TextStyle(
+                                  color: Constants.black(context),
+                                  fontWeight: Constants.bolder,
+                                  fontSize: Constants.l(context))),
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ConsultarPerfil(
+                                        id: Contactos[index].destUserId)));
+                          }));
+                }
+                /*itemBuilder: (_, index) =>
                   Row(mainAxisAlignment: MainAxisAlignment.start, children: [
                 Container(
                   width: Constants.w8(context),
@@ -419,13 +564,9 @@ class _Contacts extends State<Contacts> {
                   padding: EdgeInsets.only(left: Constants.h2(context)),
                   child: Text(Contactos[index]),
                 )
-              ]),
-              separatorBuilder: (_, __) => Divider(
-                height: 20,
-                thickness: 2,
-              ),
-              itemCount: Contactos.length,
-            ),
+              ]),*/
+
+                ),
           ),
         )
       ]),

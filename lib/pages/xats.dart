@@ -59,6 +59,8 @@ class _Chats extends State<Chats> {
                       name: user2["name"].toString() + " " + user2["surnames"]);
                   chats.add(c);
                 });
+                chats.sort((a, b) =>
+                    a.name.toLowerCase().compareTo(b.name.toLowerCase()));
               } else {
                 //print(res.statusCode);
                 showDialog(
@@ -72,8 +74,9 @@ class _Chats extends State<Chats> {
                             Text(
                                 AppLocalizations.of(context)
                                     .translate("Error_de_xarxa"),
-                                style:
-                                    TextStyle(fontSize: Constants.m(context))),
+                                style: TextStyle(
+                                    fontSize: Constants.m(context),
+                                    color: Constants.black(context))),
                           ],
                         )),
                         actions: <Widget>[
@@ -104,7 +107,9 @@ class _Chats extends State<Chats> {
                           Text(
                               AppLocalizations.of(context)
                                   .translate("Error_de_xarxa"),
-                              style: TextStyle(fontSize: Constants.m(context))),
+                              style: TextStyle(
+                                  fontSize: Constants.m(context),
+                                  color: Constants.black(context))),
                         ],
                       )),
                       actions: <Widget>[
@@ -136,7 +141,9 @@ class _Chats extends State<Chats> {
                       Text(
                           AppLocalizations.of(context)
                               .translate("Error_de_xarxa"),
-                          style: TextStyle(fontSize: Constants.m(context))),
+                          style: TextStyle(
+                              fontSize: Constants.m(context),
+                              color: Constants.black(context))),
                     ],
                   )),
                   actions: <Widget>[
@@ -164,7 +171,9 @@ class _Chats extends State<Chats> {
                     Text(
                         AppLocalizations.of(context)
                             .translate("Error_de_xarxa"),
-                        style: TextStyle(fontSize: Constants.m(context))),
+                        style: TextStyle(
+                            fontSize: Constants.m(context),
+                            color: Constants.black(context))),
                   ],
                 )),
                 actions: <Widget>[

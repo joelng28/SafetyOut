@@ -52,6 +52,12 @@ class _Discover extends State<Discover> {
   bool viewSug = false;
   bool fullSugs = false;
 
+  @override
+  void dispose() {
+    controller = null;
+    super.dispose();
+  }
+
   void getOcupation(LatLng cords) async {
     DateTime now = DateTime.now();
     Uri url = Uri.parse(
@@ -85,7 +91,9 @@ class _Discover extends State<Discover> {
                     Text(
                         AppLocalizations.of(context)
                             .translate("Error_de_xarxa"),
-                        style: TextStyle(fontSize: Constants.m(context))),
+                        style: TextStyle(
+                            fontSize: Constants.m(context),
+                            color: Constants.black(context))),
                   ],
                 )),
                 actions: <Widget>[
@@ -267,12 +275,12 @@ class _Discover extends State<Discover> {
     places = [];
     await Future.wait([
       http.get(urlPark),
-/*       http.get(urlNature),
+      http.get(urlNature),
       http.get(urlSight),
       http.get(urlTerrace),
       http.get(urlMountain),
       http.get(urlCastle),
-      http.get(urlRes) */
+      http.get(urlRes)
     ]).then((List responses) {
       responses.forEach((r) {
         Map<String, dynamic> body = jsonDecode(r.body);
@@ -321,14 +329,17 @@ class _Discover extends State<Discover> {
                 setState(() {
                   viewPlace = true;
                 });
-                controller
-                    .animateCamera(CameraUpdate.newCameraPosition(
-                        CameraPosition(
-                            target: LatLng(place["location"]["lat"],
-                                place["location"]["lng"]),
-                            zoom: 18)))
-                    .catchError((error) {});
+                if (mounted) {
+                  controller
+                      .animateCamera(CameraUpdate.newCameraPosition(
+                          CameraPosition(
+                              target: LatLng(place["location"]["lat"],
+                                  place["location"]["lng"]),
+                              zoom: 18)))
+                      .catchError((error) {});
+                }
               });
+
           markers[place["place_id"]] = marker;
         });
       });
@@ -389,10 +400,12 @@ class _Discover extends State<Discover> {
       fullSugs = false;
       searchNode.unfocus();
     });
-    controller
-        .animateCamera(CameraUpdate.newCameraPosition(
-            CameraPosition(target: loc, zoom: 18)))
-        .catchError((error) {});
+    if (mounted) {
+      controller
+          .animateCamera(CameraUpdate.newCameraPosition(
+              CameraPosition(target: loc, zoom: 18)))
+          .catchError((error) {});
+    }
   }
 
   @override
@@ -1372,13 +1385,17 @@ class _Discover extends State<Discover> {
           elevation: 10,
           backgroundColor: Constants.trueWhite(context),
           onPressed: () {
-            location.getLocation().then((loc) {
-              controller
-                  .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-                      target: LatLng(loc.latitude, loc.longitude), zoom: 18)))
-                  .catchError((error) {});
-              retrievePlaces(LatLng(loc.latitude, loc.longitude));
-            });
+            if (mounted) {
+              location.getLocation().then((loc) {
+                controller
+                    .animateCamera(CameraUpdate.newCameraPosition(
+                        CameraPosition(
+                            target: LatLng(loc.latitude, loc.longitude),
+                            zoom: 18)))
+                    .catchError((error) {});
+                retrievePlaces(LatLng(loc.latitude, loc.longitude));
+              });
+            }
             setState(() {
               viewPlace = false;
               searchNode.unfocus();

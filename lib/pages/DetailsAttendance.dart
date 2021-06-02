@@ -65,7 +65,9 @@ class _DetailsAttendanceState extends State<DetailsAttendance> {
                     Text(
                         AppLocalizations.of(context)
                             .translate("Error_modificar_assistencia"),
-                        style: TextStyle(fontSize: Constants.m(context))),
+                        style: TextStyle(
+                            fontSize: Constants.m(context),
+                            color: Constants.black(context))),
                   ],
                 )),
                 actions: <Widget>[
@@ -116,7 +118,9 @@ class _DetailsAttendanceState extends State<DetailsAttendance> {
                     Text(
                         AppLocalizations.of(context)
                             .translate("Error_borrar_assistencia"),
-                        style: TextStyle(fontSize: Constants.m(context))),
+                        style: TextStyle(
+                            fontSize: Constants.m(context),
+                            color: Constants.black(context))),
                   ],
                 )),
                 actions: <Widget>[

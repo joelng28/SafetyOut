@@ -2,6 +2,7 @@ import 'dart:convert';
 //import 'dart:html';
 
 import 'package:app/defaults/constants.dart';
+import 'package:app/pages/profile.dart';
 import 'package:app/storage/secure_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -36,20 +37,22 @@ class _Conversa extends State<Conversa> {
   bool takenName = false;
 
   void sendMessage() {
-    SecureStorage.readSecureStorage('SafetyOUT_UserId').then((id) {
-      socket.emit('message', {
-        'chatRoom': chatRoomId.toString(),
-        'author': id,
-        'message': textController.text.toString()
+    if (textController.text.toString().isNotEmpty) {
+      SecureStorage.readSecureStorage('SafetyOUT_UserId').then((id) {
+        socket.emit('message', {
+          'chatRoom': chatRoomId.toString(),
+          'author': id,
+          'message': textController.text.toString()
+        });
       });
-    });
+    }
   }
 
   void handleMessage(dynamic data) {
     SecureStorage.readSecureStorage('SafetyOUT_UserId').then((id) {
       setState(() {
         messages.add(Message(
-            messageContent: textController.text.toString(),
+            messageContent: data[2].toString(),
             owner: data[1].toString() == id ? true : false));
         if (messages.length > 4) {
           _scrollController.animateTo(
@@ -65,7 +68,92 @@ class _Conversa extends State<Conversa> {
   }
 
   void handleJoin(dynamic data, String id) {
-    chatRoomId = data;
+    chatRoomId = data["roomId"];
+    int achievementId = data["trophy"];
+    String achievementIcon;
+    String achievementText;
+
+    if (achievementId != -1) {
+      switch (achievementId) {
+        case 11:
+          achievementIcon = "xat bronze";
+          achievementText =
+              AppLocalizations.of(context).translate("Comença 1 xat");
+          break;
+        case 12:
+          achievementIcon = "xat silver";
+          achievementText =
+              AppLocalizations.of(context).translate("Comença 5 xats");
+          break;
+        case 13:
+          achievementIcon = "xat golden";
+          achievementText =
+              AppLocalizations.of(context).translate("Comença 25 xats");
+          break;
+        case 14:
+          achievementIcon = "xat platinum";
+          achievementText =
+              AppLocalizations.of(context).translate("Comença 50 xats");
+          break;
+        case 15:
+          achievementIcon = "xat diamond";
+          achievementText =
+              AppLocalizations.of(context).translate("Comença 100 xats");
+          break;
+      }
+
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+              content: SingleChildScrollView(
+                  child: Column(
+                children: [
+                  Image(
+                      height: Constants.xxl(context) +
+                          Constants.xxl(context) +
+                          Constants.xxl(context) +
+                          Constants.xs(context),
+                      image: AssetImage("assets/icons/achievements/" +
+                          achievementIcon +
+                          ".png")),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(
+                        Constants.h1(context),
+                        Constants.v1(context),
+                        Constants.h1(context),
+                        Constants.v1(context)),
+                    child: Text(achievementText),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(
+                        Constants.h1(context),
+                        Constants.v1(context),
+                        Constants.h1(context),
+                        Constants.v1(context)),
+                    child: Text(
+                        AppLocalizations.of(context)
+                            .translate("Nou assoliment!"),
+                        style: TextStyle(
+                            color: Constants.black(context),
+                            fontWeight: Constants.bold)),
+                  )
+                ],
+              )),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                      AppLocalizations.of(context).translate("Acceptar"),
+                      style: TextStyle(color: Constants.black(context))),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          });
+    }
     isConected = true;
     print(chatRoomId);
     initializeChatList(id);
@@ -78,7 +166,6 @@ class _Conversa extends State<Conversa> {
     http.get(url).then((res) {
       if (res.statusCode == 200) {
         Map<String, dynamic> body = jsonDecode(res.body);
-        print(body);
         List<dynamic> messagesaux = body["messages"];
         messagesaux.forEach((element) {
           Map<String, dynamic> message = element;
@@ -102,7 +189,9 @@ class _Conversa extends State<Conversa> {
                     Text(
                         AppLocalizations.of(context)
                             .translate("Error_de_xarxa"),
-                        style: TextStyle(fontSize: Constants.m(context))),
+                        style: TextStyle(
+                            fontSize: Constants.m(context),
+                            color: Constants.black(context))),
                   ],
                 )),
                 actions: <Widget>[
@@ -129,7 +218,9 @@ class _Conversa extends State<Conversa> {
                   child: ListBody(
                 children: <Widget>[
                   Text(AppLocalizations.of(context).translate("Error_de_xarxa"),
-                      style: TextStyle(fontSize: Constants.m(context))),
+                      style: TextStyle(
+                          fontSize: Constants.m(context),
+                          color: Constants.black(context))),
                 ],
               )),
               actions: <Widget>[
@@ -170,7 +261,9 @@ class _Conversa extends State<Conversa> {
                     Text(
                         AppLocalizations.of(context)
                             .translate("Error_de_xarxa"),
-                        style: TextStyle(fontSize: Constants.m(context))),
+                        style: TextStyle(
+                            fontSize: Constants.m(context),
+                            color: Constants.black(context))),
                   ],
                 )),
                 actions: <Widget>[
@@ -197,7 +290,9 @@ class _Conversa extends State<Conversa> {
                   child: ListBody(
                 children: <Widget>[
                   Text(AppLocalizations.of(context).translate("Error_de_xarxa"),
-                      style: TextStyle(fontSize: Constants.m(context))),
+                      style: TextStyle(
+                          fontSize: Constants.m(context),
+                          color: Constants.black(context))),
                 ],
               )),
               actions: <Widget>[
@@ -214,6 +309,115 @@ class _Conversa extends State<Conversa> {
           });
     });
   }
+
+  Function deleteChat = (BuildContext context, String chatId) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+            content: SingleChildScrollView(
+                child: ListBody(
+              children: <Widget>[
+                Text(
+                    AppLocalizations.of(context)
+                        .translate("Segur_que_vols_eliminar_la conversa"),
+                    style: TextStyle(fontSize: Constants.m(context))),
+              ],
+            )),
+            actions: <Widget>[
+              TextButton(
+                child: Text(AppLocalizations.of(context).translate("Eliminar"),
+                    style: TextStyle(color: Constants.red(context))),
+                onPressed: () {
+                  var url = Uri.parse(
+                      'https://safetyout.herokuapp.com/chat/' + chatId);
+                  http.delete(url).then((res) {
+                    if (res.statusCode == 200) {
+                      print("OK");
+                      Navigator.of(context).pop();
+                      Navigator.of(context).push(PageRouteBuilder(
+                          pageBuilder: (_, __, ___) =>
+                              Profile())); //Tornar a profile
+                    } else {
+                      print(res.statusCode);
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              contentPadding:
+                                  EdgeInsets.fromLTRB(24, 20, 24, 0),
+                              content: SingleChildScrollView(
+                                  child: ListBody(
+                                children: <Widget>[
+                                  Text(
+                                      AppLocalizations.of(context)
+                                          .translate("Error_de_xarxa"),
+                                      style: TextStyle(
+                                          fontSize: Constants.m(context))),
+                                ],
+                              )),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: Text(
+                                      AppLocalizations.of(context)
+                                          .translate("Acceptar"),
+                                      style: TextStyle(
+                                          color: Constants.black(context))),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          });
+                    }
+                  }).catchError((err) {
+                    //Sale error por pantalla
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                            content: SingleChildScrollView(
+                                child: ListBody(
+                              children: <Widget>[
+                                Text(
+                                    AppLocalizations.of(context)
+                                        .translate("Error_de_xarxa"),
+                                    style: TextStyle(
+                                        fontSize: Constants.m(context))),
+                              ],
+                            )),
+                            actions: <Widget>[
+                              TextButton(
+                                child: Text(
+                                    AppLocalizations.of(context)
+                                        .translate("Acceptar"),
+                                    style: TextStyle(
+                                        color: Constants.black(context))),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        });
+                  });
+                },
+              ),
+              TextButton(
+                child: Text(
+                    AppLocalizations.of(context).translate("Cancel·lar"),
+                    style: TextStyle(color: Constants.black(context))),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  };
 
   @override
   void dispose() {
@@ -258,11 +462,18 @@ class _Conversa extends State<Conversa> {
           leading: IconButton(
             icon: Icon(Icons.arrow_back_ios),
             onPressed: () {
-              Navigator.of(context).pop();
+              Navigator.of(context).push(
+                  PageRouteBuilder(pageBuilder: (_, __, ___) => Profile()));
             },
           ),
           title: Text(name),
-          actions: [IconButton(icon: Icon(Icons.more_horiz), onPressed: () {})],
+          actions: [
+            IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: () {
+                  deleteChat(context, chatRoomId.toString());
+                })
+          ],
         ),
         body: Stack(
           children: <Widget>[

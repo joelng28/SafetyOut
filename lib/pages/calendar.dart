@@ -138,7 +138,9 @@ class _Calendar extends State<Calendar> {
                       Text(
                           AppLocalizations.of(context)
                               .translate("Error_de_xarxa"),
-                          style: TextStyle(fontSize: Constants.m(context))),
+                          style: TextStyle(
+                              fontSize: Constants.m(context),
+                              color: Constants.black(context))),
                     ],
                   )),
                   actions: <Widget>[

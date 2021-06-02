@@ -35,6 +35,12 @@ class _Home extends State<Home> {
   final Map<String, Marker> markers = {};
   List<Map<String, dynamic>> places = [];
 
+  @override
+  void dispose() {
+    controller = null;
+    super.dispose();
+  }
+
   Future<void> onMapCreated(GoogleMapController cntlr) async {
     String mapStyle;
     Brightness theme = MediaQuery.of(context).platformBrightness;
@@ -145,12 +151,12 @@ class _Home extends State<Home> {
     places = [];
     await Future.wait([
       http.get(urlPark),
-/*       http.get(urlNature),
+      http.get(urlNature),
       http.get(urlSight),
       http.get(urlTerrace),
       http.get(urlMountain),
       http.get(urlCastle),
-      http.get(urlRes) */
+      http.get(urlRes)
     ]).then((List responses) {
       responses.forEach((r) {
         Map<String, dynamic> body = jsonDecode(r.body);
@@ -224,7 +230,9 @@ class _Home extends State<Home> {
                   child: ListBody(
                 children: <Widget>[
                   Text(AppLocalizations.of(context).translate("Error de xarxa"),
-                      style: TextStyle(fontSize: Constants.m(context))),
+                      style: TextStyle(
+                          fontSize: Constants.m(context),
+                          color: Constants.black(context))),
                 ],
               )),
               actions: <Widget>[

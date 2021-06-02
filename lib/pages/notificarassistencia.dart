@@ -61,7 +61,9 @@ class _NotificarAssistencia extends State<NotificarAssistencia> {
                     Text(
                         AppLocalizations.of(context).translate(
                             "Lhora_dentrada_ha_de_ser_anterior_a_lhora_de_sortida"),
-                        style: TextStyle(fontSize: Constants.m(context))),
+                        style: TextStyle(
+                            fontSize: Constants.m(context),
+                            color: Constants.black(context))),
                   ],
                 )),
                 actions: <Widget>[
@@ -104,7 +106,106 @@ class _NotificarAssistencia extends State<NotificarAssistencia> {
                   headers: {"Content-Type": "application/json"}, body: body)
               .then((res) {
             if (res.statusCode == 201) {
+              Map<String, dynamic> body = jsonDecode(res.body);
               Navigator.of(context).pop();
+
+              int achievementId = body["trophy"];
+              String achievementIcon;
+              String achievementText;
+
+              if (achievementId != -1) {
+                switch (achievementId) {
+                  case 16:
+                    achievementIcon = "place bronze";
+                    achievementText = AppLocalizations.of(context)
+                        .translate("Notifica 1 assistència");
+                    break;
+                  case 17:
+                    achievementIcon = "place silver";
+                    achievementText = AppLocalizations.of(context)
+                        .translate("Notifica 5 assistències");
+                    break;
+                  case 18:
+                    achievementIcon = "place golden";
+                    achievementText = AppLocalizations.of(context)
+                        .translate("Notifica 25 assistències");
+                    break;
+                  case 19:
+                    achievementIcon = "place platinum";
+                    achievementText = AppLocalizations.of(context)
+                        .translate("Notifica 50 assistències");
+                    break;
+                  case 20:
+                    achievementIcon = "place diamond";
+                    achievementText = AppLocalizations.of(context)
+                        .translate("Notifica 100 assistències");
+                    break;
+                  case 21:
+                    achievementIcon = "place advanced";
+                    achievementText = AppLocalizations.of(context)
+                        .translate("Notifica 500 assistències");
+                    break;
+                  case 22:
+                    achievementIcon = "place master";
+                    achievementText = AppLocalizations.of(context)
+                        .translate("Notifica 1000 assistències");
+                    break;
+                }
+
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                        content: SingleChildScrollView(
+                            child: Column(
+                          children: [
+                            Image(
+                                height: Constants.xxl(context) +
+                                    Constants.xxl(context) +
+                                    Constants.xxl(context) +
+                                    Constants.xs(context),
+                                image: AssetImage("assets/icons/achievements/" +
+                                    achievementIcon +
+                                    ".png")),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(
+                                  Constants.h1(context),
+                                  Constants.v1(context),
+                                  Constants.h1(context),
+                                  Constants.v1(context)),
+                              child: Text(achievementText),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(
+                                  Constants.h1(context),
+                                  Constants.v1(context),
+                                  Constants.h1(context),
+                                  Constants.v1(context)),
+                              child: Text(
+                                  AppLocalizations.of(context)
+                                      .translate("Nou assoliment!"),
+                                  style: TextStyle(
+                                      color: Constants.black(context),
+                                      fontWeight: Constants.bold)),
+                            )
+                          ],
+                        )),
+                        actions: <Widget>[
+                          TextButton(
+                            child: Text(
+                                AppLocalizations.of(context)
+                                    .translate("Acceptar"),
+                                style:
+                                    TextStyle(color: Constants.black(context))),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    });
+              }
             } //Correcte, guardar, notificació assitència ok i tornar a pantalla discover
             else if (res.statusCode == 409) {
               showDialog(
@@ -118,7 +219,9 @@ class _NotificarAssistencia extends State<NotificarAssistencia> {
                           Text(
                               AppLocalizations.of(context).translate(
                                   "Ja_has_notificat_assistència_en_aquest_lloc_data_i_hora"),
-                              style: TextStyle(fontSize: Constants.m(context))),
+                              style: TextStyle(
+                                  fontSize: Constants.m(context),
+                                  color: Constants.black(context))),
                         ],
                       )),
                       actions: <Widget>[
@@ -147,7 +250,9 @@ class _NotificarAssistencia extends State<NotificarAssistencia> {
                           Text(
                               AppLocalizations.of(context)
                                   .translate("Error_de_xarxa"),
-                              style: TextStyle(fontSize: Constants.m(context))),
+                              style: TextStyle(
+                                  fontSize: Constants.m(context),
+                                  color: Constants.black(context))),
                         ],
                       )),
                       actions: <Widget>[
@@ -209,7 +314,9 @@ class _NotificarAssistencia extends State<NotificarAssistencia> {
                     Text(
                         AppLocalizations.of(context)
                             .translate("Error_de_xarxa"),
-                        style: TextStyle(fontSize: Constants.m(context))),
+                        style: TextStyle(
+                            fontSize: Constants.m(context),
+                            color: Constants.black(context))),
                   ],
                 )),
                 actions: <Widget>[
@@ -236,7 +343,9 @@ class _NotificarAssistencia extends State<NotificarAssistencia> {
                   child: ListBody(
                 children: <Widget>[
                   Text(AppLocalizations.of(context).translate("Error_de_xarxa"),
-                      style: TextStyle(fontSize: Constants.m(context))),
+                      style: TextStyle(
+                          fontSize: Constants.m(context),
+                          color: Constants.black(context))),
                 ],
               )),
               actions: <Widget>[

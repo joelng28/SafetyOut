@@ -29,7 +29,7 @@ class _Restrictions extends State<Restrictions> {
   bool viewPlaygrounds = false;
 
   void getRestrictions() async {
-    String langCode = Localizations.localeOf(context).languageCode;
+    String langCode = 'ca';
     var prefs = await SharedPreferences.getInstance();
 
     if (prefs.getString('language_code') != null) {
@@ -193,7 +193,9 @@ class _Restrictions extends State<Restrictions> {
                   child: ListBody(
                 children: <Widget>[
                   Text(AppLocalizations.of(context).translate("Error_de_xarxa"),
-                      style: TextStyle(fontSize: Constants.m(context))),
+                      style: TextStyle(
+                          fontSize: Constants.m(context),
+                          color: Constants.black(context))),
                 ],
               )),
               actions: <Widget>[

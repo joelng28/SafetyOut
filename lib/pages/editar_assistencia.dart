@@ -5,7 +5,6 @@ import 'package:app/storage/secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_picker/Picker.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:http/http.dart' as http;
 import '../app_localizations.dart';
@@ -13,6 +12,7 @@ import 'app.dart';
 
 //Deberia recibir nombre, location, address, id, hora de inicio y hora de final
 
+// ignore: must_be_immutable
 class EditarAssistencia extends StatefulWidget {
   EditarAssistencia(
       this.placeName, this.placeId, this.date, this.endDate, this.onEdit,
@@ -108,7 +108,9 @@ class _EditarAssistencia extends State<EditarAssistencia> {
                     Text(
                         AppLocalizations.of(context).translate(
                             "Lhora_dentrada_ha_de_ser_anterior_a_lhora_de_sortida"),
-                        style: TextStyle(fontSize: Constants.m(context))),
+                        style: TextStyle(
+                            fontSize: Constants.m(context),
+                            color: Constants.black(context))),
                   ],
                 )),
                 actions: <Widget>[
@@ -157,9 +159,70 @@ class _EditarAssistencia extends State<EditarAssistencia> {
               .patch(url,
                   headers: {"Content-Type": "application/json"}, body: body)
               .then((res) {
-            if (res.statusCode == 201) {
+            if (res.statusCode == 200) {
               onEdit();
               Navigator.of(context).pop();
+              Map<String, dynamic> resBody = jsonDecode(res.body);
+              int achievementId = resBody["trophy"];
+
+              if (achievementId == 4) {
+                String achievementIcon = "edit assistance master";
+                String achievementText = AppLocalizations.of(context)
+                    .translate("Edita una assistència");
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                        content: SingleChildScrollView(
+                            child: Column(
+                          children: [
+                            Image(
+                                height: Constants.xxl(context) +
+                                    Constants.xxl(context) +
+                                    Constants.xxl(context) +
+                                    Constants.xs(context),
+                                image: AssetImage("assets/icons/achievements/" +
+                                    achievementIcon +
+                                    ".png")),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(
+                                  Constants.h1(context),
+                                  Constants.v1(context),
+                                  Constants.h1(context),
+                                  Constants.v1(context)),
+                              child: Text(achievementText),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(
+                                  Constants.h1(context),
+                                  Constants.v1(context),
+                                  Constants.h1(context),
+                                  Constants.v1(context)),
+                              child: Text(
+                                  AppLocalizations.of(context)
+                                      .translate("Nou assoliment!"),
+                                  style: TextStyle(
+                                      color: Constants.black(context),
+                                      fontWeight: Constants.bold)),
+                            )
+                          ],
+                        )),
+                        actions: <Widget>[
+                          TextButton(
+                            child: Text(
+                                AppLocalizations.of(context)
+                                    .translate("Acceptar"),
+                                style:
+                                    TextStyle(color: Constants.black(context))),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    });
+              }
             } //Correcte, guardar, notificació assitència ok i tornar a pantalla discover
             else if (res.statusCode == 409) {
               showDialog(
@@ -173,7 +236,9 @@ class _EditarAssistencia extends State<EditarAssistencia> {
                           Text(
                               AppLocalizations.of(context).translate(
                                   "Ja_has_notificat_assistència_en_aquest_lloc_data_i_hora"),
-                              style: TextStyle(fontSize: Constants.m(context))),
+                              style: TextStyle(
+                                  fontSize: Constants.m(context),
+                                  color: Constants.black(context))),
                         ],
                       )),
                       actions: <Widget>[
@@ -202,7 +267,9 @@ class _EditarAssistencia extends State<EditarAssistencia> {
                           Text(
                               AppLocalizations.of(context)
                                   .translate("Error_de_xarxa"),
-                              style: TextStyle(fontSize: Constants.m(context))),
+                              style: TextStyle(
+                                  fontSize: Constants.m(context),
+                                  color: Constants.black(context))),
                         ],
                       )),
                       actions: <Widget>[
@@ -264,7 +331,9 @@ class _EditarAssistencia extends State<EditarAssistencia> {
                     Text(
                         AppLocalizations.of(context)
                             .translate("Error_de_xarxa"),
-                        style: TextStyle(fontSize: Constants.m(context))),
+                        style: TextStyle(
+                            fontSize: Constants.m(context),
+                            color: Constants.black(context))),
                   ],
                 )),
                 actions: <Widget>[
@@ -291,7 +360,9 @@ class _EditarAssistencia extends State<EditarAssistencia> {
                   child: ListBody(
                 children: <Widget>[
                   Text(AppLocalizations.of(context).translate("Error_de_xarxa"),
-                      style: TextStyle(fontSize: Constants.m(context))),
+                      style: TextStyle(
+                          fontSize: Constants.m(context),
+                          color: Constants.black(context))),
                 ],
               )),
               actions: <Widget>[

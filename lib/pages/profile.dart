@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:app/app_localizations.dart';
 import 'package:app/defaults/constants.dart';
+import 'package:app/pages/assoliments.dart';
+import 'package:app/pages/edit_profile.dart';
 import 'package:app/pages/profileconfig.dart';
 import 'package:app/pages/bombolles.dart';
 import 'package:app/pages/contactes.dart';
@@ -9,6 +11,7 @@ import 'package:app/pages/xats.dart';
 import 'package:app/storage/secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 
 enum ProfileTab { CONTACTS, BUBBLES, CHATS }
@@ -23,6 +26,7 @@ class Profile extends StatefulWidget {
 class _Profile extends State<Profile> {
   String name = '';
   String surnames = '';
+  String photoUrl = '';
   ProfileTab tab = ProfileTab.CONTACTS;
 
   @override
@@ -39,6 +43,7 @@ class _Profile extends State<Profile> {
             setState(() {
               name = user["name"];
               surnames = user["surnames"];
+              photoUrl = user["profileImage"];
             });
           } else {
             print(res.statusCode);
@@ -82,7 +87,9 @@ class _Profile extends State<Profile> {
                       Text(
                           AppLocalizations.of(context)
                               .translate("Error_de_xarxa"),
-                          style: TextStyle(fontSize: Constants.m(context))),
+                          style: TextStyle(
+                              fontSize: Constants.m(context),
+                              color: Constants.black(context))),
                     ],
                   )),
                   actions: <Widget>[
@@ -109,8 +116,26 @@ class _Profile extends State<Profile> {
         child: Column(
           children: <Widget>[
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                Padding(
+                  padding: EdgeInsets.only(left: Constants.h1(context)),
+                  child: InkWell(
+                    focusColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                            pageBuilder: (_, __, ___) => Assoliments()),
+                      );
+                    },
+                    child: SvgPicture.asset('assets/icons/trophy.svg',
+                        color: Constants.black(context),
+                        height: Constants.xxl(context)),
+                  ),
+                ),
                 //Icono configuracion
                 IconButton(
                   icon: const Icon(Icons.settings),
@@ -164,7 +189,9 @@ class _Profile extends State<Profile> {
                                         shape: BoxShape.circle,
                                         image: DecorationImage(
                                             fit: BoxFit.fill,
-                                            image: NetworkImage(
+                                            image: NetworkImage(photoUrl != ''
+                                                ? photoUrl
+                                                :
                                                 //Imagen de prueba, se colocará la imagen del usuario
                                                 "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"))),
                                   ),
@@ -216,7 +243,21 @@ class _Profile extends State<Profile> {
                                                   color:
                                                       Constants.black(context)),
                                             ),
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                PageRouteBuilder(
+                                                    pageBuilder: (_, __, ___) =>
+                                                        EditProfile(
+                                                            name,
+                                                            surnames,
+                                                            photoUrl != ''
+                                                                ? photoUrl
+                                                                :
+                                                                //Imagen de prueba, se colocará la imagen del usuario
+                                                                "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg")),
+                                              );
+                                            },
                                             style: ElevatedButton.styleFrom(
                                                 primary: Constants.trueWhite(
                                                     context),

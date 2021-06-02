@@ -82,7 +82,9 @@ class _Login extends State<Login> {
                   Text(
                       AppLocalizations.of(context)
                           .translate("Els_credencials_són_incorrectes"),
-                      style: TextStyle(fontSize: Constants.m(context))),
+                      style: TextStyle(
+                          fontSize: Constants.m(context),
+                          color: Constants.black(context))),
                 ],
               )),
               actions: <Widget>[
@@ -107,7 +109,9 @@ class _Login extends State<Login> {
                   child: ListBody(
                 children: <Widget>[
                   Text(AppLocalizations.of(context).translate("Error de xarxa"),
-                      style: TextStyle(fontSize: Constants.m(context))),
+                      style: TextStyle(
+                          fontSize: Constants.m(context),
+                          color: Constants.black(context))),
                 ],
               )),
               actions: <Widget>[
@@ -170,7 +174,9 @@ class _Login extends State<Login> {
                       Text(
                           AppLocalizations.of(context)
                               .translate("Els_credencials_són_incorrectes"),
-                          style: TextStyle(fontSize: Constants.m(context))),
+                          style: TextStyle(
+                              fontSize: Constants.m(context),
+                              color: Constants.black(context))),
                     ],
                   )),
                   actions: <Widget>[
@@ -197,7 +203,9 @@ class _Login extends State<Login> {
                       Text(
                           AppLocalizations.of(context)
                               .translate("Error de xarxa"),
-                          style: TextStyle(fontSize: Constants.m(context))),
+                          style: TextStyle(
+                              fontSize: Constants.m(context),
+                              color: Constants.black(context))),
                     ],
                   )),
                   actions: <Widget>[
@@ -231,7 +239,9 @@ class _Login extends State<Login> {
                     Text(
                         AppLocalizations.of(context)
                             .translate("Error de xarxa"),
-                        style: TextStyle(fontSize: Constants.m(context))),
+                        style: TextStyle(
+                            fontSize: Constants.m(context),
+                            color: Constants.black(context))),
                   ],
                 )),
                 actions: <Widget>[

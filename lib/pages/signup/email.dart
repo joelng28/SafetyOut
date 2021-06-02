@@ -60,7 +60,9 @@ class _Email extends State<Email> {
                           Text(
                               AppLocalizations.of(context)
                                   .translate("El_correu_ja_existeix"),
-                              style: TextStyle(fontSize: Constants.m(context))),
+                              style: TextStyle(
+                                  fontSize: Constants.m(context),
+                                  color: Constants.black(context))),
                         ],
                       )),
                       actions: <Widget>[
@@ -89,7 +91,9 @@ class _Email extends State<Email> {
                           Text(
                               AppLocalizations.of(context)
                                   .translate("Error_de_xarxa"),
-                              style: TextStyle(fontSize: Constants.m(context))),
+                              style: TextStyle(
+                                  fontSize: Constants.m(context),
+                                  color: Constants.black(context))),
                         ],
                       )),
                       actions: <Widget>[
@@ -123,7 +127,9 @@ class _Email extends State<Email> {
                         Text(
                             AppLocalizations.of(context)
                                 .translate("Error_de_xarxa"),
-                            style: TextStyle(fontSize: Constants.m(context))),
+                            style: TextStyle(
+                                fontSize: Constants.m(context),
+                                color: Constants.black(context))),
                       ],
                     )),
                     actions: <Widget>[
@@ -155,7 +161,9 @@ class _Email extends State<Email> {
                       Text(
                           AppLocalizations.of(context)
                               .translate("El_correu_no_és_correcte"),
-                          style: TextStyle(fontSize: Constants.m(context))),
+                          style: TextStyle(
+                              fontSize: Constants.m(context),
+                              color: Constants.black(context))),
                     ],
                   )),
                   actions: <Widget>[
