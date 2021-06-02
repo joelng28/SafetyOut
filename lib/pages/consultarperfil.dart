@@ -49,9 +49,7 @@ class _ConsultarPerfil extends State<ConsultarPerfil> {
                             id1 +
                             '/deleteFriend');
                     http.delete(url, body: {'friend_id': id}).then((res) {
-                      print("BUEN");
                       if (res.statusCode == 201) {
-                        print("ENTRO");
                         Navigator.of(context).pop();
                         Navigator.push(
                           context,
@@ -59,8 +57,6 @@ class _ConsultarPerfil extends State<ConsultarPerfil> {
                               pageBuilder: (_, __, ___) => Profile()),
                         );
                       } else {
-                        print("NO");
-                        print(res.statusCode);
                         showDialog(
                             context: context,
                             builder: (BuildContext context) {
@@ -145,7 +141,6 @@ class _ConsultarPerfil extends State<ConsultarPerfil> {
     if (mounted) {
       var url = Uri.parse('https://safetyout.herokuapp.com/user/' + id);
       http.get(url).then((res) {
-        print(res.statusCode);
         if (res.statusCode == 200) {
           Map<String, dynamic> body = jsonDecode(res.body);
           Map<String, dynamic> user = body["user"];
@@ -154,7 +149,6 @@ class _ConsultarPerfil extends State<ConsultarPerfil> {
             surnames = user["surnames"];
           });
         } else {
-          print(res.statusCode);
           showDialog(
               context: context,
               builder: (BuildContext context) {
