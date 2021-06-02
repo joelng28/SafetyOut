@@ -443,10 +443,11 @@ class _Contacts extends State<Contacts> {
                             barrierDismissible: false,
                             builder: (context) => AlertDialog(
                                     title: Text(
-                                        'Envia una sol·licitud de contacte',
-                                        style: TextStyle(
-                                            fontSize: Constants.m(context),
-                                            color: Constants.black(context))),
+                                        'Envia una sol·licitud de contacte'),
+                                    titleTextStyle: TextStyle(
+                                        color: Constants.black(context),
+                                        fontSize: Constants.m(context),
+                                        fontWeight: Constants.bolder),
                                     content: Row(
                                       children: [
                                         EmailInput(

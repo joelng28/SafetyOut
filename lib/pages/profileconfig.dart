@@ -7,6 +7,7 @@ import 'package:app/storage/secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 class ProfileConfig extends StatefulWidget {
   ProfileConfig({Key key /*, this.title*/}) : super(key: key);
@@ -20,6 +21,132 @@ class ProfileConfig extends StatefulWidget {
 enum Appearence { light, dark, system }
 
 class _ProfileConfig extends State<ProfileConfig> {
+  Function deleteAccount = (BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+            content: SingleChildScrollView(
+                child: ListBody(
+              children: <Widget>[
+                Text(
+                    AppLocalizations.of(context)
+                        .translate("Segur_que_vols_eliminar_el_compte"),
+                    style: TextStyle(fontSize: Constants.m(context))),
+              ],
+            )),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                    AppLocalizations.of(context).translate("Cancel·lar"),
+                    style: TextStyle(color: Constants.black(context))),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: Text(
+                    AppLocalizations.of(context).translate("Eliminar_compte"),
+                    style: TextStyle(color: Constants.black(context))),
+                onPressed: () {
+                  SecureStorage.readSecureStorage('SafetyOUT_UserId')
+                      .then((id) {
+                    var url =
+                        Uri.parse('https://safetyout.herokuapp.com/user/' + id);
+                    http.delete(url).then((res) {
+                      print(res.statusCode);
+
+                      if (res.statusCode == 200) {
+                        print("delete");
+                        Navigator.of(context).pop();
+                        print("delete1");
+                        Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                              pageBuilder: (_, __, ___) => Login()),
+                        );
+                        SecureStorage.deleteSecureStorage().then((val) {
+                          Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                                pageBuilder: (_, __, ___) => Login()),
+                          );
+                        });
+                      } else {
+                        print(res.statusCode);
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                contentPadding:
+                                    EdgeInsets.fromLTRB(24, 20, 24, 0),
+                                content: SingleChildScrollView(
+                                    child: ListBody(
+                                  children: <Widget>[
+                                    Text(
+                                        AppLocalizations.of(context)
+                                            .translate("Error_de_xarxa"),
+                                        style: TextStyle(
+                                            fontSize: Constants.m(context))),
+                                  ],
+                                )),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: Text(
+                                        AppLocalizations.of(context)
+                                            .translate("Acceptar"),
+                                        style: TextStyle(
+                                            color: Constants.black(context))),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            });
+                      }
+                    }).catchError((err) {
+                      //Sale error por pantalla
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              contentPadding:
+                                  EdgeInsets.fromLTRB(24, 20, 24, 0),
+                              content: SingleChildScrollView(
+                                  child: ListBody(
+                                children: <Widget>[
+                                  Text(
+                                      AppLocalizations.of(context)
+                                          .translate("Error_de_xarxa"),
+                                      style: TextStyle(
+                                          fontSize: Constants.m(context))),
+                                ],
+                              )),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: Text(
+                                      AppLocalizations.of(context)
+                                          .translate("Acceptar"),
+                                      style: TextStyle(
+                                          color: Constants.black(context))),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          });
+                    });
+                  });
+                },
+              ),
+            ],
+          );
+        });
+  };
+
   Function logOut = (BuildContext context) {
     showDialog(
         context: context,
@@ -219,6 +346,22 @@ class _ProfileConfig extends State<ProfileConfig> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Padding(
+                padding: EdgeInsets.only(bottom: Constants.v7(context)),
+                child: InkWell(
+                    highlightColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    focusColor: Colors.transparent,
+                    onTap: () => deleteAccount(context),
+                    child: Text(
+                        AppLocalizations.of(context)
+                            .translate("Eliminar_compte"),
+                        style: TextStyle(
+                            fontSize: Constants.m(context),
+                            fontWeight: Constants.bold,
+                            color: Constants.red(context)))),
+              ),
+              Padding(padding: EdgeInsets.all(Constants.h7(context))),
               Padding(
                 padding: EdgeInsets.only(bottom: Constants.v7(context)),
                 child: InkWell(

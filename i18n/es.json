@@ -139,6 +139,9 @@
     "Xats": "Xats",
     "Participants": "Participantes",
     "Nom_Bombolla": "Nombre de la burbuja",
+    "Eliminar_compte": "Eliminar cuenta",
+    "Segur_que_vols_eliminar_el_compte": "¿Seguro que quieres eliminar la cuenta?",
+    "Segur_que_vols_eliminar_el_contacte": "¿Seguro que quieres eliminar el contacto?"
     "Assoliments": "Assoliments",
     "Afegeix una foto" : "Añade una foto",
     "Canvia el nom": "Cambia el nombre",
@@ -181,4 +184,3 @@
     "Editar_Perfil": "Editar Perfil",
     "Canviar_foto": "Cambiar foto"
 }
-    
