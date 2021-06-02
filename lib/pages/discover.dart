@@ -91,7 +91,9 @@ class _Discover extends State<Discover> {
                     Text(
                         AppLocalizations.of(context)
                             .translate("Error_de_xarxa"),
-                        style: TextStyle(fontSize: Constants.m(context))),
+                        style: TextStyle(
+                            fontSize: Constants.m(context),
+                            color: Constants.black(context))),
                   ],
                 )),
                 actions: <Widget>[
@@ -273,12 +275,12 @@ class _Discover extends State<Discover> {
     places = [];
     await Future.wait([
       http.get(urlPark),
-      /* http.get(urlNature),
+      http.get(urlNature),
       http.get(urlSight),
       http.get(urlTerrace),
       http.get(urlMountain),
       http.get(urlCastle),
-      http.get(urlRes) */
+      http.get(urlRes)
     ]).then((List responses) {
       responses.forEach((r) {
         Map<String, dynamic> body = jsonDecode(r.body);

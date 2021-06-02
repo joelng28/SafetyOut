@@ -5,7 +5,6 @@ import 'package:app/storage/secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_picker/Picker.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:http/http.dart' as http;
 import '../app_localizations.dart';
@@ -13,6 +12,7 @@ import 'app.dart';
 
 //Deberia recibir nombre, location, address, id, hora de inicio y hora de final
 
+// ignore: must_be_immutable
 class EditarAssistencia extends StatefulWidget {
   EditarAssistencia(
       this.placeName, this.placeId, this.date, this.endDate, this.onEdit,
@@ -108,7 +108,9 @@ class _EditarAssistencia extends State<EditarAssistencia> {
                     Text(
                         AppLocalizations.of(context).translate(
                             "Lhora_dentrada_ha_de_ser_anterior_a_lhora_de_sortida"),
-                        style: TextStyle(fontSize: Constants.m(context))),
+                        style: TextStyle(
+                            fontSize: Constants.m(context),
+                            color: Constants.black(context))),
                   ],
                 )),
                 actions: <Widget>[
@@ -173,7 +175,9 @@ class _EditarAssistencia extends State<EditarAssistencia> {
                           Text(
                               AppLocalizations.of(context).translate(
                                   "Ja_has_notificat_assistència_en_aquest_lloc_data_i_hora"),
-                              style: TextStyle(fontSize: Constants.m(context))),
+                              style: TextStyle(
+                                  fontSize: Constants.m(context),
+                                  color: Constants.black(context))),
                         ],
                       )),
                       actions: <Widget>[
@@ -202,7 +206,9 @@ class _EditarAssistencia extends State<EditarAssistencia> {
                           Text(
                               AppLocalizations.of(context)
                                   .translate("Error_de_xarxa"),
-                              style: TextStyle(fontSize: Constants.m(context))),
+                              style: TextStyle(
+                                  fontSize: Constants.m(context),
+                                  color: Constants.black(context))),
                         ],
                       )),
                       actions: <Widget>[
@@ -264,7 +270,9 @@ class _EditarAssistencia extends State<EditarAssistencia> {
                     Text(
                         AppLocalizations.of(context)
                             .translate("Error_de_xarxa"),
-                        style: TextStyle(fontSize: Constants.m(context))),
+                        style: TextStyle(
+                            fontSize: Constants.m(context),
+                            color: Constants.black(context))),
                   ],
                 )),
                 actions: <Widget>[
@@ -291,7 +299,9 @@ class _EditarAssistencia extends State<EditarAssistencia> {
                   child: ListBody(
                 children: <Widget>[
                   Text(AppLocalizations.of(context).translate("Error_de_xarxa"),
-                      style: TextStyle(fontSize: Constants.m(context))),
+                      style: TextStyle(
+                          fontSize: Constants.m(context),
+                          color: Constants.black(context))),
                 ],
               )),
               actions: <Widget>[
