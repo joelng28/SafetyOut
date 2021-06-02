@@ -79,7 +79,7 @@ class _newBubble extends State<newBubble> {
             }
           }
 
-          int achievementId = body["achievement"];
+          int achievementId = body["trophy"];
 
           if (achievementId == 28) {
             String achievementIcon = "bubble master";

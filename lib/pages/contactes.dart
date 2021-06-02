@@ -165,8 +165,6 @@ class _Contacts extends State<Contacts> {
   }
 
   void submitEnviar(BuildContext context) {
-    print(email);
-
     var url = Uri.parse('https://safetyout.herokuapp.com/user?email=' + email);
     http.get(url).then((res) {
       if (res.statusCode == 200) {
@@ -180,14 +178,13 @@ class _Contacts extends State<Contacts> {
           }).then((res) {
             if (res.statusCode == 201) {
               Navigator.of(context).pop();
-
               body = jsonDecode(res.body);
 
-              int achievementId = body["achievement"];
+              int achievementId = body["trophy"];
               String achievementIcon;
               String achievementText;
 
-              if (achievementId != 0) {
+              if (achievementId != -1) {
                 switch (achievementId) {
                   case 6:
                     achievementIcon = "friends bronze";

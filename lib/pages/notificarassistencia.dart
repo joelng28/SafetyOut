@@ -104,15 +104,14 @@ class _NotificarAssistencia extends State<NotificarAssistencia> {
                   headers: {"Content-Type": "application/json"}, body: body)
               .then((res) {
             if (res.statusCode == 201) {
+              Map<String, dynamic> body = jsonDecode(res.body);
               Navigator.of(context).pop();
 
-              Map<String, dynamic> body = jsonDecode(res.body);
-
-              int achievementId = body["achievement"];
+              int achievementId = body["trophy"];
               String achievementIcon;
               String achievementText;
 
-              if (achievementId != 0) {
+              if (achievementId != -1) {
                 switch (achievementId) {
                   case 16:
                     achievementIcon = "place bronze";

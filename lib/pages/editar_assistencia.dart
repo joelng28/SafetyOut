@@ -157,12 +157,11 @@ class _EditarAssistencia extends State<EditarAssistencia> {
               .patch(url,
                   headers: {"Content-Type": "application/json"}, body: body)
               .then((res) {
-            if (res.statusCode == 201) {
+            if (res.statusCode == 200) {
               onEdit();
               Navigator.of(context).pop();
-
               Map<String, dynamic> resBody = jsonDecode(res.body);
-              int achievementId = resBody["achievement"];
+              int achievementId = resBody["trophy"];
 
               if (achievementId == 4) {
                 String achievementIcon = "edit assistance master";

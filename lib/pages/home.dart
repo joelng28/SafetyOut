@@ -81,13 +81,16 @@ class _Home extends State<Home> {
     }
     controller = cntlr;
     location.onLocationChanged.listen((LocationData l) {
-      controller
-          .animateCamera(
-            CameraUpdate.newCameraPosition(
-              CameraPosition(target: LatLng(l.latitude, l.longitude), zoom: 18),
-            ),
-          )
-          .catchError((error) {});
+      if (mounted) {
+        controller
+            .animateCamera(
+              CameraUpdate.newCameraPosition(
+                CameraPosition(
+                    target: LatLng(l.latitude, l.longitude), zoom: 18),
+              ),
+            )
+            .catchError((error) {});
+      }
     });
   }
 

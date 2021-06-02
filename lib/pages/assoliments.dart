@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:app/app_localizations.dart';
 import 'package:app/defaults/constants.dart';
 import 'package:app/pages/app.dart';
+import 'package:app/storage/secure_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class Assoliments extends StatefulWidget {
   Assoliments({Key key /*, this.title*/}) : super(key: key);
@@ -16,7 +20,7 @@ enum Appearence { light, dark, system }
 
 class _Assoliments extends State<Assoliments> {
   int idAssoliment;
-  List<int> assolimentsUsuari = [1, 4, 7];
+  List<dynamic> assolimentsUsuari = [];
   List<String> iconesAssoliments = [
     "camera master",
     "edit master",
@@ -80,6 +84,83 @@ class _Assoliments extends State<Assoliments> {
     "Entra en una bombolla",
     "Envia un missatge en un xat bombolla",
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    if (mounted) {
+      SecureStorage.readSecureStorage('SafetyOUT_UserId').then((userId) {
+        var uri = Uri.parse(
+            'https://safetyout.herokuapp.com/user/' + userId + '/trophies');
+        http.get(uri).then((res) {
+          print(res.statusCode);
+          if (res.statusCode == 200) {
+            Map<String, dynamic> body = jsonDecode(res.body);
+            setState(() {
+              assolimentsUsuari = body["trophies"];
+            });
+          } else {
+            print(res.statusCode);
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                    content: SingleChildScrollView(
+                        child: ListBody(
+                      children: <Widget>[
+                        Text(
+                            AppLocalizations.of(context)
+                                .translate("Error_de_xarxa"),
+                            style: TextStyle(fontSize: Constants.m(context))),
+                      ],
+                    )),
+                    actions: <Widget>[
+                      TextButton(
+                        child: Text(
+                            AppLocalizations.of(context).translate("Acceptar"),
+                            style: TextStyle(color: Constants.black(context))),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  );
+                });
+          }
+        }).catchError((err) {
+          print(err);
+          //Sale error por pantalla
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                  content: SingleChildScrollView(
+                      child: ListBody(
+                    children: <Widget>[
+                      Text(
+                          AppLocalizations.of(context)
+                              .translate("Error_de_xarxa"),
+                          style: TextStyle(fontSize: Constants.m(context))),
+                    ],
+                  )),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text(
+                          AppLocalizations.of(context).translate("Acceptar"),
+                          style: TextStyle(color: Constants.black(context))),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              });
+        });
+      });
+    }
+  }
 
   void showAssoliment() {
     showDialog(
@@ -224,13 +305,13 @@ class _Assoliments extends State<Assoliments> {
                                 splashColor: Colors.transparent,
                                 highlightColor: Colors.transparent,
                                 onTap: () {
-                                  idAssoliment = 1;
+                                  idAssoliment = 27;
                                   showAssoliment();
                                 },
                                 child: ColorFiltered(
                                   colorFilter: ColorFilter.mode(
                                       Colors.white.withOpacity(
-                                          assolimentsUsuari.contains(2)
+                                          assolimentsUsuari.contains(28)
                                               ? 1
                                               : 0.5),
                                       BlendMode.dstIn),
@@ -241,7 +322,7 @@ class _Assoliments extends State<Assoliments> {
                                           Constants.xs(context),
                                       image: AssetImage(
                                           "assets/icons/achievements/" +
-                                              iconesAssoliments[1] +
+                                              iconesAssoliments[27] +
                                               ".png")),
                                 )),
                             InkWell(
@@ -931,82 +1012,6 @@ class _Assoliments extends State<Assoliments> {
                                       image: AssetImage(
                                           "assets/icons/achievements/" +
                                               iconesAssoliments[26] +
-                                              ".png")),
-                                )),
-                          ],
-                        )),
-                    Padding(
-                        padding: EdgeInsets.fromLTRB(Constants.h4(context),
-                            Constants.v3(context), Constants.h4(context), 0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            InkWell(
-                                focusColor: Colors.transparent,
-                                splashColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
-                                onTap: () {
-                                  idAssoliment = 27;
-                                  showAssoliment();
-                                },
-                                child: ColorFiltered(
-                                  colorFilter: ColorFilter.mode(
-                                      Colors.white.withOpacity(
-                                          assolimentsUsuari.contains(28)
-                                              ? 1
-                                              : 0.5),
-                                      BlendMode.dstIn),
-                                  child: Image(
-                                      height: Constants.xxl(context) +
-                                          Constants.xxl(context) +
-                                          Constants.xxl(context) +
-                                          Constants.xs(context),
-                                      image: AssetImage(
-                                          "assets/icons/achievements/" +
-                                              iconesAssoliments[27] +
-                                              ".png")),
-                                )),
-                            InkWell(
-                                focusColor: Colors.transparent,
-                                splashColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
-                                child: ColorFiltered(
-                                  colorFilter: ColorFilter.mode(
-                                      Colors.white.withOpacity(
-                                          assolimentsUsuari.contains(29)
-                                              ? 1
-                                              : 0.5),
-                                      BlendMode.dstIn),
-                                  child: Image(
-                                      height: Constants.xxl(context) +
-                                          Constants.xxl(context) +
-                                          Constants.xxl(context) +
-                                          Constants.xs(context),
-                                      image: AssetImage(
-                                          "assets/icons/achievements/" +
-                                              iconesAssoliments[28] +
-                                              ".png")),
-                                )),
-                            InkWell(
-                                focusColor: Colors.transparent,
-                                splashColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
-                                onTap: () {
-                                  idAssoliment = 28;
-                                  showAssoliment();
-                                },
-                                child: ColorFiltered(
-                                  colorFilter: ColorFilter.mode(
-                                      Colors.white.withOpacity(0),
-                                      BlendMode.dstIn),
-                                  child: Image(
-                                      height: Constants.xxl(context) +
-                                          Constants.xxl(context) +
-                                          Constants.xxl(context) +
-                                          Constants.xs(context),
-                                      image: AssetImage(
-                                          "assets/icons/achievements/" +
-                                              iconesAssoliments[28] +
                                               ".png")),
                                 )),
                           ],

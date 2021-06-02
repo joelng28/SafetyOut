@@ -89,7 +89,7 @@ class _Bubbles extends State<Bubbles> {
         getBombolles();
 
         Map<String, dynamic> body = jsonDecode(res.body);
-        int achievementId = body["achievement"];
+        int achievementId = body["trophy"];
 
         if (achievementId == 28) {
           String achievementIcon = "bubble master";

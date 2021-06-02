@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:app/app_localizations.dart';
 import 'package:app/defaults/constants.dart';
 import 'package:app/pages/assoliments.dart';
+import 'package:app/pages/edit_profile.dart';
 import 'package:app/pages/profileconfig.dart';
 import 'package:app/pages/bombolles.dart';
 import 'package:app/pages/contactes.dart';
@@ -25,6 +26,7 @@ class Profile extends StatefulWidget {
 class _Profile extends State<Profile> {
   String name = '';
   String surnames = '';
+  String photoUrl = '';
   ProfileTab tab = ProfileTab.CONTACTS;
 
   @override
@@ -41,6 +43,7 @@ class _Profile extends State<Profile> {
             setState(() {
               name = user["name"];
               surnames = user["surnames"];
+              photoUrl = user["profileImage"];
             });
           } else {
             print(res.statusCode);
@@ -184,7 +187,9 @@ class _Profile extends State<Profile> {
                                         shape: BoxShape.circle,
                                         image: DecorationImage(
                                             fit: BoxFit.fill,
-                                            image: NetworkImage(
+                                            image: NetworkImage(photoUrl != ''
+                                                ? photoUrl
+                                                :
                                                 //Imagen de prueba, se colocará la imagen del usuario
                                                 "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"))),
                                   ),
@@ -236,7 +241,21 @@ class _Profile extends State<Profile> {
                                                   color:
                                                       Constants.black(context)),
                                             ),
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                PageRouteBuilder(
+                                                    pageBuilder: (_, __, ___) =>
+                                                        EditProfile(
+                                                            name,
+                                                            surnames,
+                                                            photoUrl != ''
+                                                                ? photoUrl
+                                                                :
+                                                                //Imagen de prueba, se colocará la imagen del usuario
+                                                                "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg")),
+                                              );
+                                            },
                                             style: ElevatedButton.styleFrom(
                                                 primary: Constants.trueWhite(
                                                     context),

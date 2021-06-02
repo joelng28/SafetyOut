@@ -170,9 +170,11 @@
     "Envia un missatge en un xat bombolla": "Envia un missatge en un xat bombolla",
     "Aconseguit": "Aconseguit",
     "Pendent": "Pendent",
-    "Nou assoliment!": "Nou assoliment!"
+    "Nou assoliment!": "Nou assoliment!",
     "Segur_que_vols_eliminar_la conversa": "Segur que vols eliminar la conversa?",
     "Sortir_de_la_bombolla": "Sortir de la bombolla",
     "Segur_que_vols_sortir_de_la_bombolla": "Segur que vols sortir de la bombolla?",
-    "Sortir": "Sortir"
+    "Sortir": "Sortir",
+    "Editar_Perfil": "Editar Perfil",
+    "Canviar_foto": "Canviar foto"
 }

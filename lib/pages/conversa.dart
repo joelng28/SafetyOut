@@ -69,6 +69,91 @@ class _Conversa extends State<Conversa> {
 
   void handleJoin(dynamic data, String id) {
     chatRoomId = data["roomId"];
+    int achievementId = data["trophy"];
+    String achievementIcon;
+    String achievementText;
+
+    if (achievementId != -1) {
+      switch (achievementId) {
+        case 11:
+          achievementIcon = "xat bronze";
+          achievementText =
+              AppLocalizations.of(context).translate("Comença 1 xat");
+          break;
+        case 12:
+          achievementIcon = "xat silver";
+          achievementText =
+              AppLocalizations.of(context).translate("Comença 5 xats");
+          break;
+        case 13:
+          achievementIcon = "xat golden";
+          achievementText =
+              AppLocalizations.of(context).translate("Comença 25 xats");
+          break;
+        case 14:
+          achievementIcon = "xat platinum";
+          achievementText =
+              AppLocalizations.of(context).translate("Comença 50 xats");
+          break;
+        case 15:
+          achievementIcon = "xat diamond";
+          achievementText =
+              AppLocalizations.of(context).translate("Comença 100 xats");
+          break;
+      }
+
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+              content: SingleChildScrollView(
+                  child: Column(
+                children: [
+                  Image(
+                      height: Constants.xxl(context) +
+                          Constants.xxl(context) +
+                          Constants.xxl(context) +
+                          Constants.xs(context),
+                      image: AssetImage("assets/icons/achievements/" +
+                          achievementIcon +
+                          ".png")),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(
+                        Constants.h1(context),
+                        Constants.v1(context),
+                        Constants.h1(context),
+                        Constants.v1(context)),
+                    child: Text(achievementText),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(
+                        Constants.h1(context),
+                        Constants.v1(context),
+                        Constants.h1(context),
+                        Constants.v1(context)),
+                    child: Text(
+                        AppLocalizations.of(context)
+                            .translate("Nou assoliment!"),
+                        style: TextStyle(
+                            color: Constants.black(context),
+                            fontWeight: Constants.bold)),
+                  )
+                ],
+              )),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                      AppLocalizations.of(context).translate("Acceptar"),
+                      style: TextStyle(color: Constants.black(context))),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          });
+    }
     isConected = true;
     print(chatRoomId);
     initializeChatList(id);
@@ -81,7 +166,6 @@ class _Conversa extends State<Conversa> {
     http.get(url).then((res) {
       if (res.statusCode == 200) {
         Map<String, dynamic> body = jsonDecode(res.body);
-        print(body);
         List<dynamic> messagesaux = body["messages"];
         messagesaux.forEach((element) {
           Map<String, dynamic> message = element;
@@ -92,92 +176,6 @@ class _Conversa extends State<Conversa> {
             messages.add(m);
           });
         });
-
-        int achievementId = body["achievement"];
-        String achievementIcon;
-        String achievementText;
-
-        if (achievementId != 0) {
-          switch (achievementId) {
-            case 11:
-              achievementIcon = "xat bronze";
-              achievementText =
-                  AppLocalizations.of(context).translate("Comença 1 xat");
-              break;
-            case 12:
-              achievementIcon = "xat silver";
-              achievementText =
-                  AppLocalizations.of(context).translate("Comença 5 xats");
-              break;
-            case 13:
-              achievementIcon = "xat golden";
-              achievementText =
-                  AppLocalizations.of(context).translate("Comença 25 xats");
-              break;
-            case 14:
-              achievementIcon = "xat platinum";
-              achievementText =
-                  AppLocalizations.of(context).translate("Comença 50 xats");
-              break;
-            case 15:
-              achievementIcon = "xat diamond";
-              achievementText =
-                  AppLocalizations.of(context).translate("Comença 100 xats");
-              break;
-          }
-
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
-                  content: SingleChildScrollView(
-                      child: Column(
-                    children: [
-                      Image(
-                          height: Constants.xxl(context) +
-                              Constants.xxl(context) +
-                              Constants.xxl(context) +
-                              Constants.xs(context),
-                          image: AssetImage("assets/icons/achievements/" +
-                              achievementIcon +
-                              ".png")),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(
-                            Constants.h1(context),
-                            Constants.v1(context),
-                            Constants.h1(context),
-                            Constants.v1(context)),
-                        child: Text(achievementText),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(
-                            Constants.h1(context),
-                            Constants.v1(context),
-                            Constants.h1(context),
-                            Constants.v1(context)),
-                        child: Text(
-                            AppLocalizations.of(context)
-                                .translate("Nou assoliment!"),
-                            style: TextStyle(
-                                color: Constants.black(context),
-                                fontWeight: Constants.bold)),
-                      )
-                    ],
-                  )),
-                  actions: <Widget>[
-                    TextButton(
-                      child: Text(
-                          AppLocalizations.of(context).translate("Acceptar"),
-                          style: TextStyle(color: Constants.black(context))),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
-                );
-              });
-        }
       } else {
         print(res.statusCode);
         showDialog(

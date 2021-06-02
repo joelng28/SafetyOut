@@ -267,7 +267,6 @@ class _Activity extends State<Activity> {
                                                         await SecureStorage
                                                             .readSecureStorage(
                                                                 'SafetyOUT_UserId');
-                                                    print(userId);
                                                     Uri url = Uri.parse(
                                                         'https://safetyout.herokuapp.com/assistance');
                                                     var body = jsonEncode({
@@ -291,14 +290,15 @@ class _Activity extends State<Activity> {
                                                         },
                                                         body: body);
                                                     if (res.statusCode == 200) {
+                                                      Navigator.of(context)
+                                                          .pop();
                                                       onDelete(placeId);
 
                                                       Map<String, dynamic>
                                                           resBody =
                                                           jsonDecode(res.body);
                                                       int achievementId =
-                                                          resBody[
-                                                              "achievement"];
+                                                          resBody["trophy"];
 
                                                       if (achievementId == 5) {
                                                         String achievementIcon =
@@ -390,7 +390,6 @@ class _Activity extends State<Activity> {
                                                             });
                                                       }
                                                     }
-                                                    Navigator.of(context).pop();
                                                   },
                                                 ),
                                                 TextButton(
