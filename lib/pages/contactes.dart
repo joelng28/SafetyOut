@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:app/defaults/constants.dart';
+import 'package:app/models/contactChat.dart';
 import 'package:app/storage/secure_storage.dart';
 
 import 'package:app/widgets/email_input.dart';
@@ -10,6 +11,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../app_localizations.dart';
 import 'package:http/http.dart' as http;
 
+import 'consultarperfil.dart';
+
 class Contacts extends StatefulWidget {
   Contacts({Key key}) : super(key: key);
 
@@ -18,7 +21,7 @@ class Contacts extends StatefulWidget {
 }
 
 class _Contacts extends State<Contacts> {
-  List<String> Contactos = [];
+  List<Contact> Contactos = [];
   List<String> ContactoSolicitudName = [];
   List<String> ContactoSolicitudID = [];
   String email;
@@ -72,14 +75,22 @@ class _Contacts extends State<Contacts> {
           Map<String, dynamic> body = jsonDecode(res.body);
           setState(() {
             body["friends"].forEach((f) {
-              var urlName = Uri.parse(
-                  'https://safetyout.herokuapp.com/user/' + f["userId"]);
+              String userid = f["userId"].toString();
+              var urlName =
+                  Uri.parse('https://safetyout.herokuapp.com/user/' + userid);
               http.get(urlName).then((resName) {
                 if (resName.statusCode == 200) {
                   Map<String, dynamic> bodyName = jsonDecode(resName.body);
                   Map<String, dynamic> user = bodyName["user"];
                   setState(() {
-                    Contactos.add(user['name'] + " " + user["surnames"]);
+                    Contact c = Contact(
+                        name: user['name'] + " " + user["surnames"],
+                        destUserId: userid);
+                    Contactos.add(c);
+                  });
+                  setState(() {
+                    Contactos.sort((a, b) =>
+                        a.name.toLowerCase().compareTo(b.name.toLowerCase()));
                   });
                 }
               });
@@ -395,12 +406,43 @@ class _Contacts extends State<Contacts> {
           child: Padding(
             padding: EdgeInsets.only(
                 top: Constants.v2(context),
-                left: Constants.h7(context),
+                //left: Constants.h7(context),
                 right: Constants.h7(context)),
             child: ListView.separated(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (_, index) =>
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                separatorBuilder: (_, __) => Divider(
+                      height: 20,
+                      thickness: 2,
+                    ),
+                itemCount: Contactos.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                      child: ListTile(
+                          leading: Container(
+                            width: Constants.w8(context),
+                            height: Constants.w8(context),
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                    fit: BoxFit.fill, image: NetworkImage(
+                                        //Imagen de prueba, se colocará la imagen del usuario
+                                        "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"))),
+                          ),
+                          title: Text(Contactos[index].name,
+                              style: TextStyle(
+                                  color: Constants.black(context),
+                                  fontWeight: Constants.bolder,
+                                  fontSize: Constants.l(context))),
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ConsultarPerfil(
+                                        id: Contactos[index].destUserId)));
+                          }));
+                }
+                /*itemBuilder: (_, index) =>
                   Row(mainAxisAlignment: MainAxisAlignment.start, children: [
                 Container(
                   width: Constants.w8(context),
@@ -415,13 +457,9 @@ class _Contacts extends State<Contacts> {
                   padding: EdgeInsets.only(left: Constants.h2(context)),
                   child: Text(Contactos[index]),
                 )
-              ]),
-              separatorBuilder: (_, __) => Divider(
-                height: 20,
-                thickness: 2,
-              ),
-              itemCount: Contactos.length,
-            ),
+              ]),*/
+
+                ),
           ),
         )
       ]),
