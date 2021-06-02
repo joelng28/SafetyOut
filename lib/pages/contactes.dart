@@ -85,6 +85,7 @@ class _Contacts extends State<Contacts> {
                   setState(() {
                     Contact c = Contact(
                         name: user['name'] + " " + user["surnames"],
+                        photoUrl: user['profileImage'],
                         destUserId: userid);
                     Contactos.add(c);
                   });
@@ -524,7 +525,13 @@ class _Contacts extends State<Contacts> {
                             decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 image: DecorationImage(
-                                    fit: BoxFit.fill, image: NetworkImage(
+                                    fit: BoxFit.fill,
+                                    image: NetworkImage((Contactos[index]
+                                                    .photoUrl !=
+                                                '' &&
+                                            Contactos[index].photoUrl != null)
+                                        ? Contactos[index].photoUrl
+                                        :
                                         //Imagen de prueba, se colocará la imagen del usuario
                                         "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"))),
                           ),

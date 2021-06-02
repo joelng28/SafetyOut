@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:app/app_localizations.dart';
 import 'package:app/defaults/constants.dart';
+import 'package:app/pages/assoliments_contacte.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
@@ -20,6 +21,7 @@ class _ConsultarPerfil extends State<ConsultarPerfil> {
   _ConsultarPerfil(this.id);
   String name = '';
   String surnames = '';
+  String photoUrl = '';
   final String id;
 
   Function deleteContact = (BuildContext context, String id) {
@@ -147,6 +149,7 @@ class _ConsultarPerfil extends State<ConsultarPerfil> {
           setState(() {
             name = user["name"];
             surnames = user["surnames"];
+            photoUrl = user["profileImage"];
           });
         } else {
           showDialog(
@@ -281,7 +284,11 @@ class _ConsultarPerfil extends State<ConsultarPerfil> {
                                               fit: BoxFit.fill,
                                               image: NetworkImage(
                                                   //Imagen de prueba, se colocará la imagen del usuario
-                                                  "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"))),
+                                                  photoUrl != ''
+                                                      ? photoUrl
+                                                      :
+                                                      //Imagen de prueba, se colocará la imagen del usuario
+                                                      "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"))),
                                     ),
                                   ],
                                 ),
@@ -319,7 +326,7 @@ class _ConsultarPerfil extends State<ConsultarPerfil> {
                                           child: Container(
                                             height: Constants.a6(context) +
                                                 Constants.a2(context),
-                                            width: Constants.w10(context),
+                                            width: Constants.w11(context),
                                             child: TextButton(
                                               child: Text(
                                                 AppLocalizations.of(context)
@@ -375,7 +382,8 @@ class _ConsultarPerfil extends State<ConsultarPerfil> {
                                     ),
                                   )
                                 ],
-                              ))
+                              )),
+                          Expanded(child: AssolimentsContacte(id))
                         ],
                       ),
                     ),
