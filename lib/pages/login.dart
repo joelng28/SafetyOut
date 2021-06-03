@@ -1,11 +1,12 @@
 import 'dart:convert';
-
+import 'package:app/authentication.dart';
 import 'package:app/defaults/constants.dart';
 import 'package:app/pages/recover_password/recover_email.dart';
 import 'package:app/pages/signup/name.dart';
 import 'package:app/storage/secure_storage.dart';
 import 'package:app/widgets/password_input.dart';
 import 'package:app/widgets/email_input.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
@@ -28,147 +29,240 @@ class _Login extends State<Login> {
   FocusNode pwdFocusNode = FocusNode();
   Function submitLogin = (BuildContext context) {};
 
+  Future<void> googleLogin(BuildContext context) async {
+    User user = await Authentication.signInWithGoogle(context: context)
+        .catchError((e) {});
+    setState(() {
+      isLoading = true;
+      activeButton = false;
+    });
+    Uri url = Uri.parse("https://safetyout.herokuapp.com/user/loginTerceros");
+    List<String> fullName = user.displayName.split(" ");
+    String firstName = fullName[0];
+    String lastName = "";
+    for (int i = 1; i < fullName.length; i++) {
+      lastName += fullName[i];
+      if (i != fullName.length - 1) lastName += " ";
+    }
+    var body = jsonEncode({
+      'name': firstName,
+      'surnames': lastName,
+      'email': user.email,
+      'password':
+          "'39t4y b4gfpicfbthr98ewotfiuchnblñq  fewriuvygfqrlhewoditvgf ybn3rqp9ew8t",
+      'birthday': "1-1-2000",
+      'gender': "not_applicable",
+      'profileImage': user.photoURL
+    });
+
+    var res = await http.post(url,
+        headers: {"Content-Type": "application/json"}, body: body);
+    if (res.statusCode == 200 || res.statusCode == 201) {
+      Map<String, dynamic> body = jsonDecode(res.body);
+      await SecureStorage.writeSecureStorage('SafetyOUT_Token', body["token"]);
+      await SecureStorage.writeSecureStorage(
+          'SafetyOUT_UserId', body["userId"]);
+      setState(() {
+        isLoading = false;
+      });
+      await Navigator.of(context).pushReplacementNamed('/');
+    } else if (res.statusCode == 404 || res.statusCode == 401) {
+      setState(() {
+        isLoading = false;
+        activeButton = true;
+      });
+      await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+              content: SingleChildScrollView(
+                  child: ListBody(
+                children: <Widget>[
+                  Text(
+                      AppLocalizations.of(context)
+                          .translate("Els_credencials_són_incorrectes"),
+                      style: TextStyle(
+                          fontSize: Constants.m(context),
+                          color: Constants.black(context))),
+                ],
+              )),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                      AppLocalizations.of(context).translate("Acceptar"),
+                      style: TextStyle(color: Constants.black(context))),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          });
+    } else {
+      await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+              content: SingleChildScrollView(
+                  child: ListBody(
+                children: <Widget>[
+                  Text(AppLocalizations.of(context).translate("Error de xarxa"),
+                      style: TextStyle(
+                          fontSize: Constants.m(context),
+                          color: Constants.black(context))),
+                ],
+              )),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                      AppLocalizations.of(context).translate("Acceptar"),
+                      style: TextStyle(color: Constants.black(context))),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          });
+      setState(() {
+        isLoading = false;
+        activeButton = true;
+      });
+    }
+    setState(() {
+      isLoading = false;
+      activeButton = true;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     submitLogin = (BuildContext context) {
-    isLoading = true;
-    activeButton = false;
-    var url = Uri.parse('https://safetyout.herokuapp.com/user/login');
-    http.post(url, body: {
-      'email': email,
-      'password': pwd,
-    })
-    .then((res) {
-      if(res.statusCode == 200) {
-        //Guardar key
-        Map<String, dynamic> body = jsonDecode(res.body);
-        SecureStorage.writeSecureStorage('SafetyOUT_Token', body["token"]);
-        SecureStorage.writeSecureStorage('SafetyOUT_Token', body["userId"]);
-        Navigator.of(context).pushReplacementNamed('/');
-        setState(() {
-          isLoading = false;
-          activeButton = true;
-        });
-      } else if(res.statusCode == 404 || res.statusCode == 401) {
-        setState(() {
-          isLoading = false;
-          activeButton = true;
-        });
-        showDialog(
-          context: context, 
-          builder: (BuildContext context) {
-            return AlertDialog(
-              contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: <Widget>[
-                    Text(
-                      AppLocalizations.of(context).translate("Els_credencials_són_incorrectes"),
-                      style: TextStyle(
-                        fontSize: Constants.m(context)
-                      )
-                    ),
-                  ],
-                )
-              ),
-              actions: <Widget>[
-                TextButton(
-                  child: Text(
-                    AppLocalizations.of(context).translate("Acceptar"),
-                    style: TextStyle(
-                      color: Constants.black(context)
-                    )),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
-      } else {
-        showDialog(
-          context: context, 
-          builder: (BuildContext context) {
-            return AlertDialog(
-              contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: <Widget>[
-                    Text(
-                      AppLocalizations.of(context).translate("Error de xarxa"),
-                      style: TextStyle(
-                        fontSize: Constants.m(context)
-                      )
-                    ),
-                  ],
-                )
-              ),
-              actions: <Widget>[
-                TextButton(
-                  child: Text(
-                    AppLocalizations.of(context).translate("Acceptar"),
-                    style: TextStyle(
-                      color: Constants.black(context)
-                    )),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
+      isLoading = true;
+      activeButton = false;
+      var url = Uri.parse('https://safetyout.herokuapp.com/user/login');
+      http.post(url, body: {
+        'email': email,
+        'password': pwd,
+      }).then((res) {
+        if (res.statusCode == 200) {
+          //Guardar key
+          Map<String, dynamic> body = jsonDecode(res.body);
+          SecureStorage.writeSecureStorage('SafetyOUT_Token', body["token"]);
+          SecureStorage.writeSecureStorage('SafetyOUT_UserId', body["userId"]);
+          Navigator.of(context).pushReplacementNamed('/');
           setState(() {
             isLoading = false;
             activeButton = true;
           });
-      }
-    })
-    .catchError((err) {
-      //Sale error por pantalla
-      showDialog(
-        context: context, 
-        builder: (BuildContext context) {
-          return AlertDialog(
-            contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  Text(
-                    AppLocalizations.of(context).translate("Error de xarxa"),
-                    style: TextStyle(
-                      fontSize: Constants.m(context)
-                    )
+        } else if (res.statusCode == 404 || res.statusCode == 401) {
+          setState(() {
+            isLoading = false;
+            activeButton = true;
+          });
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                  content: SingleChildScrollView(
+                      child: ListBody(
+                    children: <Widget>[
+                      Text(
+                          AppLocalizations.of(context)
+                              .translate("Els_credencials_són_incorrectes"),
+                          style: TextStyle(
+                              fontSize: Constants.m(context),
+                              color: Constants.black(context))),
+                    ],
+                  )),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text(
+                          AppLocalizations.of(context).translate("Acceptar"),
+                          style: TextStyle(color: Constants.black(context))),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              });
+        } else {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                  content: SingleChildScrollView(
+                      child: ListBody(
+                    children: <Widget>[
+                      Text(
+                          AppLocalizations.of(context)
+                              .translate("Error de xarxa"),
+                          style: TextStyle(
+                              fontSize: Constants.m(context),
+                              color: Constants.black(context))),
+                    ],
+                  )),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text(
+                          AppLocalizations.of(context).translate("Acceptar"),
+                          style: TextStyle(color: Constants.black(context))),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              });
+          setState(() {
+            isLoading = false;
+            activeButton = true;
+          });
+        }
+      }).catchError((err) {
+        print(err);
+        //Sale error por pantalla
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                content: SingleChildScrollView(
+                    child: ListBody(
+                  children: <Widget>[
+                    Text(
+                        AppLocalizations.of(context)
+                            .translate("Error de xarxa"),
+                        style: TextStyle(
+                            fontSize: Constants.m(context),
+                            color: Constants.black(context))),
+                  ],
+                )),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text(
+                        AppLocalizations.of(context).translate("Acceptar"),
+                        style: TextStyle(color: Constants.black(context))),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
                   ),
                 ],
-              )
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: Text(
-                  AppLocalizations.of(context).translate("Acceptar"),
-                  style: TextStyle(
-                    color: Constants.black(context)
-                  )),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        });
+              );
+            });
         setState(() {
           isLoading = false;
           activeButton = true;
         });
-    });
-  };
+      });
+    };
   }
-
-  Function facebookLogin = () {};
-
-  Function googleLogin = () {};
-
 
   @override
   Widget build(BuildContext context) {
@@ -270,13 +364,17 @@ class _Login extends State<Login> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     PasswordInput(
-                      focusNode: pwdFocusNode,
-                      onSubmitted: (val) => email != '' && pwd != '' ? setState(() { submitLogin(context); }) : () {},
-                      onChanged: (val) => setState(() {
-                      pwd = val;
-                       activeButton = pwd != '' && email != '';
-                      }),
-                      labelText: AppLocalizations.of(context)
+                        focusNode: pwdFocusNode,
+                        onSubmitted: (val) => email != '' && pwd != ''
+                            ? setState(() {
+                                submitLogin(context);
+                              })
+                            : () {},
+                        onChanged: (val) => setState(() {
+                              pwd = val;
+                              activeButton = pwd != '' && email != '';
+                            }),
+                        labelText: AppLocalizations.of(context)
                             .translate("Contrasenya"))
                   ],
                 ),
@@ -291,9 +389,10 @@ class _Login extends State<Login> {
                           highlightColor: Colors.transparent,
                           splashColor: Colors.transparent,
                           onTap: () {
-                              Navigator.push(
+                            Navigator.push(
                               context,
-                              PageRouteBuilder(pageBuilder: (_, __, ___) => RecoverEmail()),
+                              PageRouteBuilder(
+                                  pageBuilder: (_, __, ___) => RecoverEmail()),
                             );
                           },
                           child: Text(
@@ -317,42 +416,55 @@ class _Login extends State<Login> {
                         child: Container(
                           decoration: BoxDecoration(
                               gradient: LinearGradient(
-                                colors: activeButton ? [Color(0xFF84FCCD), Color(0xFFA7FF80)] : [Color(0xFF679080), Color(0xFF68865A)],
+                                colors: activeButton
+                                    ? [Color(0xFF84FCCD), Color(0xFFA7FF80)]
+                                    : [Color(0xFF679080), Color(0xFF68865A)],
                                 begin: FractionalOffset.centerLeft,
                                 end: FractionalOffset.centerRight,
                               ),
                               borderRadius: BorderRadius.circular(30),
                               boxShadow: [
                                 BoxShadow(
-                                  offset: Offset(0, 3),
+                                  offset: Offset(0, 5),
                                   blurRadius: 10,
                                   color: Color.fromARGB(100, 0, 0, 0),
                                 )
                               ]),
                           child: TextButton(
                               key: Key('loginButton'),
-                              onPressed: () => email != '' && pwd != '' ? setState(() { submitLogin(context); }) : () {},
+                              onPressed: () => email != '' && pwd != ''
+                                  ? setState(() {
+                                      submitLogin(context);
+                                    })
+                                  : () {},
                               style: ButtonStyle(
                                   shape: MaterialStateProperty.all(
                                       RoundedRectangleBorder(
-                                    borderRadius:
-                                        new BorderRadius.circular(30.0),
+                                    borderRadius: BorderRadius.circular(30.0),
                                   )),
                                   backgroundColor: MaterialStateProperty.all(
                                       Colors.transparent)),
-                              child: isLoading ? 
-                              SpinKitFadingCube(
-                                color: Colors.white,
-                                size: 20.0 / (MediaQuery.of(context).size.height < 700 ? 1.3 : MediaQuery.of(context).size.height < 800 ? 1.15 : 1)
-                              )
-                              :
-                              Text(
-                                  AppLocalizations.of(context)
-                                      .translate("Iniciar_sessio"),
-                                  style: TextStyle(
-                                      fontSize: Constants.m(context),
-                                      fontWeight: Constants.bold,
-                                      color: Constants.primaryDark(context)))),
+                              child: isLoading
+                                  ? SpinKitFadingCube(
+                                      color: Colors.white,
+                                      size: 20.0 /
+                                          (MediaQuery.of(context).size.height <
+                                                  700
+                                              ? 1.3
+                                              : MediaQuery.of(context)
+                                                          .size
+                                                          .height <
+                                                      800
+                                                  ? 1.15
+                                                  : 1))
+                                  : Text(
+                                      AppLocalizations.of(context)
+                                          .translate("Iniciar_sessio"),
+                                      style: TextStyle(
+                                          fontSize: Constants.m(context),
+                                          fontWeight: Constants.bold,
+                                          color:
+                                              Constants.primaryDark(context)))),
                         ),
                       ),
                     )
@@ -406,101 +518,31 @@ class _Login extends State<Login> {
                               )
                             ]),
                         child: TextButton(
-                            onPressed: facebookLogin,
-                            style: ButtonStyle(
-                                shape: MaterialStateProperty.all(
-                                    RoundedRectangleBorder(
-                                  borderRadius: new BorderRadius.circular(30.0),
-                                )),
-                                backgroundColor: MaterialStateProperty.all(
-                                    Colors.transparent)),
-                            child: Padding(
-                              padding:
-                                  EdgeInsets.only(right: Constants.h1(context)),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    flex: (MediaQuery.of(context).size.width < 380 ? 20 : 30),
-                                    child: Padding(
-                                      padding: EdgeInsets.only(left: 1),
-                                      child: SvgPicture.asset(
-                                        'assets/icons/facebook.svg',
-                                        color: Colors.blueAccent[700],
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 75,
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Text('FACEBOOK',
-                                            style: TextStyle(
-                                                fontSize: Constants.s(context),
-                                                fontWeight: Constants.bold,
-                                                color: Colors.blueAccent[700])),
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                          onPressed: () => googleLogin(context),
+                          style: ButtonStyle(
+                              shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30.0),
+                              )),
+                              backgroundColor: MaterialStateProperty.all(
+                                  Colors.transparent)),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: Constants.w8(context),
+                                child: SvgPicture.asset(
+                                  'assets/icons/google.svg',
+                                ),
                               ),
-                            )),
-                      ),
-                    ),
-                  ),
-                  Spacer(flex: 15),
-                  Expanded(
-                    flex: 45,
-                    child: SizedBox(
-                      height: Constants.a7(context),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(30),
-                            boxShadow: [
-                              BoxShadow(
-                                offset: Offset(0, 3),
-                                blurRadius: 10,
-                                color: Color.fromARGB(100, 0, 0, 0),
-                              )
-                            ]),
-                        child: TextButton(
-                            onPressed: googleLogin,
-                            style: ButtonStyle(
-                                shape: MaterialStateProperty.all(
-                                    RoundedRectangleBorder(
-                                  borderRadius: new BorderRadius.circular(30.0),
-                                )),
-                                backgroundColor: MaterialStateProperty.all(
-                                    Colors.transparent)),
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                  left: Constants.h1(context),
-                                  right: Constants.h1(context)),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    flex: 25,
-                                    child: SvgPicture.asset(
-                                      'assets/icons/google.svg',
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 75,
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Text('GOOGLE',
-                                            style: TextStyle(
-                                                fontSize: Constants.s(context),
-                                                fontWeight: Constants.bold,
-                                                color: Colors.red)),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )),
+                              Text('GOOGLE',
+                                  style: TextStyle(
+                                      fontSize: Constants.s(context),
+                                      fontWeight: Constants.bold,
+                                      color: Colors.red)),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   )
@@ -529,7 +571,8 @@ class _Login extends State<Login> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        PageRouteBuilder(pageBuilder: (_, __, ___) => RegData()),
+                        PageRouteBuilder(
+                            pageBuilder: (_, __, ___) => RegData()),
                       );
                     },
                     child: Text(

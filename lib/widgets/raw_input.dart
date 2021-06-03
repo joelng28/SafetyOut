@@ -1,10 +1,15 @@
 import 'package:app/defaults/constants.dart';
 import 'package:flutter/material.dart';
 
-TextEditingController textController = new TextEditingController();
+TextEditingController textController = TextEditingController();
 
 class RawInput extends StatelessWidget {
-  RawInput({this.labelText, this.onChanged, this.type, this.onSubmitted, this.focusNode});
+  RawInput(
+      {this.labelText,
+      this.onChanged,
+      this.type,
+      this.onSubmitted,
+      this.focusNode});
 
   final String labelText;
   final Function onChanged;

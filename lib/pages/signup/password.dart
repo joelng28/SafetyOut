@@ -29,160 +29,28 @@ class _RegPassword extends State<RegPassword> {
   void initState() {
     super.initState();
     submitSignUp = (BuildContext context) {
-    if(pwd != rePwd) {
-      showDialog(
-        context: context, 
-        builder: (BuildContext context) {
-          return AlertDialog(
-            contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  Text(
-                    AppLocalizations.of(context).translate("Les_contrasenyes_no_coincideixen"),
-                    style: TextStyle(
-                      fontSize: Constants.m(context)
-                    )
-                  ),
-                ],
-              )
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: Text(
-                  AppLocalizations.of(context).translate("Acceptar"),
-                  style: TextStyle(
-                    color: Constants.black(context)
-                  )),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        });
-    }
-    else if(!pwd.contains(new RegExp(r'[0-9]')) || !pwd.contains(new RegExp(r'[a-z]')) || !pwd.contains(new RegExp(r'[A-Z]')) || pwd.length < 8 ) {
-      showDialog(
-        context: context, 
-        builder: (BuildContext context) {
-          return AlertDialog(
-            contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  Text(
-                    AppLocalizations.of(context).translate("La_contrasenya_ha_de_contenir_com_a_mínim:"),
-                    style: TextStyle(
-                      fontSize: Constants.m(context)
-                    )
-                  ),
-                  Text(
-                    AppLocalizations.of(context).translate("8_caràcters"),
-                    style: TextStyle(
-                      fontSize: Constants.m(context),
-                      fontWeight: Constants.bold
-                    )
-                  ),
-                  Text(
-                    AppLocalizations.of(context).translate("Un_número"),
-                    style: TextStyle(
-                      fontSize: Constants.m(context),
-                      fontWeight: Constants.bold
-                    )
-                  ),
-                  Text(
-                    AppLocalizations.of(context).translate("Una_minúscula"),
-                    style: TextStyle(
-                      fontSize: Constants.m(context),
-                      fontWeight: Constants.bold
-                    )
-                  ),
-                  Text(
-                    AppLocalizations.of(context).translate("Una_majúscula"),
-                    style: TextStyle(
-                      fontSize: Constants.m(context),
-                      fontWeight: Constants.bold
-                    )
-                  ),
-                ],
-              )
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: Text(
-                  AppLocalizations.of(context).translate("Acceptar"),
-                  style: TextStyle(
-                    color: Constants.black(context)
-                  )),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        });
-    } else {
-      isLoading = true;
-      activeButton = false;
-      String name = Provider.of<RegState>(context, listen: false).getName;
-      List<String> fullName = name.split(" ");
-      String surnames = fullName.length > 1 ? name.replaceAll(fullName[0] + ' ', '') : '';
-      String email = Provider.of<RegState>(context, listen: false).getEmail;
-      String gender = Provider.of<RegState>(context, listen: false).getGender;
-      DateTime birthdate = Provider.of<RegState>(context, listen: false).getBirthdate;
-      String birthday = birthdate.year.toString() + '-' + birthdate.month.toString() + '-' + birthdate.day.toString();
-      String profileImage = "a";
-      var url = Uri.parse('https://safetyout.herokuapp.com/user/signup');
-      http.post(url, body: {
-        'name': fullName[0],
-        'surnames': surnames,
-        'email': email,
-        'gender': gender,
-        'birthday': birthday,
-        'password': pwd,
-        'profileImage': profileImage
-      })
-      .then((res) {
-        if(res.statusCode == 201) {
-          //Guardar key
-          Map<String, dynamic> body = jsonDecode(res.body);
-          SecureStorage.writeSecureStorage('SafetyOUT_Token', body["token"]);
-          SecureStorage.writeSecureStorage('SafetyOUT_Token', body["userId"]);
-          Navigator.of(context).pushReplacementNamed('/');
-          setState(() {
-            isLoading = false;
-            activeButton = true;
-          });
-        } else {
-          setState(() {
-            isLoading = false;
-            activeButton = true;
-          });
-          showDialog(
-            context: context, 
+      if (pwd != rePwd) {
+        showDialog(
+            context: context,
             builder: (BuildContext context) {
               return AlertDialog(
                 contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
                 content: SingleChildScrollView(
-                  child: ListBody(
-                    children: <Widget>[
-                      Text(
-                        AppLocalizations.of(context).translate("Error_de_xarxa"),
+                    child: ListBody(
+                  children: <Widget>[
+                    Text(
+                        AppLocalizations.of(context)
+                            .translate("Les_contrasenyes_no_coincideixen"),
                         style: TextStyle(
-                          fontSize: Constants.m(context)
-                        )
-                      ),
-                    ],
-                  )
-                ),
+                            fontSize: Constants.m(context),
+                            color: Constants.black(context))),
+                  ],
+                )),
                 actions: <Widget>[
                   TextButton(
                     child: Text(
-                      AppLocalizations.of(context).translate("Acceptar"),
-                      style: TextStyle(
-                        color: Constants.black(context)
-                      )),
+                        AppLocalizations.of(context).translate("Acceptar"),
+                        style: TextStyle(color: Constants.black(context))),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -190,47 +58,168 @@ class _RegPassword extends State<RegPassword> {
                 ],
               );
             });
-        }
-      })
-      .catchError((err) {
+      } else if (!pwd.contains(RegExp(r'[0-9]')) ||
+          !pwd.contains(RegExp(r'[a-z]')) ||
+          !pwd.contains(RegExp(r'[A-Z]')) ||
+          pwd.length < 8) {
         showDialog(
-          context: context, 
-          builder: (BuildContext context) {
-            return AlertDialog(
-              contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
-              content: SingleChildScrollView(
-                child: ListBody(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                content: SingleChildScrollView(
+                    child: ListBody(
                   children: <Widget>[
                     Text(
-                      AppLocalizations.of(context).translate("Error_de_xarxa"),
-                      style: TextStyle(
-                        fontSize: Constants.m(context)
-                      )
+                        AppLocalizations.of(context).translate(
+                            "La_contrasenya_ha_de_contenir_com_a_mínim:"),
+                        style: TextStyle(
+                            fontSize: Constants.m(context),
+                            color: Constants.black(context))),
+                    Text(AppLocalizations.of(context).translate("8_caràcters"),
+                        style: TextStyle(
+                            fontSize: Constants.m(context),
+                            fontWeight: Constants.bold,
+                            color: Constants.black(context))),
+                    Text(AppLocalizations.of(context).translate("Un_número"),
+                        style: TextStyle(
+                            fontSize: Constants.m(context),
+                            fontWeight: Constants.bold,
+                            color: Constants.black(context))),
+                    Text(
+                        AppLocalizations.of(context).translate("Una_minúscula"),
+                        style: TextStyle(
+                            fontSize: Constants.m(context),
+                            fontWeight: Constants.bold,
+                            color: Constants.black(context))),
+                    Text(
+                        AppLocalizations.of(context).translate("Una_majúscula"),
+                        style: TextStyle(
+                            fontSize: Constants.m(context),
+                            fontWeight: Constants.bold,
+                            color: Constants.black(context))),
+                  ],
+                )),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text(
+                        AppLocalizations.of(context).translate("Acceptar"),
+                        style: TextStyle(color: Constants.black(context))),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            });
+      } else {
+        isLoading = true;
+        activeButton = false;
+        String name = Provider.of<RegState>(context, listen: false).getName;
+        List<String> fullName = name.split(" ");
+        String surnames =
+            fullName.length > 1 ? name.replaceAll(fullName[0] + ' ', '') : '';
+        String email = Provider.of<RegState>(context, listen: false).getEmail;
+        String gender = Provider.of<RegState>(context, listen: false).getGender;
+        DateTime birthdate =
+            Provider.of<RegState>(context, listen: false).getBirthdate;
+        String birthday = birthdate.year.toString() +
+            '-' +
+            birthdate.month.toString() +
+            '-' +
+            birthdate.day.toString();
+        String profileImage = "a";
+        var url = Uri.parse('https://safetyout.herokuapp.com/user/signup');
+        http.post(url, body: {
+          'name': fullName[0],
+          'surnames': surnames,
+          'email': email,
+          'gender': gender,
+          'birthday': birthday,
+          'password': pwd,
+          'profileImage': profileImage
+        }).then((res) {
+          if (res.statusCode == 201) {
+            //Guardar key
+            Map<String, dynamic> body = jsonDecode(res.body);
+            SecureStorage.writeSecureStorage('SafetyOUT_Token', body["token"]);
+            SecureStorage.writeSecureStorage(
+                'SafetyOUT_UserId', body["userId"]);
+            Navigator.of(context).pushReplacementNamed('/');
+            setState(() {
+              isLoading = false;
+              activeButton = true;
+            });
+          } else {
+            setState(() {
+              isLoading = false;
+              activeButton = true;
+            });
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                    content: SingleChildScrollView(
+                        child: ListBody(
+                      children: <Widget>[
+                        Text(
+                            AppLocalizations.of(context)
+                                .translate("Error_de_xarxa"),
+                            style: TextStyle(
+                                fontSize: Constants.m(context),
+                                color: Constants.black(context))),
+                      ],
+                    )),
+                    actions: <Widget>[
+                      TextButton(
+                        child: Text(
+                            AppLocalizations.of(context).translate("Acceptar"),
+                            style: TextStyle(color: Constants.black(context))),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  );
+                });
+          }
+        }).catchError((err) {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                  content: SingleChildScrollView(
+                      child: ListBody(
+                    children: <Widget>[
+                      Text(
+                          AppLocalizations.of(context)
+                              .translate("Error_de_xarxa"),
+                          style: TextStyle(
+                              fontSize: Constants.m(context),
+                              color: Constants.black(context))),
+                    ],
+                  )),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text(
+                          AppLocalizations.of(context).translate("Acceptar"),
+                          style: TextStyle(color: Constants.black(context))),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
                     ),
                   ],
-                )
-              ),
-              actions: <Widget>[
-                TextButton(
-                  child: Text(
-                    AppLocalizations.of(context).translate("Acceptar"),
-                    style: TextStyle(
-                      color: Constants.black(context)
-                    )),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
+                );
+              });
           setState(() {
             isLoading = false;
             activeButton = true;
           });
-      });
-    }
-  };
+        });
+      }
+    };
   }
 
   @override
@@ -240,41 +229,41 @@ class _RegPassword extends State<RegPassword> {
         child: Column(
           children: <Widget>[
             Padding(
-                padding: EdgeInsets.only(top: Constants.xs(context)),
-                child: Stack(
-                  children: [
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: EdgeInsets.only(left: Constants.xxs(context)),
-                        child: InkWell(
-                          highlightColor: Colors.transparent,
-                          splashColor: Colors.transparent,
-                          onTap: () {
-                              Navigator.of(context).pop();
-                          },
-                          child: Icon(
-                            Icons.arrow_back_ios_rounded,
+              padding: EdgeInsets.only(top: Constants.xs(context)),
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.only(left: Constants.xxs(context)),
+                      child: InkWell(
+                        highlightColor: Colors.transparent,
+                        splashColor: Colors.transparent,
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Icon(Icons.arrow_back_ios_rounded,
                             size: 32 /
-                                  (MediaQuery.of(context).size.width < 380 ? 1.3 : 1),
-                            color: Constants.black(context)
-                          ),
-                        ),
+                                (MediaQuery.of(context).size.width < 380
+                                    ? 1.3
+                                    : 1),
+                            color: Constants.black(context)),
                       ),
                     ),
-                    Align(
-                      alignment: Alignment.center,
-                      child: Text(
+                  ),
+                  Align(
+                    alignment: Alignment.center,
+                    child: Text(
                         AppLocalizations.of(context)
                             .translate("Registre_Usuari"),
                         style: TextStyle(
                             color: Constants.darkGrey(context),
                             fontSize: Constants.xl(context),
                             fontWeight: Constants.bolder)),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -300,11 +289,10 @@ class _RegPassword extends State<RegPassword> {
                       labelText:
                           AppLocalizations.of(context).translate("Contrasenya"),
                       onChanged: (value) => setState(() {
-                        pwd = value;
-                        activeButton = pwd != '' && rePwd != '';
-                      }),
-                      onSubmitted: (val) => rePwdFocusNode.requestFocus()
-                    )
+                            pwd = value;
+                            activeButton = pwd != '' && rePwd != '';
+                          }),
+                      onSubmitted: (val) => rePwdFocusNode.requestFocus())
                 ],
               ),
             ),
@@ -315,14 +303,18 @@ class _RegPassword extends State<RegPassword> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   PasswordInput3(
-                      labelText: AppLocalizations.of(context)
-                          .translate("Confirmar_Contrasenya"),
-                      onChanged: (value) => setState(() {
-                        rePwd = value;
-                        activeButton = pwd != '' && rePwd != '';
-                      }),
-                      focusNode: rePwdFocusNode,
-                      onSubmitted: (val) => activeButton ? setState(() { submitSignUp(context); }) : () {},
+                    labelText: AppLocalizations.of(context)
+                        .translate("Confirmar_Contrasenya"),
+                    onChanged: (value) => setState(() {
+                      rePwd = value;
+                      activeButton = pwd != '' && rePwd != '';
+                    }),
+                    focusNode: rePwdFocusNode,
+                    onSubmitted: (val) => activeButton
+                        ? setState(() {
+                            submitSignUp(context);
+                          })
+                        : () {},
                   )
                 ],
               ),
@@ -339,7 +331,9 @@ class _RegPassword extends State<RegPassword> {
                       child: Container(
                         decoration: BoxDecoration(
                             gradient: LinearGradient(
-                              colors: activeButton ? [Color(0xFF84FCCD), Color(0xFFA7FF80)] : [Color(0xFF679080), Color(0xFF68865A)],
+                              colors: activeButton
+                                  ? [Color(0xFF84FCCD), Color(0xFFA7FF80)]
+                                  : [Color(0xFF679080), Color(0xFF68865A)],
                               begin: FractionalOffset.centerLeft,
                               end: FractionalOffset.centerRight,
                             ),
@@ -352,26 +346,39 @@ class _RegPassword extends State<RegPassword> {
                               )
                             ]),
                         child: TextButton(
-                            onPressed: () => activeButton ? setState(() { submitSignUp(context); }) : () {},
+                            onPressed: () => activeButton
+                                ? setState(() {
+                                    submitSignUp(context);
+                                  })
+                                : () {},
                             style: ButtonStyle(
                                 shape: MaterialStateProperty.all(
                                     RoundedRectangleBorder(
-                                  borderRadius: new BorderRadius.circular(30.0),
+                                  borderRadius: BorderRadius.circular(30.0),
                                 )),
                                 backgroundColor: MaterialStateProperty.all(
                                     Colors.transparent)),
-                            child: isLoading ? 
-                              SpinKitFadingCube(
-                                color: Colors.white,
-                                size: 20.0 / (MediaQuery.of(context).size.height < 700 ? 1.3 : MediaQuery.of(context).size.height < 800 ? 1.15 : 1)
-                              )
-                              :
-                              Text(AppLocalizations.of(context)
+                            child: isLoading
+                                ? SpinKitFadingCube(
+                                    color: Colors.white,
+                                    size: 20.0 /
+                                        (MediaQuery.of(context).size.height <
+                                                700
+                                            ? 1.3
+                                            : MediaQuery.of(context)
+                                                        .size
+                                                        .height <
+                                                    800
+                                                ? 1.15
+                                                : 1))
+                                : Text(
+                                    AppLocalizations.of(context)
                                         .translate("Confirmar"),
-                                style: TextStyle(
-                                    fontSize: Constants.m(context),
-                                    fontWeight: Constants.bold,
-                                    color: Constants.primaryDark(context)))),
+                                    style: TextStyle(
+                                        fontSize: Constants.m(context),
+                                        fontWeight: Constants.bold,
+                                        color:
+                                            Constants.primaryDark(context)))),
                       ),
                     ),
                   )

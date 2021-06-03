@@ -1,10 +1,15 @@
 import 'package:app/defaults/constants.dart';
 import 'package:flutter/material.dart';
 
-TextEditingController emailController = new TextEditingController();
+TextEditingController emailController = TextEditingController();
 
 class EmailInput extends StatelessWidget {
-  EmailInput({this.labelText, this.prefixIcon, this.onChanged, this.onSubmitted, this.focusNode});
+  EmailInput(
+      {this.labelText,
+      this.prefixIcon,
+      this.onChanged,
+      this.onSubmitted,
+      this.focusNode});
 
   final String labelText;
   final IconData prefixIcon;
@@ -18,9 +23,9 @@ class EmailInput extends StatelessWidget {
       child: SizedBox(
         height: Constants.a7(context),
         child: TextField(
-          focusNode: focusNode,
-          onSubmitted: onSubmitted,
-          onChanged: onChanged,
+            focusNode: focusNode,
+            onSubmitted: onSubmitted,
+            onChanged: onChanged,
             autocorrect: false,
             keyboardType: TextInputType.emailAddress,
             style: TextStyle(color: Constants.black(context)),
