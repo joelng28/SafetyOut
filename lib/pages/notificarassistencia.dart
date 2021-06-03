@@ -238,37 +238,6 @@ class _NotificarAssistencia extends State<NotificarAssistencia> {
                       ],
                     );
                   });
-            } else {
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
-                      content: SingleChildScrollView(
-                          child: ListBody(
-                        children: <Widget>[
-                          Text(
-                              AppLocalizations.of(context)
-                                  .translate("Error_de_xarxa"),
-                              style: TextStyle(
-                                  fontSize: Constants.m(context),
-                                  color: Constants.black(context))),
-                        ],
-                      )),
-                      actions: <Widget>[
-                        TextButton(
-                          child: Text(
-                              AppLocalizations.of(context)
-                                  .translate("Acceptar"),
-                              style:
-                                  TextStyle(color: Constants.black(context))),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ],
-                    );
-                  });
             }
           });
         });
