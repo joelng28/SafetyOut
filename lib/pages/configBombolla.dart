@@ -2,6 +2,7 @@ import 'dart:convert';
 //import 'dart:html';
 
 import 'package:app/defaults/constants.dart';
+import 'package:app/pages/profile.dart';
 import 'package:app/storage/secure_storage.dart';
 import 'package:app/widgets/raw_input.dart';
 import 'package:flutter/cupertino.dart';
@@ -170,9 +171,167 @@ class _ConfigBubble extends State<ConfigBubble> {
         });
   }
 
-  void deleteMember(int index) {}
+  void deleteMember(int index) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+            content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Text("Segur que vols eliminar a " + MembersNames[index] +" ?",
+                        style: TextStyle(fontSize: Constants.m(context))),
+                  ],
+                )),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                    AppLocalizations.of(context)
+                        .translate("Cancel·lar"),
+                    style:
+                    TextStyle(color: Constants.black(context))),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: Text(
+                    AppLocalizations.of(context)
+                        .translate("Confirmar"),
+                    style:
+                    TextStyle(color: Constants.black(context))),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  calldeleteMember(index);
+                },
+              ),
+            ],
+          );
+        });
+  }
 
-  void deleteBubble() {}
+  void calldeleteMember(int index) {
+    var url = Uri.parse('https://safetyout.herokuapp.com/bubble/' + bubbleId + '/members/' + MembersIDs[index]);
+    http.delete(url).then((res) {
+      Map<String, dynamic> body = jsonDecode(res.body);
+      if (res.statusCode == 200) {
+        getInfoBombolla();
+      }
+      else {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                content: SingleChildScrollView(
+                    child: ListBody(
+                      children: <Widget>[
+                        Text(
+                            body["message"],
+                            style: TextStyle(fontSize: Constants.m(context))),
+                      ],
+                    )),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text(
+                        AppLocalizations.of(context)
+                            .translate("Acceptar"),
+                        style:
+                        TextStyle(color: Constants.black(context))),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            });
+      }
+    });
+  }
+
+  void deleteBubble() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+            content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Text("Segur que vols eliminar la bombolla?",
+                        style: TextStyle(fontSize: Constants.m(context))),
+                  ],
+                )),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                    AppLocalizations.of(context)
+                        .translate("Cancel·lar"),
+                    style:
+                    TextStyle(color: Constants.black(context))),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: Text(
+                    AppLocalizations.of(context)
+                        .translate("Confirmar"),
+                    style:
+                    TextStyle(color: Constants.black(context))),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  calldeleteBubble();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  void calldeleteBubble() {
+    var url = Uri.parse('https://safetyout.herokuapp.com/bubble/' + bubbleId);
+    http.delete(url).then((res) {
+      Map<String, dynamic> body = jsonDecode(res.body);
+      if (res.statusCode == 200) {
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+              pageBuilder: (_, __, ___) => Profile()),
+        );
+      }
+      else {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                content: SingleChildScrollView(
+                    child: ListBody(
+                      children: <Widget>[
+                        Text(
+                            body["message"],
+                            style: TextStyle(fontSize: Constants.m(context))),
+                      ],
+                    )),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text(
+                        AppLocalizations.of(context)
+                            .translate("Acceptar"),
+                        style:
+                        TextStyle(color: Constants.black(context))),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            });
+      }
+    });
+  }
 
   @override
   void initState() {
@@ -260,7 +419,9 @@ class _ConfigBubble extends State<ConfigBubble> {
                   children: [
                     RawInput(
                       labelText:
-                          AppLocalizations.of(context).translate("Nom_Bombolla"),
+                          bubbleName == null ?
+                          AppLocalizations.of(context).translate("Nom_Bombolla")
+                          : bubbleName,
                       onChanged: (value) => setState(() {
                         bubbleName = value;
                       }),
@@ -298,7 +459,7 @@ class _ConfigBubble extends State<ConfigBubble> {
                                         fontWeight: Constants.bolder,
                                         fontSize: Constants.l(context)),
                                   ),
-                                  trailing: adminId == userId ? IconButton(
+                                  trailing: adminId == userId  ? IconButton(
                                       icon: Icon(Icons.close, color: Constants.red(context)),
                                       iconSize: Constants.w6(context),
                                       onPressed: () {
