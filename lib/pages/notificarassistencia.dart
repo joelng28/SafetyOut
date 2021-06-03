@@ -105,7 +105,7 @@ class _NotificarAssistencia extends State<NotificarAssistencia> {
               .post(url,
                   headers: {"Content-Type": "application/json"}, body: body)
               .then((res) {
-            if (res.statusCode == 201) {
+            if (res.statusCode != 409) {
               Map<String, dynamic> body = jsonDecode(res.body);
               Navigator.of(context).pop();
 
