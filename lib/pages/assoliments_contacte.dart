@@ -2,11 +2,10 @@ import 'dart:convert';
 
 import 'package:app/app_localizations.dart';
 import 'package:app/defaults/constants.dart';
-import 'package:app/pages/app.dart';
-import 'package:app/storage/secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+// ignore: must_be_immutable
 class AssolimentsContacte extends StatefulWidget {
   AssolimentsContacte(this.userId, {Key key /*, this.title*/})
       : super(key: key);

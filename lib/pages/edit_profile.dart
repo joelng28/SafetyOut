@@ -1,21 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:app/app_localizations.dart';
 import 'package:app/defaults/constants.dart';
 import 'package:app/pages/app.dart';
-import 'package:app/pages/assoliments.dart';
-import 'package:app/pages/profile.dart';
-import 'package:app/pages/profileconfig.dart';
-import 'package:app/pages/bombolles.dart';
-import 'package:app/pages/contactes.dart';
-import 'package:app/pages/xats.dart';
 import 'package:app/storage/secure_storage.dart';
 import 'package:app/widgets/raw_input.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 

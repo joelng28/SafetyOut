@@ -13,7 +13,6 @@ import 'package:http/http.dart' as http;
 
 import '../app_localizations.dart';
 import 'configBombolla.dart';
-import 'contactes.dart';
 
 class ConversaBubble extends StatefulWidget {
   ConversaBubble({Key key, @required this.BubbleId, this.UserId})

@@ -287,8 +287,9 @@ class _newBubble extends State<newBubble> {
                       separatorBuilder: (_, __) => Divider(),
                       itemCount: Contactos.length,
                       itemBuilder: (context, index) {
-                        if (index >= Participants.length)
+                        if (index >= Participants.length) {
                           Participants.add(false);
+                        }
                         return Container(
                             color: Participants[index]
                                 ? Constants.lightGrey(context)
