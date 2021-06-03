@@ -284,17 +284,6 @@ class _Bubbles extends State<Bubbles> {
                           overflow: TextOverflow.clip,
                         )),
                   ),
-                  Expanded(
-                      flex: 1,
-                      //Acceptar contacte
-                      child: IconButton(
-                          splashColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
-                          icon: Icon(Icons.check, color: Colors.green),
-                          iconSize: Constants.w6(context),
-                          onPressed: () {
-                            acceptarSolicitud(context, index);
-                          })),
                   IconButton(
                       splashColor: Colors.transparent,
                       highlightColor: Colors.transparent,

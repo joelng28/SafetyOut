@@ -24,6 +24,7 @@ class _Contacts extends State<Contacts> {
   List<Contact> Contactos = [];
   List<String> ContactoSolicitudName = [];
   List<String> ContactoSolicitudID = [];
+  List<String> ContactoSolicitudPhoto = [];
   String email;
   FocusNode pwdFocusNode = FocusNode();
 
@@ -55,6 +56,7 @@ class _Contacts extends State<Contacts> {
                     ContactoSolicitudName.add(
                         user['name'] + " " + user["surnames"]);
                     ContactoSolicitudID.add(f['_id']);
+                    ContactoSolicitudPhoto.add(user['profileImage']);
                   });
                 }
               });
@@ -374,9 +376,16 @@ class _Contacts extends State<Contacts> {
                       height: Constants.w8(context), //Constants.w9(context),
                       decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          image: DecorationImage(fit: BoxFit.fill, image: NetworkImage(
-                              //Imagen de prueba, se colocará la imagen del usuario
-                              "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"))),
+                          image: DecorationImage(
+                              fit: BoxFit.fill,
+                              image: NetworkImage((ContactoSolicitudPhoto[
+                                              index] !=
+                                          '' &&
+                                      ContactoSolicitudPhoto[index] != null)
+                                  ? ContactoSolicitudPhoto[index]
+                                  :
+                                  //Imagen de prueba, se colocará la imagen del usuario
+                                  "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"))),
                     ),
                     Expanded(
                       flex: 4,

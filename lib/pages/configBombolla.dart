@@ -2,7 +2,6 @@ import 'dart:convert';
 //import 'dart:html';
 
 import 'package:app/defaults/constants.dart';
-import 'package:app/pages/profile.dart';
 import 'package:app/widgets/raw_input.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -31,30 +30,14 @@ class _ConfigBubble extends State<ConfigBubble> {
 
   void getInfoBombolla() {
     MembersIDs.clear();
-    MembersNames.clear();
     var urlB = Uri.parse('https://safetyout.herokuapp.com/bubble/' + bubbleId);
-    http.get(urlB).then((res) {
-      if (res.statusCode == 200) {
-        Map<String, dynamic> body = jsonDecode(res.body);
-        Map<String, dynamic> binfo = body["bubble"];
+    http.get(urlB).then((resName) {
+      if (resName.statusCode == 200) {
+        Map<String, dynamic> body = jsonDecode(resName.body);
         setState(() {
-          bubbleName = binfo['name'];
-          adminId = binfo['admin'];
-          binfo['members'].forEach((m) {
-            Map<String, dynamic> member = m;
-            MembersIDs.add(member["userId"]);
-            var urlName = Uri.parse(
-                'https://safetyout.herokuapp.com/user/' + member["userId"]);
-            http.get(urlName).then((resName) {
-              if (resName.statusCode == 200) {
-                Map<String, dynamic> bodyName = jsonDecode(resName.body);
-                Map<String, dynamic> user = bodyName["user"];
-                setState(() {
-                  MembersNames.add(user['name'] + " " + user["surnames"]);
-                });
-              }
-            });
-          });
+          bubbleName = body['name'];
+          adminId = body['admin'];
+          MembersIDs = body['members'];
         });
       }
     });
@@ -170,152 +153,6 @@ class _ConfigBubble extends State<ConfigBubble> {
         });
   }
 
-  void deleteMember(int index) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
-            content: SingleChildScrollView(
-                child: ListBody(
-              children: <Widget>[
-                Text("Segur que vols eliminar a " + MembersNames[index] + " ?",
-                    style: TextStyle(fontSize: Constants.m(context))),
-              ],
-            )),
-            actions: <Widget>[
-              TextButton(
-                child: Text(
-                    AppLocalizations.of(context).translate("Cancel·lar"),
-                    style: TextStyle(color: Constants.black(context))),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              TextButton(
-                child: Text(AppLocalizations.of(context).translate("Confirmar"),
-                    style: TextStyle(color: Constants.black(context))),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  calldeleteMember(index);
-                },
-              ),
-            ],
-          );
-        });
-  }
-
-  void calldeleteMember(int index) {
-    var url = Uri.parse('https://safetyout.herokuapp.com/bubble/' +
-        bubbleId +
-        '/members/' +
-        MembersIDs[index]);
-    http.delete(url).then((res) {
-      Map<String, dynamic> body = jsonDecode(res.body);
-      if (res.statusCode == 200) {
-        getInfoBombolla();
-      } else {
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
-                content: SingleChildScrollView(
-                    child: ListBody(
-                  children: <Widget>[
-                    Text(body["message"],
-                        style: TextStyle(fontSize: Constants.m(context))),
-                  ],
-                )),
-                actions: <Widget>[
-                  TextButton(
-                    child: Text(
-                        AppLocalizations.of(context).translate("Acceptar"),
-                        style: TextStyle(color: Constants.black(context))),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              );
-            });
-      }
-    });
-  }
-
-  void deleteBubble() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
-            content: SingleChildScrollView(
-                child: ListBody(
-              children: <Widget>[
-                Text("Segur que vols eliminar la bombolla?",
-                    style: TextStyle(fontSize: Constants.m(context))),
-              ],
-            )),
-            actions: <Widget>[
-              TextButton(
-                child: Text(
-                    AppLocalizations.of(context).translate("Cancel·lar"),
-                    style: TextStyle(color: Constants.black(context))),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              TextButton(
-                child: Text(AppLocalizations.of(context).translate("Confirmar"),
-                    style: TextStyle(color: Constants.black(context))),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  calldeleteBubble();
-                },
-              ),
-            ],
-          );
-        });
-  }
-
-  void calldeleteBubble() {
-    var url = Uri.parse('https://safetyout.herokuapp.com/bubble/' + bubbleId);
-    http.delete(url).then((res) {
-      Map<String, dynamic> body = jsonDecode(res.body);
-      if (res.statusCode == 200) {
-        Navigator.push(
-          context,
-          PageRouteBuilder(pageBuilder: (_, __, ___) => Profile()),
-        );
-      } else {
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
-                content: SingleChildScrollView(
-                    child: ListBody(
-                  children: <Widget>[
-                    Text(body["message"],
-                        style: TextStyle(fontSize: Constants.m(context))),
-                  ],
-                )),
-                actions: <Widget>[
-                  TextButton(
-                    child: Text(
-                        AppLocalizations.of(context).translate("Acceptar"),
-                        style: TextStyle(color: Constants.black(context))),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              );
-            });
-      }
-    });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -401,9 +238,8 @@ class _ConfigBubble extends State<ConfigBubble> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 RawInput(
-                  labelText: bubbleName == null
-                      ? AppLocalizations.of(context).translate("Nom_Bombolla")
-                      : bubbleName,
+                  labelText:
+                      AppLocalizations.of(context).translate("Nom_Bombolla"),
                   onChanged: (value) => setState(() {
                     bubbleName = value;
                   }),
@@ -411,47 +247,6 @@ class _ConfigBubble extends State<ConfigBubble> {
               ],
             ),
           ),
-          Flexible(
-            child: Padding(
-                padding: EdgeInsets.only(
-                    top: Constants.v2(context),
-                    left: Constants.h1(context),
-                    right: Constants.h1(context)),
-                child: ListView.separated(
-                    separatorBuilder: (_, __) => Divider(),
-                    itemCount: MembersNames.length,
-                    itemBuilder: (context, index) {
-                      return Container(
-                          child: ListTile(
-                        leading: Container(
-                            width: Constants.w9(context),
-                            height: Constants.w9(context),
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                image: DecorationImage(
-                                    //fit: BoxFit.cover,
-                                    image: NetworkImage(
-                                        //Imagen de prueba, se colocará la imagen del usuario
-                                        "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg")))),
-                        title: Text(
-                          MembersNames[index],
-                          style: TextStyle(
-                              color: Constants.black(context),
-                              fontWeight: Constants.bolder,
-                              fontSize: Constants.l(context)),
-                        ),
-                        trailing: adminId == userId
-                            ? IconButton(
-                                icon: Icon(Icons.close,
-                                    color: Constants.red(context)),
-                                iconSize: Constants.w6(context),
-                                onPressed: () {
-                                  deleteMember(index);
-                                })
-                            : null,
-                      ));
-                    })),
-          )
         ])),
         bottomSheet: (adminId != userId) == true
             ? SafeArea(
@@ -474,26 +269,7 @@ class _ConfigBubble extends State<ConfigBubble> {
                   ],
                 ),
               )
-            : SafeArea(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(bottom: Constants.v7(context)),
-                      child: InkWell(
-                          highlightColor: Colors.transparent,
-                          splashColor: Colors.transparent,
-                          focusColor: Colors.transparent,
-                          onTap: () => deleteBubble(),
-                          child: Text("Eliminar bombolla",
-                              style: TextStyle(
-                                  fontSize: Constants.m(context),
-                                  fontWeight: Constants.bold,
-                                  color: Constants.red(context)))),
-                    ),
-                  ],
-                ),
-              ) //Boton eliminar bombolla
+            : Container() //Boton eliminar bombolla
         );
   }
 }

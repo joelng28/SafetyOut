@@ -19,6 +19,7 @@ class _newBubble extends State<newBubble> {
   static String nameBubble;
   List<String> Contactos = [];
   List<String> ContactosID = [];
+  List<String> ContactosPhoto = [];
   static List<bool> Participants = List<bool>.empty(growable: true);
   int npart = 0;
 
@@ -49,6 +50,7 @@ class _newBubble extends State<newBubble> {
                   setState(() {
                     Contactos.add(user['name'] + " " + user["surnames"]);
                     ContactosID.add(f["userId"]);
+                    ContactosPhoto.add(user['profileImage']);
                   });
                 }
               });
@@ -302,7 +304,13 @@ class _newBubble extends State<newBubble> {
                                         shape: BoxShape.circle,
                                         image: DecorationImage(
                                             //fit: BoxFit.cover,
-                                            image: NetworkImage(
+                                            image: NetworkImage((ContactosPhoto[
+                                                            index] !=
+                                                        '' &&
+                                                    ContactosPhoto[index] !=
+                                                        null)
+                                                ? ContactosPhoto[index]
+                                                :
                                                 //Imagen de prueba, se colocará la imagen del usuario
                                                 "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg")))),
                                 title: Text(

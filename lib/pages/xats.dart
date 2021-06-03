@@ -56,6 +56,7 @@ class _Chats extends State<Chats> {
                   print(userid);
                   Contact c = Contact(
                       destUserId: userid,
+                      photoUrl: user2['profileImage'],
                       name: user2["name"].toString() + " " + user2["surnames"]);
                   chats.add(c);
                 });
@@ -224,9 +225,15 @@ class _Chats extends State<Chats> {
                       height: Constants.w7(context),
                       decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          image: DecorationImage(fit: BoxFit.fill, image: NetworkImage(
-                              //Imagen de prueba, se colocará la imagen del usuario
-                              "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"))),
+                          image: DecorationImage(
+                              fit: BoxFit.fill,
+                              image: NetworkImage((chats[index].photoUrl !=
+                                          '' &&
+                                      chats[index].photoUrl != null)
+                                  ? chats[index].photoUrl
+                                  :
+                                  //Imagen de prueba, se colocará la imagen del usuario
+                                  "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"))),
                     ),
                     title: Text(
                       chats[index].name,
